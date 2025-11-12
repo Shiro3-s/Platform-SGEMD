@@ -31,9 +31,9 @@ exports.update = async (req, res) => {
     try {
         const updated = await asistencia.update(req.params.id, req.body)
         if (updated) {
-            res.json({ success: true, message: 'Asisitencia actualizado' })
+            res.json({ success: true, message: 'Asistencia actualizado' })
         } else {
-            res.status(404).json({ success: false, error: 'Asisitencia no encontrado' })
+            res.status(404).json({ success: false, error: 'Asistencia no encontrado' })
         }
     } catch (error) {
         res.status(400).json({ success: false, error: error.message })
@@ -44,9 +44,9 @@ exports.remove = async (req, res) => {
     try {
         const deleted = await asistencia.remove(req.params.id)
         if (deleted) {
-            res.json({ success: true, message: 'Asisitencia eliminado' })
+            res.json({ success: true, message: 'Asistencia eliminado' })
         } else {
-            res.status(404).json({ success: false, error: 'Asisitencia no encontrado' })
+            res.status(404).json({ success: false, error: 'Asistencia no encontrado' })
         }
     } catch (error) {
         res.status(500).json({ success: false, error: error.message })

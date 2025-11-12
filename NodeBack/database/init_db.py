@@ -184,18 +184,18 @@ try:
         """
         cursor.execute(create_Usuarios)
 
-        # Tabla EtapadeEmpedimiento
-        create_EtapadeEmpedimiento = """
-        CREATE TABLE IF NOT EXISTS EtapadeEmpedimiento (
-            idEtapadeEmpedimiento INT NOT NULL AUTO_INCREMENT,
+        # Tabla EtapaEmprendimiento
+        create_EtapaEmprendimiento = """
+        CREATE TABLE IF NOT EXISTS EtapaEmprendimiento (
+            idEtapaEmprendimiento INT NOT NULL AUTO_INCREMENT,
             Estado TINYINT NOT NULL,
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             TipoEtapa VARCHAR(45) NOT NULL,
-            PRIMARY KEY (idEtapadeEmpedimiento)
+            PRIMARY KEY (idEtapaEmprendimiento)
         ) 
         """
-        cursor.execute(create_EtapadeEmpedimiento)
+        cursor.execute(create_EtapaEmprendimiento)
 
         # Tabla Emprendimiento
         create_Emprendimiento = """
@@ -210,12 +210,12 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             ActaCompromiso TEXT(150) NOT NULL,
-            EtapadeEmpedimiento_idEtapadeEmpedimiento INT NOT NULL,
+            EtapaEmprendimiento_idEtapaEmprendimiento INT NOT NULL,
             PRIMARY KEY (idEmprendimiento),
-            INDEX fk_Emprendimiento_EtapadeEmpedimiento1_idx (EtapadeEmpedimiento_idEtapadeEmpedimiento),
-            CONSTRAINT fk_Emprendimiento_EtapadeEmpedimiento1
-                FOREIGN KEY (EtapadeEmpedimiento_idEtapadeEmpedimiento)
-                REFERENCES EtapadeEmpedimiento (idEtapadeEmpedimiento)
+            INDEX fk_Emprendimiento_EtapaEmprendimiento1_idx (EtapaEmprendimiento_idEtapaEmprendimiento),
+            CONSTRAINT fk_Emprendimiento_EtapaEmprendimiento1
+                FOREIGN KEY (EtapaEmprendimiento_idEtapaEmprendimiento)
+                REFERENCES EtapaEmprendimiento (idEtapaEmprendimiento)
         ) 
         """
         cursor.execute(create_Emprendimiento)
@@ -227,7 +227,7 @@ try:
             histproal VARCHAR(45) NOT NULL,
             TipoSeguimiento VARCHAR(45) NOT NULL,
             Descripcion VARCHAR(45) NOT NULL,
-            Seguimientoscol VARCHAR(45) NOT NULL,
+            SeguimientoCol VARCHAR(45) NOT NULL,
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idSeguimientos)
@@ -235,27 +235,27 @@ try:
         """
         cursor.execute(create_Seguimientos)
 
-        # Tabla Asisitencia
-        create_Asisitencia = """
-        CREATE TABLE IF NOT EXISTS Asisitencia (
-            idAsisitencia INT NOT NULL AUTO_INCREMENT,
+        # Tabla Asistencia
+        create_Asistencia = """
+        CREATE TABLE IF NOT EXISTS Asistencia (
+            idAsistencia INT NOT NULL AUTO_INCREMENT,
             FeedBack VARCHAR(45) NOT NULL,
             Emprendimiento_idEmprendimiento INT NOT NULL,
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             Seguimientos_idSeguimientos INT NOT NULL,
-            PRIMARY KEY (idAsisitencia),
-            INDEX fk_Asisitencia_Emprendimiento1_idx (Emprendimiento_idEmprendimiento),
-            INDEX fk_Asisitencia_Seguimientos1_idx (Seguimientos_idSeguimientos),
-            CONSTRAINT fk_Asisitencia_Emprendimiento1
+            PRIMARY KEY (idAsistencia),
+            INDEX fk_Asistencia_Emprendimiento1_idx (Emprendimiento_idEmprendimiento),
+            INDEX fk_Asistencia_Seguimientos1_idx (Seguimientos_idSeguimientos),
+            CONSTRAINT fk_Asistencia_Emprendimiento1
                 FOREIGN KEY (Emprendimiento_idEmprendimiento)
                 REFERENCES Emprendimiento (idEmprendimiento),
-            CONSTRAINT fk_Asisitencia_Seguimientos1
+            CONSTRAINT fk_Asistencia_Seguimientos1
                 FOREIGN KEY (Seguimientos_idSeguimientos)
                 REFERENCES Seguimientos (idSeguimientos)
         ) 
         """
-        cursor.execute(create_Asisitencia)
+        cursor.execute(create_Asistencia)
 
         # Tabla SectorEconomico
         create_SectorEconomico = """
@@ -333,27 +333,6 @@ try:
         """
         cursor.execute(create_Fecha_y_Horarios)
 
-        # Tabla Asistencia
-        create_Asistencia = """
-        CREATE TABLE IF NOT EXISTS Asistencia (
-            idAsistencia INT NOT NULL AUTO_INCREMENT,
-            FeedBack VARCHAR(45) NOT NULL,
-            Emprendimiento_idEmprendimiento INT NOT NULL,
-            FechaCreacion DATE NOT NULL,
-            FechaActualizacion DATE NOT NULL,
-            Seguimientos_idSeguimientos INT NOT NULL,
-            PRIMARY KEY (idAsistencia),
-            INDEX fk_Asistencia_Emprendimiento1_idx (Emprendimiento_idEmprendimiento),
-            INDEX fk_Asistencia_Seguimientos1_idx (Seguimientos_idSeguimientos),
-            CONSTRAINT fk_Asistencia_Emprendimiento1
-                FOREIGN KEY (Emprendimiento_idEmprendimiento)
-                REFERENCES Emprendimiento (idEmprendimiento),
-            CONSTRAINT fk_Asistencia_Seguimientos1
-                FOREIGN KEY (Seguimientos_idSeguimientos)
-                REFERENCES Seguimientos (idSeguimientos)
-        ) 
-        """
-        cursor.execute(create_Asistencia)
         # Tabla Asesorias
         create_Asesorias = """
         CREATE TABLE IF NOT EXISTS Asesorias (
