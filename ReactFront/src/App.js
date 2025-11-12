@@ -1,7 +1,7 @@
 // src/App.js
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
+import Register from "./components/Register";
 import PrivateRoute from "./routes/PrivateRoute";
 import Admin from "./pages/Admin";
 import Maestro from "./pages/Maestro";
@@ -14,8 +14,8 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Ruta pública */}
-        <Route path="/" element={<Login setUsuario={setUsuario} />} /> {/* ✅ Aquí pasamos setUsuario */}
+        {/* Ruta pública - Login y Register combinados */}
+        <Route path="/" element={<Register />} />
 
         {/* Rutas protegidas */}
         <Route

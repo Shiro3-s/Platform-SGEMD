@@ -287,6 +287,9 @@ exports.createUser = async (req, res) => {
   try {
     console.log('Body recibido en createUser:', req.body);
     const newUser = await usersService.create(req.body);
+    console.log('✅ Usuario creado correctamente');
+    console.log('   Código de verificación:', newUser.verificationCode);
+    console.log('   Retornando al frontend:', JSON.stringify(newUser));
     res.status(201).json({ success: true, data: newUser });
   } catch (error) {
     console.error('Error en createUser:', error);
@@ -401,5 +404,43 @@ exports.getStudentEntrepreneurships = async (req, res) => {
   } catch (error) {
     console.error('Error en getStudentEntrepreneurships:', error);
     res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// ==================================================
+// 🔐 VERIFICAR USUARIO (Activar cuenta)
+// ==================================================
+exports.verifyUser = async (req, res) => {
+  const { CorreoInstitucional } = req.body;
+  console.log('🔍 Intento de verificación:', { CorreoInstitucional });
+
+  if (!CorreoInstitucional) {
+    return res.status(400).json({
+      success: false,
+      error: 'El correo es requerido'
+    });
+  }
+
+  try {
+    const result = await usersService.verifyUserByEmail(CorreoInstitucional);
+
+    if (result) {
+      console.log('✅ Usuario verificado:', CorreoInstitucional);
+      res.json({
+        success: true,
+        message: 'Usuario verificado correctamente'
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        error: 'Usuario no encontrado'
+      });
+    }
+  } catch (error) {
+    console.error('❌ Error en verifyUser:', error);
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
   }
 };

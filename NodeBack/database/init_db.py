@@ -11,10 +11,10 @@ try:
 
     if connection.is_connected():
         cursor = connection.cursor()
-        cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SEGMED")
+        cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SGMED")
         print("Base de datos creada exitosamente o ya existía.")
 
-        cursor.execute("USE DB_SEGMED")
+        cursor.execute("USE DB_SGMED")
 
         # Tabla Modulos
         create_Modulos = """
@@ -120,25 +120,26 @@ try:
             idUsuarios INT NOT NULL AUTO_INCREMENT,
             Nombre VARCHAR(45) NOT NULL,
             CorreoInstitucional VARCHAR(45) NOT NULL,
-            CorreoPersonal VARCHAR(45) NOT NULL,
+            CorreoPersonal VARCHAR(45),
+            Verificado TINYINT(1) NOT NULL DEFAULT 0,
             Password VARCHAR(255) NOT NULL,  -- Nuevo campo para la contraseña
-            Celular VARCHAR(45) NOT NULL,
-            Telefono VARCHAR(45) NOT NULL,
-            Direccion VARCHAR(45) NOT NULL,  -- Corregido de Direcccion
-            Genero VARCHAR(45) NOT NULL,
-            EstadoCivil VARCHAR(45) NOT NULL,
-            FechaNacimiento DATE NOT NULL,
+            Celular VARCHAR(45),
+            Telefono VARCHAR(45),
+            Direccion VARCHAR(45),  -- Corregido de Direcccion
+            Genero VARCHAR(45),
+            EstadoCivil VARCHAR(45),
+            FechaNacimiento DATE,
             Modulos_idModulos INT,
             Municipios_idMunicipio INT,
             ProgramaAcademico_idProgramaAcademico INT,
             Roles_idRoles1 INT,
             TipoDocumentos_idTipoDocumento INT,
             TipoUsuarios_idTipoUsuarios INT,
-            ProgramaAcademico_idProgramaAcademico1 INT NOT NULL,
-            CentroUniversitarios_idCentroUniversitarios INT NOT NULL,
-            Estado TINYINT NOT NULL,
-            Semestre VARCHAR(45) NOT NULL,
-            Modalidad VARCHAR(45) NOT NULL,
+            ProgramaAcademico_idProgramaAcademico1 INT,
+            CentroUniversitarios_idCentroUniversitarios INT,
+            Estado TINYINT,
+            Semestre VARCHAR(45),
+            Modalidad VARCHAR(45),
             TipoPoblacion_idTipoPoblacion INT,
             FechaCreacion DATE,
             FechaActualizacion DATE,
