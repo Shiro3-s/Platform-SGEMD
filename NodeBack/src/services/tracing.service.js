@@ -15,14 +15,14 @@ exports.create = async (data) => {
     const fechaActual = new Date();
     const [result] = await pool.execute(
         `INSERT INTO Seguimientos (
-            histproal, TipoSeguimiento, Descripcion, Seguimientoscol,
+            histproal, TipoSeguimiento, Descripcion, SeguimientoCol,
             FechaCreacion, FechaActualizacion
         ) VALUES (?, ?, ?, ?, ?, ?)`,
         [
             data.histproal,
             data.TipoSeguimiento,
             data.Descripcion,
-            data.Seguimientoscol,
+            data.SeguimientoCol,
             fechaActual,
             fechaActual
         ]
@@ -33,14 +33,14 @@ exports.create = async (data) => {
 exports.update = async (id, data) => {
     const [result] = await pool.execute(
         `UPDATE Seguimientos SET
-            histproal = ?, TipoSeguimiento = ?, Descripcion = ?, Seguimientoscol = ?,
+            histproal = ?, TipoSeguimiento = ?, Descripcion = ?, SeguimientoCol = ?,
             FechaActualizacion = ?
         WHERE idSeguimientos = ?`,
         [
             data.histproal,
             data.TipoSeguimiento,
             data.Descripcion,
-            data.Seguimientoscol,
+            data.SeguimientoCol,
             new Date(),
             id
         ]

@@ -14,7 +14,7 @@ exports.findById = async (id) => {
 exports.create = async (data) => {
     const [result] = await pool.execute(
         `INSERT INTO Tipo_evento (
-            idTipo_evento, Academico, Cultura, Deportivo, Social, Conerencia
+            idTipo_evento, Academico, Cultura, Deportivo, Social, Conferencia
         ) VALUES (?, ?, ?, ?, ?, ?)`,
         [
             data.idTipo_evento,
@@ -22,7 +22,7 @@ exports.create = async (data) => {
             data.Cultura,
             data.Deportivo,
             data.Social,
-            data.Conerencia
+            data.Conferencia
         ]
     )
     return { id: result.insertId, ...data }
@@ -31,14 +31,14 @@ exports.create = async (data) => {
 exports.update = async (id, data) => {
     const [result] = await pool.execute(
         `UPDATE Tipo_evento SET
-            Academico = ?, Cultura = ?, Deportivo = ?, Social = ?, Conerencia = ?
+            Academico = ?, Cultura = ?, Deportivo = ?, Social = ?, Conferencia = ?
         WHERE idTipo_evento = ?`,
         [
             data.Academico,
             data.Cultura,
             data.Deportivo,
             data.Social,
-            data.Conerencia,
+            data.Conferencia,
             id
         ]
     )

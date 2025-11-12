@@ -1,20 +1,20 @@
 const { pool } = require('../config/db.config')
 
 exports.findAll = async () => {
-    const [rows] = await pool.execute('SELECT * FROM Asisitencia')
+    const [rows] = await pool.execute('SELECT * FROM Asistencia')
     return rows
 }
 
 exports.findById = async (id) => {
-    const [rows] = await pool.execute('SELECT * FROM Asisitencia WHERE idAsisitencia = ?', [id]);
-    if (rows.length === 0) throw new Error('Asisitencia no encontrada');
+    const [rows] = await pool.execute('SELECT * FROM Asistencia WHERE idAsistencia = ?', [id]);
+    if (rows.length === 0) throw new Error('Asistencia no encontrada');
     return rows[0]
 }
 
 exports.create = async (data) => {
     const fechaActual = new Date()
     const [result] = await pool.execute(
-        `INSERT INTO Asisitencia (
+    `INSERT INTO Asistencia (
             FeedBack, Emprendimiento_idEmprendimiento, FechaCreacion, FechaActualizacion, Seguimientos_idSeguimientos
         ) VALUES (?, ?, ?, ?, ?)`,
         [
@@ -30,9 +30,9 @@ exports.create = async (data) => {
 
 exports.update = async (id, data) => {
     const [result] = await pool.execute(
-        `UPDATE Asisitencia SET
+    `UPDATE Asistencia SET
             FeedBack = ?, Emprendimiento_idEmprendimiento = ?, FechaActualizacion = ?, Seguimientos_idSeguimientos = ?
-        WHERE idAsisitencia = ?`,
+    WHERE idAsistencia = ?`,
         [
             data.FeedBack,
             data.Emprendimiento_idEmprendimiento,
@@ -46,7 +46,7 @@ exports.update = async (id, data) => {
 
 exports.remove = async (id) => {
     const [result] = await pool.execute(
-        'DELETE FROM Asisitencia WHERE idAsisitencia = ?', [id]
+    'DELETE FROM Asistencia WHERE idAsistencia = ?', [id]
     )
     return result.affectedRows > 0;
 }
