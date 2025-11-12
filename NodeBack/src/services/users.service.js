@@ -56,6 +56,13 @@ exports.create = async (data) => {
 
     // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(Password, 10);
+    
+    // Generar código de verificación (6 dígitos) - solo para enviar por email
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log(`\n🔐 CÓDIGO DE VERIFICACIÓN GENERADO: ${verificationCode}`);
+    console.log(`   Tipo: ${typeof verificationCode}`);
+    console.log(`   Longitud: ${verificationCode.length}`);
+    console.log(`   Para: ${CorreoInstitucional}\n`);
 
     const [result] = await pool.query(
         `INSERT INTO usuarios (
@@ -75,36 +82,58 @@ exports.create = async (data) => {
             Semestre,
             Modalidad,
             Roles_idRoles1,
+            Verificado,
             FechaCreacion,
             FechaActualizacion
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             Nombre,
             CorreoInstitucional,
-            data.CorreoPersonal,
+            data.CorreoPersonal || null,
             hashedPassword,
-            data.Celular,
-            data.Telefono,
-            data.Direccion,
-            data.Genero,
-            data.EstadoCivil,
-            data.FechaNacimiento,
-            data.ProgramaAcademico_idProgramaAcademico1,
-            data.CentroUniversitarios_idCentroUniversitarios,
-            data.Estado,
-            data.Semestre,
-            data.Modalidad,
-            data.Roles_idRoles1,
-            data.FechaCreacion,
-            data.FechaActualizacion
+            data.Celular || null,
+            data.Telefono || null,
+            data.Direccion || null,
+            data.Genero || null,
+            data.EstadoCivil || null,
+            data.FechaNacimiento || null,
+            data.ProgramaAcademico_idProgramaAcademico1 || null,
+            data.CentroUniversitarios_idCentroUniversitarios || null,
+            data.Estado || 1,
+            data.Semestre || null,
+            data.Modalidad || null,
+            data.Roles_idRoles1 || 2,
+            0, // Verificado = 0 (no verificado)
+            data.FechaCreacion || new Date(),
+            data.FechaActualizacion || new Date()
         ]
     );
+
+    // Enviar email de verificación con el código
+    const { enviarCorreoVerificacion } = require('../config/mailer');
+    let emailSent = false;
+    try {
+        console.log(`\n🔄 Intentando enviar correo de verificación a ${CorreoInstitucional}...`);
+        const result = await enviarCorreoVerificacion(CorreoInstitucional, Nombre, verificationCode);
+        if (result && result.success) {
+            console.log('✅ Correo de verificación enviado exitosamente');
+            emailSent = true;
+        } else {
+            console.log('⚠️ Correo no enviado, pero el registro continúa');
+        }
+    } catch (err) {
+        console.error('⚠️ Error enviando correo:', err.message);
+        console.error('   El registro continúa sin el correo');
+    }
 
     return {
         idUsuarios: result.insertId,
         Nombre,
         CorreoInstitucional,
-        Roles_idRoles1: data.Roles_idRoles1
+        Roles_idRoles1: data.Roles_idRoles1 || 2,
+        verificationCode, // Retornar código para desarrollo/testing
+        emailSent, // Indicar si el correo se envió
+        message: 'Usuario creado. Verifica tu correo para activar la cuenta.'
     };
 };
 
@@ -149,6 +178,11 @@ exports.login = async (CorreoInstitucional, Password) => {
     const isMatch = await bcrypt.compare(Password, user.Password);
     if (!isMatch) throw new Error('Contraseña incorrecta');
 
+    // Validar que el usuario esté verificado
+    if (!user.Verificado) {
+        throw new Error('Tu cuenta aún no ha sido verificada. Revisa tu correo o contacta al administrador.');
+    }
+
     const token = jwt.sign(
         { id: user.idUsuarios, Rol: user.Roles_idRoles1 },
         JWT_SECRET,
@@ -173,4 +207,14 @@ exports.getEntrepreneurships = async (idUsuario) => {
         [idUsuario]
     );
     return rows;
+};
+
+// Verificar usuario (activar por código)
+exports.verifyUserByEmail = async (CorreoInstitucional) => {
+    const [result] = await pool.query(
+        `UPDATE usuarios SET Verificado = 1 WHERE CorreoInstitucional = ?`,
+        [CorreoInstitucional]
+    );
+
+    return result.affectedRows > 0;
 };

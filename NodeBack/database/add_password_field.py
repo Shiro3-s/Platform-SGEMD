@@ -82,9 +82,9 @@ def add_password_and_verification_fields():
             cursor = connection.cursor()
 
             # 🔹 Crear base de datos si no existe
-            cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SEGMED")
-            cursor.execute("USE DB_SEGMED")
-            print("✅ Base de datos 'DB_SEGMED' seleccionada correctamente.\n")
+            cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SGMED")
+            cursor.execute("USE DB_SGMED")
+            print("✅ Base de datos 'DB_SGMED' seleccionada correctamente.\n")
 
             # 🔹 Verificar si la tabla Usuarios existe
             cursor.execute("""
