@@ -15,7 +15,7 @@ exports.create = async (data) => {
     const [result] = await pool.execute(
         `INSERT INTO Asesorias (
             Nombre_de_asesoria, Descripcion, Fecha_asesoria, Comentarios,
-            Fecha_creacion, Fecha_actualizacion, confimacion,
+            Fecha_creacion, Fecha_actualizacion, confirmacion,
             Usuarios_idUsuarios, Modalidad_idModalidad, Fecha_y_Horarios_idFecha_y_Horarios
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -25,7 +25,7 @@ exports.create = async (data) => {
             data.Comentarios,
             data.Fecha_creacion,
             data.Fecha_actualizacion,
-            data.confimacion,
+            data.confirmacion,
             data.Usuarios_idUsuarios,
             data.Modalidad_idModalidad,
             data.Fecha_y_Horarios_idFecha_y_Horarios
@@ -38,7 +38,7 @@ exports.update = async (id, data) => {
     const [result] = await pool.execute(
         `UPDATE Asesorias SET
             Nombre_de_asesoria = ?, Descripcion = ?, Fecha_asesoria = ?, Comentarios = ?,
-            Fecha_creacion = ?, Fecha_actualizacion = ?, confimacion = ?,
+            Fecha_creacion = ?, Fecha_actualizacion = ?, confirmacion = ?,
             Usuarios_idUsuarios = ?, Modalidad_idModalidad = ?, Fecha_y_Horarios_idFecha_y_Horarios = ?
         WHERE idAsesorias = ?`,
         [
@@ -48,7 +48,7 @@ exports.update = async (id, data) => {
             data.Comentarios,
             data.Fecha_creacion,
             data.Fecha_actualizacion,
-            data.confimacion,
+            data.confirmacion,
             data.Usuarios_idUsuarios,
             data.Modalidad_idModalidad,
             data.Fecha_y_Horarios_idFecha_y_Horarios,

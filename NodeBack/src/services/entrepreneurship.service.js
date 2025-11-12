@@ -17,7 +17,7 @@ exports.create = async (data) => {
         `INSERT INTO Emprendimiento (
             Nombre, Descripcion, TipoEmprendimiento, SectorProductivo,
             RedesSociales, Acompanamiento, FechaCreacion, FechaActualizacion,
-            ActaCompromiso, EtapadeEmpedimiento_idEtapadeEmpedimiento
+            ActaCompromiso, EtapaEmprendimiento_idEtapaEmprendimiento
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             data.Nombre,
@@ -29,7 +29,7 @@ exports.create = async (data) => {
             fechaActual,
             fechaActual,
             data.ActaCompromiso,
-            data.EtapadeEmpedimiento_idEtapadeEmpedimiento
+            data.EtapaEmprendimiento_idEtapaEmprendimiento
         ]
     )
     return { id: result.insertId, ...data }
@@ -40,7 +40,7 @@ exports.update = async (id, data) => {
         `UPDATE Emprendimiento SET
             Nombre = ?, Descripcion = ?, TipoEmprendimiento = ?, SectorProductivo = ?,
             RedesSociales = ?, Acompanamiento = ?, FechaActualizacion = ?,
-            ActaCompromiso = ?, EtapadeEmpedimiento_idEtapadeEmpedimiento = ?
+            ActaCompromiso = ?, EtapaEmprendimiento_idEtapaEmprendimiento = ?
         WHERE idEmprendimiento = ?`,
         [
             data.Nombre,
@@ -51,7 +51,7 @@ exports.update = async (id, data) => {
             data.Acompanamiento,
             new Date(),
             data.ActaCompromiso,
-            data.EtapadeEmpedimiento_idEtapadeEmpedimiento,
+            data.EtapaEmprendimiento_idEtapaEmprendimiento,
             id
         ]
     )

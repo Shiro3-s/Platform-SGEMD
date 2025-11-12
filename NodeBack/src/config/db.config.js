@@ -5,7 +5,7 @@ const dbConfig = {
     port: '3306',
     user: 'root',
     password: '',
-    database: 'db_segmed',
+    database: 'db_sgmed',
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0

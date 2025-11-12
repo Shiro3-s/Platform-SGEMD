@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // 🔹 Componentes principales
 import Login from "./components/Login";
+import Register from "./components/Register";
 import PrivateRoute from "./routes/PrivateRoute";
 
 // 🔹 Layouts y páginas del Administrador
@@ -34,6 +35,8 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Ruta pública - Login y Register combinados */}
+        <Route path="/" element={<Register />} />
 
         {/* ========================================================= */}
         {/* 🟢 RUTA PÚBLICA: LOGIN */}

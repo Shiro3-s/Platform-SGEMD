@@ -7,6 +7,36 @@ const { authenticateToken, isAdmin } = require('../middleware/auth.middleware')
 //RUTAS PÚBLICAS
 router.post('/login', usersController.loginUser)
 router.post('/register', usersController.createUser)
+router.post('/verify', usersController.verifyUser)
+
+// Ruta de prueba para verificar que el correo funciona
+router.post('/test-email', async (req, res) => {
+  try {
+    const { destinatario, nombre, codigo } = req.body;
+    
+    if (!destinatario || !nombre || !codigo) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Faltan parámetros: destinatario, nombre, codigo' 
+      });
+    }
+    
+    const { enviarCorreoVerificacion } = require('../config/mailer');
+    const result = await enviarCorreoVerificacion(destinatario, nombre, codigo);
+    
+    res.json({
+      success: true,
+      message: 'Correo de prueba enviado',
+      result
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
 
 //RUTAS PROTEGIDAS 
 router.get('/', authenticateToken, usersController.getAllUsers)

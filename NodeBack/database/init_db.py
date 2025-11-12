@@ -11,10 +11,10 @@ try:
 
     if connection.is_connected():
         cursor = connection.cursor()
-        cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SEGMED")
+        cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SGMED")
         print("Base de datos creada exitosamente o ya existía.")
 
-        cursor.execute("USE DB_SEGMED")
+        cursor.execute("USE DB_SGMED")
 
         # Tabla Modulos
         create_Modulos = """
@@ -120,25 +120,26 @@ try:
             idUsuarios INT NOT NULL AUTO_INCREMENT,
             Nombre VARCHAR(45) NOT NULL,
             CorreoInstitucional VARCHAR(45) NOT NULL,
-            CorreoPersonal VARCHAR(45) NOT NULL,
+            CorreoPersonal VARCHAR(45),
+            Verificado TINYINT(1) NOT NULL DEFAULT 0,
             Password VARCHAR(255) NOT NULL,  -- Nuevo campo para la contraseña
-            Celular VARCHAR(45) NOT NULL,
-            Telefono VARCHAR(45) NOT NULL,
-            Direccion VARCHAR(45) NOT NULL,  -- Corregido de Direcccion
-            Genero VARCHAR(45) NOT NULL,
-            EstadoCivil VARCHAR(45) NOT NULL,
-            FechaNacimiento DATE NOT NULL,
+            Celular VARCHAR(45),
+            Telefono VARCHAR(45),
+            Direccion VARCHAR(45),  -- Corregido de Direcccion
+            Genero VARCHAR(45),
+            EstadoCivil VARCHAR(45),
+            FechaNacimiento DATE,
             Modulos_idModulos INT,
             Municipios_idMunicipio INT,
             ProgramaAcademico_idProgramaAcademico INT,
             Roles_idRoles1 INT,
             TipoDocumentos_idTipoDocumento INT,
             TipoUsuarios_idTipoUsuarios INT,
-            ProgramaAcademico_idProgramaAcademico1 INT NOT NULL,
-            CentroUniversitarios_idCentroUniversitarios INT NOT NULL,
-            Estado TINYINT NOT NULL,
-            Semestre VARCHAR(45) NOT NULL,
-            Modalidad VARCHAR(45) NOT NULL,
+            ProgramaAcademico_idProgramaAcademico1 INT,
+            CentroUniversitarios_idCentroUniversitarios INT,
+            Estado TINYINT,
+            Semestre VARCHAR(45),
+            Modalidad VARCHAR(45),
             TipoPoblacion_idTipoPoblacion INT,
             FechaCreacion DATE,
             FechaActualizacion DATE,
@@ -256,49 +257,49 @@ try:
         """
         cursor.execute(create_Asisitencia)
 
-        # Tabla SectoEconomico
-        create_SectoEconomico = """
-        CREATE TABLE IF NOT EXISTS SectoEconomico (
-            idSectoEconomico INT NOT NULL AUTO_INCREMENT,
+        # Tabla SectorEconomico
+        create_SectorEconomico = """
+        CREATE TABLE IF NOT EXISTS SectorEconomico (
+            idSectorEconomico INT NOT NULL AUTO_INCREMENT,
             Nombre VARCHAR(45) NOT NULL,
-            PRIMARY KEY (idSectoEconomico)
+            PRIMARY KEY (idSectorEconomico)
         ) 
         """
-        cursor.execute(create_SectoEconomico)
+        cursor.execute(create_SectorEconomico)
 
         # Tabla Diagnosticos
         create_Diagnosticos = """
         CREATE TABLE IF NOT EXISTS Diagnosticos (
             idDiagnosticos INT NOT NULL AUTO_INCREMENT,
-            FechaEmprendimiento DATE NOT NULL,                -- Corregido de FechaEmpredimiento
+            FechaEmprendimiento DATE NOT NULL,
             AreaEstrategia VARCHAR(45) NOT NULL,
             Diferencial TINYINT NOT NULL,
             Planeacion TINYINT NOT NULL,
-            MercadoObjetivo VARCHAR(45) NOT NULL,             -- Corregido de Mercadoobjetivo
+            MercadoObjetivo VARCHAR(45) NOT NULL,
             Tendencias TINYINT NOT NULL,
             Canales TINYINT NOT NULL,
             DescripcionPromocion TEXT(150) NOT NULL,
-            SectoEconomico_idSectoEconomico INT NOT NULL,
+            SectorEconomico_idSectorEconomico INT NOT NULL,
             Emprendimiento_idEmprendimiento INT NOT NULL,
             Presentacion TINYINT NOT NULL,
             PasosElaboracion TINYINT NOT NULL,
-            SituacionFinanciera TINYINT NOT NULL,             -- Corregido de SituacionFinaciera
-            FuenteFinanciero TEXT(150) NOT NULL,              -- Corregido de FuenteFinaciero
-            EstructuraOrganica TINYINT NOT NULL,              -- Corregido de EstrucuturaOrganica
-            ConocimientoLegal TINYINT NOT NULL,               -- Corregido de ConociminetoLegal
-            MetodologiaInnovacion TEXT(150) NOT NULL,         -- Corregido de MEtologiaInnovacion
-            HerramientaTecnologicas TEXT(150) NOT NULL,       -- Corregido de HerammientoTecnologicas
+            SituacionFinanciera TINYINT NOT NULL,
+            FuenteFinanciero TEXT(150) NOT NULL,
+            EstructuraOrganica TINYINT NOT NULL,
+            ConocimientoLegal TINYINT NOT NULL,
+            MetodologiaInnovacion TEXT(150) NOT NULL,
+            HerramientaTecnologicas TEXT(150) NOT NULL,
             Marca TEXT(150) NOT NULL,
             AplicacionMetodologia TINYINT NOT NULL,
             ImpactoAmbiental TINYINT NOT NULL,
             ImpactoSocial TINYINT NOT NULL,
             Viabilidad TINYINT NOT NULL,
             PRIMARY KEY (idDiagnosticos),
-            INDEX fk_Diagnosticos_SectoEconomico1_idx (SectoEconomico_idSectoEconomico),
+            INDEX fk_Diagnosticos_SectorEconomico1_idx (SectorEconomico_idSectorEconomico),
             INDEX fk_Diagnosticos_Emprendimiento1_idx (Emprendimiento_idEmprendimiento),
-            CONSTRAINT fk_Diagnosticos_SectoEconomico1
-                FOREIGN KEY (SectoEconomico_idSectoEconomico)
-                REFERENCES SectoEconomico (idSectoEconomico),
+            CONSTRAINT fk_Diagnosticos_SectorEconomico1
+                FOREIGN KEY (SectorEconomico_idSectorEconomico)
+                REFERENCES SectorEconomico (idSectorEconomico),
             CONSTRAINT fk_Diagnosticos_Emprendimiento1
                 FOREIGN KEY (Emprendimiento_idEmprendimiento)
                 REFERENCES Emprendimiento (idEmprendimiento)
@@ -332,6 +333,27 @@ try:
         """
         cursor.execute(create_Fecha_y_Horarios)
 
+        # Tabla Asistencia
+        create_Asistencia = """
+        CREATE TABLE IF NOT EXISTS Asistencia (
+            idAsistencia INT NOT NULL AUTO_INCREMENT,
+            FeedBack VARCHAR(45) NOT NULL,
+            Emprendimiento_idEmprendimiento INT NOT NULL,
+            FechaCreacion DATE NOT NULL,
+            FechaActualizacion DATE NOT NULL,
+            Seguimientos_idSeguimientos INT NOT NULL,
+            PRIMARY KEY (idAsistencia),
+            INDEX fk_Asistencia_Emprendimiento1_idx (Emprendimiento_idEmprendimiento),
+            INDEX fk_Asistencia_Seguimientos1_idx (Seguimientos_idSeguimientos),
+            CONSTRAINT fk_Asistencia_Emprendimiento1
+                FOREIGN KEY (Emprendimiento_idEmprendimiento)
+                REFERENCES Emprendimiento (idEmprendimiento),
+            CONSTRAINT fk_Asistencia_Seguimientos1
+                FOREIGN KEY (Seguimientos_idSeguimientos)
+                REFERENCES Seguimientos (idSeguimientos)
+        ) 
+        """
+        cursor.execute(create_Asistencia)
         # Tabla Asesorias
         create_Asesorias = """
         CREATE TABLE IF NOT EXISTS Asesorias (
@@ -342,7 +364,7 @@ try:
             Comentarios VARCHAR(45) NOT NULL,
             Fecha_creacion DATETIME NOT NULL,
             Fecha_actualizacion DATETIME NOT NULL,
-            confimacion VARCHAR(45) NOT NULL,
+            confirmacion VARCHAR(45) NOT NULL,
             Usuarios_idUsuarios INT NOT NULL,
             Modalidad_idModalidad INT NOT NULL,
             Fecha_y_Horarios_idFecha_y_Horarios INT NOT NULL,
@@ -350,16 +372,10 @@ try:
             INDEX fk_Asesorias_Usuarios1_idx (Usuarios_idUsuarios),
             INDEX fk_Asesorias_Modalidad1_idx (Modalidad_idModalidad),
             INDEX fk_Asesorias_Fecha_y_Horarios1_idx (Fecha_y_Horarios_idFecha_y_Horarios),
-            CONSTRAINT fk_Asesorias_Usuarios1
-                FOREIGN KEY (Usuarios_idUsuarios)
-                REFERENCES Usuarios (idUsuarios),
-            CONSTRAINT fk_Asesorias_Modalidad1
-                FOREIGN KEY (Modalidad_idModalidad)
-                REFERENCES Modalidad (idModalidad),
-            CONSTRAINT fk_Asesorias_Fecha_y_Horarios1
-                FOREIGN KEY (Fecha_y_Horarios_idFecha_y_Horarios)
-                REFERENCES Fecha_y_Horarios (idFecha_y_Horarios)
-        ) 
+            CONSTRAINT fk_Asesorias_Usuarios1 FOREIGN KEY (Usuarios_idUsuarios) REFERENCES Usuarios (idUsuarios),
+            CONSTRAINT fk_Asesorias_Modalidad1 FOREIGN KEY (Modalidad_idModalidad) REFERENCES Modalidad (idModalidad),
+            CONSTRAINT fk_Asesorias_Fecha_y_Horarios1 FOREIGN KEY (Fecha_y_Horarios_idFecha_y_Horarios) REFERENCES Fecha_y_Horarios (idFecha_y_Horarios)
+        );
         """
         cursor.execute(create_Asesorias)
 
@@ -371,9 +387,9 @@ try:
             Cultura VARCHAR(45) NOT NULL,
             Deportivo VARCHAR(45) NOT NULL,
             Social VARCHAR(45) NOT NULL,
-            Conerencia VARCHAR(45) NOT NULL,
+            Conferencia VARCHAR(45) NOT NULL,
             PRIMARY KEY (idTipo_evento)
-        ) 
+        );
         """
         cursor.execute(create_Tipo_evento)
 
@@ -389,22 +405,16 @@ try:
             Estado VARCHAR(45) NOT NULL,
             Capacidad_maxima INT NOT NULL,
             Requiere_registro TINYINT NOT NULL,
-            Fecha_creacion DATETIME NOT NULL,          -- Corregido de Fecha_crecion
+            Fecha_creacion DATETIME NOT NULL,
             Fecha_actualizacion DATETIME NOT NULL,
             PRIMARY KEY (idEventos),
             INDEX fk_Eventos_Tipo_evento1_idx (Tipo_evento_idTipo_evento),
             INDEX fk_Eventos_Modalidad1_idx (Modalidad_idModalidad),
             INDEX fk_Eventos_Fecha_y_Horarios1_idx (Fecha_y_Horarios_idFecha_y_Horarios),
-            CONSTRAINT fk_Eventos_Tipo_evento1
-                FOREIGN KEY (Tipo_evento_idTipo_evento)
-                REFERENCES Tipo_evento (idTipo_evento),
-            CONSTRAINT fk_Eventos_Modalidad1
-                FOREIGN KEY (Modalidad_idModalidad)
-                REFERENCES Modalidad (idModalidad),
-            CONSTRAINT fk_Eventos_Fecha_y_Horarios1
-                FOREIGN KEY (Fecha_y_Horarios_idFecha_y_Horarios)
-                REFERENCES Fecha_y_Horarios (idFecha_y_Horarios)
-        ) 
+            CONSTRAINT fk_Eventos_Tipo_evento1 FOREIGN KEY (Tipo_evento_idTipo_evento) REFERENCES Tipo_evento (idTipo_evento),
+            CONSTRAINT fk_Eventos_Modalidad1 FOREIGN KEY (Modalidad_idModalidad) REFERENCES Modalidad (idModalidad),
+            CONSTRAINT fk_Eventos_Fecha_y_Horarios1 FOREIGN KEY (Fecha_y_Horarios_idFecha_y_Horarios) REFERENCES Fecha_y_Horarios (idFecha_y_Horarios)
+        );
         """
         cursor.execute(create_Eventos)
 
