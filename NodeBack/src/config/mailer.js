@@ -103,7 +103,7 @@ async function enviarCorreoVerificacion(destinatario, nombre, codigo) {
           <div class="container">
             <div class="header">
               <h1>SGEMD</h1>
-              <p>Sistema de Gestión de Emprendimientos Médicos Digitales</p>
+              <p>Sistema de Gestión de Emprendimientos Minuto de Dios</p>
             </div>
             <div class="content">
               <h2 class="welcome">¡Bienvenido, ${nombre}!</h2>
@@ -118,7 +118,7 @@ async function enviarCorreoVerificacion(destinatario, nombre, codigo) {
               </div>
               
               <div class="warning">
-                <strong>⏰ Importante:</strong><br>
+                <strong>Importante:</strong><br>
                 • Este código es válido por 24 horas<br>
                 • No compartas este código con nadie<br>
                 • Nadie del equipo te pedirá este código por otros medios
@@ -154,14 +154,14 @@ async function enviarCorreoVerificacion(destinatario, nombre, codigo) {
 
     const info = await transporter.sendMail(mailOptions);
     
-    console.log("✅ CORREO ENVIADO EXITOSAMENTE");
+    console.log("CORREO ENVIADO EXITOSAMENTE");
     console.log(`   ID: ${info.messageId}`);
     console.log(`   Response: ${info.response}`);
     console.log("=".repeat(60) + "\n");
     
     return { success: true, messageId: info.messageId };
   } catch (error) {
-    console.error("\n❌ ERROR ENVIANDO CORREO DE VERIFICACIÓN");
+    console.error("\nERROR ENVIANDO CORREO DE VERIFICACIÓN");
     console.error("=".repeat(60));
     console.error(`Error: ${error.message}`);
     console.error(`Código: ${error.code}`);
@@ -172,7 +172,7 @@ async function enviarCorreoVerificacion(destinatario, nombre, codigo) {
     
     // Log adicional para debugging
     if (error.code === 'EAUTH') {
-      console.error("⚠️  PROBLEMA: Error de autenticación con Gmail");
+      console.error("PROBLEMA: Error de autenticación con Gmail");
       console.error("   Verifica:");
       console.error("   1. EMAIL_USER y EMAIL_PASS en .env");
       console.error("   2. Contraseña de aplicación (no la contraseña normal)");

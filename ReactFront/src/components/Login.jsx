@@ -13,6 +13,32 @@ function Login({ setUsuario }) {
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // Permitir cuentas de prueba locales (sin llamar al backend)
+    const DEMO_ACCOUNTS = {
+      "admin@demo.com": { password: "admin123", rol: 1, nombre: "Admin Demo" },
+      "student@demo.com": { password: "student123", rol: 2, nombre: "Student Demo" },
+      "teacher@demo.com": { password: "teacher123", rol: 3, nombre: "Teacher Demo" },
+    };
+
+    const tryDemo = (email, pass) => {
+      const account = DEMO_ACCOUNTS[email];
+      if (account && account.password === pass) return account;
+      return null;
+    };
+
+    const demo = tryDemo(correo.trim(), clave);
+    if (demo) {
+      // Login local: establecer token y usuario, redirigir según rol
+      const rolesMap = { 1: "administrador", 2: "estudiante", 3: "maestro" };
+      const rol = rolesMap[demo.rol] || "desconocido";
+      localStorage.setItem("token", `demo-token-${demo.rol}`);
+      if (typeof setUsuario === "function") setUsuario({ nombre: demo.nombre, rol });
+      if (rol === "administrador") navigate("/admin");
+      else if (rol === "maestro") navigate("/maestro");
+      else if (rol === "estudiante") navigate("/estudiante");
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/segmed/users/login`, {
         method: "POST",
@@ -78,6 +104,7 @@ function Login({ setUsuario }) {
         />
         <button type="submit">Ingresar</button>
       </form>
+      {/* Demo buttons removed from UI per user request. Demo accounts remain available programmatically. */}
       {mensaje && <p>{mensaje}</p>}
     </div>
   );

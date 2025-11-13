@@ -5,7 +5,7 @@ import "./Login.css";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3005";
 
-function Register() {
+function Register({ setUsuario }) {
   const [activeTab, setActiveTab] = useState("login");
   const navigate = useNavigate();
 
@@ -48,6 +48,31 @@ function Register() {
       return;
     }
 
+    // Manejo local de cuentas demo para mostrar vistas sin backend
+    const DEMO_ACCOUNTS = {
+      "admin@demo.com": { password: "admin123", rol: 1, nombre: "Admin Demo" },
+      "student@demo.com": { password: "student123", rol: 2, nombre: "Student Demo" },
+      "teacher@demo.com": { password: "teacher123", rol: 3, nombre: "Teacher Demo" },
+    };
+
+    const tryDemo = (email, pass) => {
+      const account = DEMO_ACCOUNTS[email];
+      if (account && account.password === pass) return account;
+      return null;
+    };
+
+    const demo = tryDemo(loginData.correo.trim(), loginData.clave);
+    if (demo) {
+      const rolesMap = { 1: "administrador", 2: "estudiante", 3: "maestro" };
+      const rol = rolesMap[demo.rol] || "desconocido";
+      localStorage.setItem("token", `demo-token-${demo.rol}`);
+      if (typeof setUsuario === "function") setUsuario({ nombre: demo.nombre, rol });
+      if (rol === "administrador") navigate("/admin");
+      else if (rol === "maestro") navigate("/maestro");
+      else if (rol === "estudiante") navigate("/estudiante");
+      return;
+    }
+
     try {
       const response = await fetch(`${API_URL}/segmed/users/login`, {
         method: "POST",
@@ -67,6 +92,11 @@ function Register() {
         if (user && typeof user.Rol === "number") {
           const rolesMap = { 1: "administrador", 2: "estudiante", 3: "maestro" };
           const rol = rolesMap[user.Rol] || "desconocido";
+
+          // Set global usuario in App so PrivateRoute works
+          if (typeof setUsuario === "function") {
+            setUsuario({ nombre: user.Nombre, rol });
+          }
 
           if (rol === "administrador") navigate("/admin");
           else if (rol === "maestro") navigate("/maestro");
@@ -310,6 +340,7 @@ function Register() {
             />
             <button type="submit">Ingresar</button>
           </form>
+          {/* Demo buttons removed from login UI per request. Demo accounts remain available programmatically. */}
           {loginMsg && <p className="error-message">{loginMsg}</p>}
         </div>
       )}

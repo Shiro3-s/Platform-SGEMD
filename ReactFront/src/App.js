@@ -35,13 +35,15 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Ruta pública - Login y Register combinados */}
-        <Route path="/" element={<Register />} />
+  {/* Ruta pública - Vista combinada (login/register) en la raíz */}
+  <Route path="/" element={<Register setUsuario={setUsuario} />} />
+  {/* Rutas alternativas: acceso directo a login o register si se necesita */}
+  <Route path="/login" element={<Login setUsuario={setUsuario} />} />
+  <Route path="/register" element={<Register setUsuario={setUsuario} />} />
 
-        {/* ========================================================= */}
-        {/* 🟢 RUTA PÚBLICA: LOGIN */}
-        {/* ========================================================= */}
-        <Route path="/" element={<Login setUsuario={setUsuario} />} />
+  {/* ========================================================= */}
+  {/* 🟢 RUTA PÚBLICA: (la raíz ya muestra el formulario combinado) */}
+  {/* ========================================================= */}
 
         {/* ========================================================= */}
         {/* 🧑‍🎓 RUTAS ANIDADAS: ESTUDIANTE */}
