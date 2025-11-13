@@ -11,10 +11,10 @@ try:
 
     if connection.is_connected():
         cursor = connection.cursor()
-        cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SGMED")
+        cursor.execute("CREATE DATABASE IF NOT EXISTS DB_SGEMD")
         print("Base de datos creada exitosamente o ya existía.")
 
-        cursor.execute("USE DB_SGMED")
+        cursor.execute("USE DB_SGEMD")
 
         # Tabla Modulos
         create_Modulos = """
