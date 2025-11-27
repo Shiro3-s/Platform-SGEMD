@@ -57,7 +57,7 @@ exports.create = async (data) => {
 
     // Encriptar contraseña
     const hashedPassword = await bcrypt.hash(Password, 10);
-    
+
     // Generar código de verificación (6 dígitos) - solo para enviar por email
     const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
     console.log(`\n🔐 CÓDIGO DE VERIFICACIÓN GENERADO: ${verificationCode}`);
@@ -105,7 +105,7 @@ exports.create = async (data) => {
             data.Semestre || null,
             data.Modalidad || null,
             data.Roles_idRoles1 || 2,
-            0, // Verificado = 0 (no verificado)
+            data.Verificado !== undefined ? data.Verificado : 0, // Verificado (si no se pasa, es 0)
             data.FechaCreacion || new Date(),
             data.FechaActualizacion || new Date(),
             data.img_perfil || null

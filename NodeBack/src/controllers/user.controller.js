@@ -288,15 +288,15 @@ exports.getMe = async (req, res) => {
   try {
     const requester = req.user;
     console.log('👤 getMe solicitado por usuario:', requester);
-    
+
     if (!requester || !requester.id) {
       console.error('❌ No hay usuario en req.user');
       return res.status(401).json({ success: false, error: 'No autenticado' });
     }
-    
+
     const user = await usersService.findById(requester.id);
     console.log('✅ Usuario encontrado:', { id: user?.idUsuarios, nombre: user?.Nombre });
-    
+
     res.json({ success: true, data: user });
   } catch (error) {
     console.error('❌ Error en getMe:', error.message);
@@ -356,9 +356,9 @@ exports.requestReactivation = async (req, res) => {
     // Enviar notificación a admins (aquí puedes implementar envío de email a admins)
     // Por ahora solo registramos que se hizo la solicitud
 
-    res.json({ 
-      success: true, 
-      message: 'Solicitud enviada exitosamente. Un administrador revisará tu solicitud pronto.' 
+    res.json({
+      success: true,
+      message: 'Solicitud enviada exitosamente. Un administrador revisará tu solicitud pronto.'
     });
   } catch (error) {
     console.error('Error en requestReactivation:', error);
@@ -372,7 +372,17 @@ exports.requestReactivation = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     console.log('Body recibido en createUser:', req.body);
-    const newUser = await usersService.create(req.body);
+    console.log('Body recibido en createUser:', req.body);
+
+    const data = { ...req.body };
+    // Si es admin (req.user.Rol === 1), permitir crear usuario verificado
+    if (req.user && req.user.Rol === 1) {
+      data.Verificado = 1;
+    } else {
+      data.Verificado = 0;
+    }
+
+    const newUser = await usersService.create(data);
     console.log('✅ Usuario creado correctamente');
     console.log('   Código de verificación:', newUser.verificationCode);
     console.log('   Retornando al frontend:', JSON.stringify(newUser));

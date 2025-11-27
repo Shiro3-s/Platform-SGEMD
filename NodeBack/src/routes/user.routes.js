@@ -1,7 +1,7 @@
 // Rutas para la gestión de usuarios
 const express = require('express')
 const router = express.Router()
-const usersController = require('../controllers/user.controller') 
+const usersController = require('../controllers/user.controller')
 const { authenticateToken, isAdmin } = require('../middleware/auth.middleware')
 const multer = require('multer');
 const path = require('path');
@@ -30,17 +30,17 @@ router.post('/verify', usersController.verifyUser)
 router.post('/test-email', async (req, res) => {
   try {
     const { destinatario, nombre, codigo } = req.body;
-    
+
     if (!destinatario || !nombre || !codigo) {
-      return res.status(400).json({ 
-        success: false, 
-        error: 'Faltan parámetros: destinatario, nombre, codigo' 
+      return res.status(400).json({
+        success: false,
+        error: 'Faltan parámetros: destinatario, nombre, codigo'
       });
     }
-    
+
     const { enviarCorreoVerificacion } = require('../config/mailer');
     const result = await enviarCorreoVerificacion(destinatario, nombre, codigo);
-    
+
     res.json({
       success: true,
       message: 'Correo de prueba enviado',
@@ -58,8 +58,8 @@ router.post('/test-email', async (req, res) => {
 //RUTAS PROTEGIDAS (se declaran ANTES que /:id para evitar conflictos de routing)
 router.get('/me', authenticateToken, usersController.getMe)
 router.get('/', authenticateToken, usersController.getAllUsers)
-router.get('/students', authenticateToken, usersController.getAllStudents)
-router.get('/teachers', authenticateToken, usersController.getAllTeachers)
+router.get('/students', authenticateToken, isAdmin, usersController.getAllStudents)
+router.get('/teachers', authenticateToken, isAdmin, usersController.getAllTeachers)
 router.get('/admins', authenticateToken, isAdmin, usersController.getAllAdmins)
 router.post('/:id/reactivate', authenticateToken, isAdmin, usersController.reactivateUser)
 router.post('/:id/request-reactivation', authenticateToken, usersController.requestReactivation)

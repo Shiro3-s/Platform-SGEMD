@@ -1,6 +1,7 @@
 // src/App.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { apiFetch } from "./api";
 
 // 🔹 Componentes principales
 import Login from "./components/Login";
@@ -15,6 +16,7 @@ import AdminLayout from "./pages/Admin/AdminLayout.jsx"; // Layout con <Outlet /
 import AdminAsignar from "./pages/Admin/AdminAsignar.jsx";
 import AdminPerfil from "./pages/Admin/Perfil.jsx";
 import AdminUsuarios from "./pages/Admin/Usuarios.jsx";
+import GestionarUsuarios from "./pages/Admin/GestionarUsuarios.jsx";
 
 // 🔹 Páginas del Maestro
 import Maestro from "./pages/Maestro/Maestro.jsx";
@@ -32,19 +34,67 @@ import EstudianteProgreso from "./pages/Estudiante/Progreso.jsx";
 function App() {
   // 🔹 Estado global del usuario autenticado
   const [usuario, setUsuario] = useState(null);
+  const [loading, setLoading] = useState(true); // Nuevo estado de carga
+
+  // 🔹 Efecto para restaurar sesión desde localStorage al recargar
+  useEffect(() => {
+    const checkSession = async () => {
+      const token = localStorage.getItem("token");
+      console.log('🔍 App.js: Verificando sesión...');
+      console.log('   Token en localStorage:', token ? 'PRESENTE' : 'AUSENTE');
+      if (token) {
+        try {
+          // Validar token con el backend
+          const res = await apiFetch('/segmed/users/me');
+          if (res.success && res.data) {
+            const user = res.data;
+            const rolesMap = { 1: "administrador", 2: "estudiante", 3: "maestro" };
+            const rol = rolesMap[user.Roles_idRoles1] || "desconocido";
+
+            setUsuario({
+              nombre: user.Nombre,
+              rol: rol,
+              id: user.idUsuarios
+            });
+            console.log('✅ Sesión restaurada:', { nombre: user.Nombre, rol });
+          } else {
+            // Token inválido o expirado según el backend
+            console.warn("Sesión inválida, limpiando token");
+            localStorage.removeItem("token");
+          }
+        } catch (err) {
+          console.error("❌ Error validando sesión:", err.message);
+          localStorage.removeItem("token");
+        }
+      } else {
+        console.log('⚠️ No hay token en localStorage');
+      }
+      setLoading(false); // Finalizar carga
+    };
+
+    checkSession();
+  }, []);
+
+  if (loading) {
+    return <div className="d-flex justify-content-center align-items-center vh-100">
+      <div className="spinner-border text-primary" role="status">
+        <span className="visually-hidden">Cargando...</span>
+      </div>
+    </div>;
+  }
 
   return (
     <Router>
       <Routes>
-  {/* Ruta pública - Vista combinada (login/register) en la raíz */}
-  <Route path="/" element={<Register setUsuario={setUsuario} />} />
-  {/* Rutas alternativas: acceso directo a login o register si se necesita */}
-  <Route path="/login" element={<Login setUsuario={setUsuario} />} />
-  <Route path="/register" element={<Register setUsuario={setUsuario} />} />
+        {/* Ruta pública - Vista combinada (login/register) en la raíz */}
+        <Route path="/" element={<Register setUsuario={setUsuario} />} />
+        {/* Rutas alternativas: acceso directo a login o register si se necesita */}
+        <Route path="/login" element={<Login setUsuario={setUsuario} />} />
+        <Route path="/register" element={<Register setUsuario={setUsuario} />} />
 
-  {/* ========================================================= */}
-  {/* 🟢 RUTA PÚBLICA: (la raíz ya muestra el formulario combinado) */}
-  {/* ========================================================= */}
+        {/* ========================================================= */}
+        {/* 🟢 RUTA PÚBLICA: (la raíz ya muestra el formulario combinado) */}
+        {/* ========================================================= */}
 
         {/* ========================================================= */}
         {/* 🧑‍🎓 RUTAS ANIDADAS: ESTUDIANTE */}
@@ -107,8 +157,8 @@ function App() {
           <Route path="docentes/asignar" element={<AdminAsignar />} />
 
           {/* 4️⃣ Otras rutas de ejemplo */}
-          <Route path="gestionar/docentes" element={<div>Gestionar Docentes View</div>} />
-          <Route path="gestionar/estudiantes" element={<div>Gestionar Estudiantes View</div>} />
+          <Route path="gestionar/docentes" element={<GestionarUsuarios role="docente" />} />
+          <Route path="gestionar/estudiantes" element={<GestionarUsuarios role="estudiante" />} />
           <Route path="emprendimientos/plan-de-trabajo" element={<div>Plan de Trabajo View</div>} />
           <Route path="eventos/crear" element={<div>Crear Evento View</div>} />
           <Route path="eventos/editar" element={<div>Editar Evento View</div>} />

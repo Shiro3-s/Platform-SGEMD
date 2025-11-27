@@ -1,85 +1,119 @@
-// src/pages/Maestro/SidebarMaestro.jsx
+// src/components/SidebarMaestro.jsx
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+
+// Íconos SVG para indicar el estado del submenú
+const IconAngleUp = (props) => (
+  <svg
+    {...props}
+    width="16"
+    height="16"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 448 512"
+    fill="currentColor"
+  >
+    <path d="M201.4 137.4c12.5-12.5 32.8-12.5 45.3 0l160 160c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L224 205.3 86.6 342.6c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3l160-160z" />
+  </svg>
+);
+
+const IconAngleDown = (props) => (
+  <svg
+    {...props}
+    width="16"
+    height="16"
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 448 512"
+    fill="currentColor"
+  >
+    <path d="M201.4 342.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+  </svg>
+);
+
+const menuStructure = [
+  { title: 'Perfil', items: ['Completar información personal'] },
+  { title: 'Emprendimientos', items: ['Perfil de Emprendimiento', 'Seguimiento'] },
+  { title: 'Asesorías', items: ['Mis Asesorías', 'Crear Asesoría', 'Editar Asesoría'] },
+];
 
 const SidebarMaestro = () => {
-  const [openMenu, setOpenMenu] = useState('Perfil'); // Abre 'Perfil' por defecto
+  const location = useLocation();
+  const activePath = location.pathname;
 
-  const toggleMenu = (menu) => {
-    setOpenMenu(openMenu === menu ? null : menu);
+  // Abiertos por defecto
+  const [openMenus, setOpenMenus] = useState(['Perfil', 'Asesorías']);
+
+  const toggleMenu = (title) => {
+    setOpenMenus((prev) =>
+      prev.includes(title)
+        ? prev.filter((t) => t !== title)
+        : [...prev, title]
+    );
   };
 
-  const MenuItem = ({ name, path, hasSubmenu, submenuItems }) => (
-    <div className="menu-item-container">
-      {!hasSubmenu ? (
-        <Link
-          to={path}
-          className={`menu-item ${openMenu === name ? 'activo' : ''}`}
-        >
-          {name}
-        </Link>
-      ) : (
-        <div
-          className={`menu-item ${openMenu === name ? 'activo' : ''}`}
-          onClick={() => toggleMenu(name)}
-        >
-          {name}
-          <span className="arrow">{openMenu === name ? '▲' : '▼'}</span>
-        </div>
-      )}
+  const getLinkPath = (groupTitle, itemTitle) => {
+    const base = groupTitle.toLowerCase().replace(/\s/g, '');
+    const item = itemTitle.toLowerCase().replace(/\s/g, '');
 
-      {hasSubmenu && openMenu === name && (
-        <ul className="submenu">
-          {submenuItems.map((item) => (
-            <li key={item.name}>
-              <Link to={item.path}>{item.name}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+    if (item === 'completarinformaciónpersonal') return '/maestro/perfil';
+    if (item === 'perfildeemprendimiento') return '/maestro/emprendimientos/perfil';
+    if (item === 'misasesorías') return '/maestro/asesorias';
+    if (item === 'crearasesoria') return '/maestro/asesorias/crear';
+    if (item === 'editarasesoria') return '/maestro/asesorias/editar';
+
+    return `/maestro/${base}/${item}`;
+  };
 
   return (
-    <aside className="sidebar-maestro">
-      <div className="logo-sgep">
-        {/* CAMBIO: Reemplazamos el texto 'SGEKO' por la imagen del logo */}
-        <img 
-            // Asume que el logo se llama 'logo-sgeko.png' y está en la raíz de `public/`
-            src="/logo.png" 
-            alt="Logo SGEKO" 
-            className="logo-imagen" // Clase para estilizar
+    <aside className="admin-sidebar" style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', width: '250px', minWidth: '250px' }}>
+      <div className="logo-admin-area" style={{ position: 'sticky', top: 0, zIndex: 10, minHeight: '90px', flexShrink: 0, justifyContent: 'center' }}>
+        <img
+          src="/logo.png"
+          alt="Logo SGEMD Maestro"
+          className="logo-admin-imagen"
+          style={{ maxHeight: '75px', maxWidth: '200px', width: 'auto', height: 'auto' }}
         />
       </div>
 
-      <nav className="navigation-menu"></nav>
- 
+      <nav>
+        {/* Dashboard principal */}
+        <Link
+          to="/maestro"
+          className={`admin-menu-item ${activePath === '/maestro' ? 'activo-principal' : ''}`}
+        >
+          Dashboard
+        </Link>
 
-      <nav className="navigation-menu">
-        {/* Perfil */}
-        <MenuItem
-          name="Perfil"
-          hasSubmenu={true}
-          submenuItems={[
-            { name: 'Completar información personal', path: '/maestro/perfil' },
-          ]}
-        />
+        {/* Grupos de menú colapsables */}
+        {menuStructure.map((group) => (
+          <div key={group.title}>
+            <div
+              className="admin-menu-group-title"
+              onClick={() => toggleMenu(group.title)}
+            >
+              {group.title}
+              {openMenus.includes(group.title) ? <IconAngleUp /> : <IconAngleDown />}
+            </div>
 
-        {/* Emprendimientos */}
-        <MenuItem
-          name="Emprendimientos"
-          hasSubmenu={true}
-          submenuItems={[
-            { name: 'Perfil de Emprendimiento', path: '/maestro/emprendimientos/perfil' },
-            { name: 'Seguimiento', path: '/maestro/emprendimientos/seguimiento' },
-          ]}
-        />
-
-        {/* Asesorías */}
-        <MenuItem name="Mis Asesorías" path="/maestro/asesorias" />
-        <MenuItem name="Crear Asesorías" path="/maestro/asesorias/crear" />
-        <MenuItem name="Editar Asesorías" path="/maestro/asesorias/editar" />
+            {/* Submenú */}
+            {openMenus.includes(group.title) && (
+              <div className="submenu-admin">
+                {group.items.map((item) => {
+                  const itemPath = getLinkPath(group.title, item);
+                  return (
+                    <Link
+                      key={item}
+                      to={itemPath}
+                      className={`admin-menu-item ${activePath === itemPath ? 'activo' : ''}`}
+                    >
+                      {item}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        ))}
       </nav>
     </aside>
   );
