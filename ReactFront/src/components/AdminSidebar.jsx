@@ -61,6 +61,8 @@ const AdminSidebar = () => {
     if (item === 'asignaraemprendimiento') return '/admin/docentes/asignar';
     if (item === 'docentes' && groupTitle === 'Gestionar perfiles')
       return '/admin/gestionar/docentes';
+    if (item === 'estudiantes' && groupTitle === 'Gestionar perfiles')
+      return '/admin/gestionar/estudiantes';
 
     return `/admin/${base}/${item}`;
   };
@@ -68,11 +70,11 @@ const AdminSidebar = () => {
   return (
     <aside className="admin-sidebar">
       <div className="logo-admin-area">
-        <img 
-            // Ruta absoluta si el logo está en public/
-            src="/logo.png" 
-            alt="Logo SGEKO Admin" 
-            className="logo-admin-imagen" // Nueva clase para estilizar la imagen
+        <img
+          // Ruta absoluta si el logo está en public/
+          src="/logo.png"
+          alt="Logo SGEKO Admin"
+          className="logo-admin-imagen" // Nueva clase para estilizar la imagen
         />
       </div>
 
