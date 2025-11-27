@@ -55,13 +55,18 @@ const EstudianteSidebar = () => {
 
     const getLinkPath = (groupTitle, itemTitle) => {
         const base = groupTitle.toLowerCase().replace(/\s/g, '');
-        const item = itemTitle.toLowerCase().replace(/\s/g, '');
+        // Remover tildes para normalizar la ruta
+        const item = itemTitle.toLowerCase()
+            .replace(/\s/g, '')
+            .replace(/[áéíóú]/g, (c) => ({ á: 'a', é: 'e', í: 'i', ó: 'o', ú: 'u' }[c]));
 
-        if (item === 'completarinformaciónpersonal') return '/estudiante/perfil';
-        if (item === 'verdiagnóstico') return '/estudiante/diagnostico';
+        if (item === 'completarinformacionpersonal') return '/estudiante/perfil';
+        if (item === 'verdiagnostico') return '/estudiante/diagnostico';
         if (item === 'plandetrabajo') return '/estudiante/emprendimientos/plan-de-trabajo';
         if (item === 'estadodeseguimiento') return '/estudiante/emprendimientos/estado-de-seguimiento';
         if (item === 'vereventosdisponibles') return '/estudiante/eventos';
+        if (item === 'asesorias') return '/estudiante/recursos/asesorias';
+        if (item === 'docentes') return '/estudiante/recursos/docentes';
 
         return `/estudiante/${base}/${item}`;
     };

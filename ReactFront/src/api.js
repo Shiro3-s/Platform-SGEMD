@@ -1,7 +1,8 @@
 // src/api.js
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
 
-export const apiFetch = async (url, options = {}) => {
+// apiFetch with timeout and improved error handling
+export const apiFetch = async (url, options = {}, timeoutMs = 8000) => {
   const token = localStorage.getItem("token");
 
   // Asegurar que la URL sea completa
@@ -12,24 +13,36 @@ export const apiFetch = async (url, options = {}) => {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
-  console.log(`📡 Fetching ${fullUrl}`);
-  console.log(`   Token presente: ${token ? 'SÍ' : 'NO'}`);
-  if (token) {
-    console.log(`   Token (primeros 20 chars): ${token.substring(0, 20)}...`);
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeoutMs);
+
+  console.log(`📡 Fetching ${fullUrl} (timeout ${timeoutMs}ms)`);
+
+  try {
+    const response = await fetch(fullUrl, { ...options, headers, credentials: 'include', signal: controller.signal });
+
+    if (response.status === 401 || response.status === 403) {
+      console.warn(`⚠️ Error ${response.status}: Token inválido o expirado. URL: ${url}`);
+      throw new Error(`Error ${response.status}: No autorizado.`);
+    }
+
+    // Intentar parsear JSON, si falla devolver error legible
+    const text = await response.text();
+    try {
+      const data = text ? JSON.parse(text) : {};
+      return data;
+    } catch (err) {
+      // Respuesta no JSON
+      return text;
+    }
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      console.warn(`⏱️ Request timeout after ${timeoutMs}ms: ${fullUrl}`);
+      throw new Error('Request timeout');
+    }
+    console.warn('📛 Fetch error:', err.message);
+    throw err;
+  } finally {
+    clearTimeout(id);
   }
-
-  const response = await fetch(fullUrl, { ...options, headers, credentials: 'include' });
-
-  // Si el token expiró o no es válido
-  if (response.status === 401 || response.status === 403) {
-    console.warn(`⚠️ Error ${response.status}: Token inválido o expirado. URL: ${url}`);
-    // localStorage.removeItem("token"); // Comentado temporalmente para debug
-    // window.location.href = "/";
-    // return;
-    const errorMsg = `Error ${response.status}: No autorizado. Token: ${token ? 'Presente' : 'Ausente'}`;
-    console.warn(`⚠️ ${errorMsg}`);
-    throw new Error(errorMsg);
-  }
-
-  return response.json();
 };

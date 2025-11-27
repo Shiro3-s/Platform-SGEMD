@@ -30,6 +30,7 @@ import EstudianteLayout from "./pages/Estudiante/EstudianteLayout.jsx";
 import EstudianteDashboard from "./pages/Estudiante/DashboardContent.jsx";
 import EstudiantePerfil from "./pages/Estudiante/Perfil.jsx";
 import EstudianteProgreso from "./pages/Estudiante/Progreso.jsx";
+import EstudianteAsesorias from './pages/Estudiante/Asesorias.jsx';
 
 function App() {
   // 🔹 Estado global del usuario autenticado
@@ -110,6 +111,7 @@ function App() {
           <Route index element={<EstudianteDashboard />} />
           <Route path="perfil" element={<EstudiantePerfil />} />
           <Route path="progreso" element={<EstudianteProgreso />} />
+          <Route path="recursos/asesorias" element={<EstudianteAsesorias />} />
           <Route path="comparativa" element={<div>Vista de Comparativa</div>} />
         </Route>
 
