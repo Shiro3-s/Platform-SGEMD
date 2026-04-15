@@ -1,0 +1,284 @@
+/* ============================================
+   SGEMD - Estilos Maestro (Usando Variables CSS)
+   ============================================ */
+
+/* ===================
+   LAYOUT
+   =================== */
+.contenedor-maestro {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: 100vh;
+    overflow: hidden;
+    background-color: var(--bg-secondary);
+}
+
+.content-padding {
+    padding: var(--space-6);
+}
+
+/* ===================
+   TARJETAS
+   =================== */
+.card {
+    background-color: var(--bg-white);
+    padding: var(--space-5);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    margin-bottom: var(--space-4);
+    transition: box-shadow var(--transition);
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+/* ===================
+   SIDEBAR
+   =================== */
+.sidebar-maestro {
+    background-color: var(--primary-900);
+    color: white;
+    padding-top: var(--space-5);
+    height: 100vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+}
+
+.logo-sgep {
+    background-color: var(--primary-700);
+    padding: var(--space-5);
+    margin-bottom: var(--space-6);
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90px;
+}
+
+.logo-sgep::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 22px;
+    height: 100%;
+    background-color: var(--accent);
+    transform: skewX(-20deg);
+}
+
+.logo-sgep .logo-imagen {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    z-index: 2;
+}
+
+/* ===================
+   MENÚ
+   =================== */
+.menu-item {
+    padding: var(--space-4) var(--space-5);
+    cursor: pointer;
+    font-weight: var(--font-medium);
+    display: block;
+    transition: background-color var(--transition), padding-left var(--transition);
+    color: white;
+    text-decoration: none;
+    font-size: var(--text-sm);
+}
+
+.menu-item:hover {
+    background-color: var(--primary-500);
+    padding-left: var(--space-7);
+}
+
+.menu-item.activo {
+    background-color: var(--primary-700);
+    border-left: 3px solid var(--accent);
+}
+
+/* ===================
+   SUBMENÚ
+   =================== */
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.submenu li a {
+    display: block;
+    padding: var(--space-3) var(--space-5) var(--space-3) var(--space-11);
+    color: white;
+    font-size: var(--text-sm);
+    opacity: 0.9;
+    transition: background-color var(--transition), padding-left var(--transition);
+    text-align: left;
+    text-decoration: none;
+}
+
+.submenu li a:hover {
+    background-color: var(--primary-500);
+    padding-left: calc(var(--space-11) + 4px);
+}
+
+/* ===================
+   CONTENIDO PRINCIPAL
+   =================== */
+.contenido-principal {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header-superior {
+    height: var(--header-height);
+    background-color: var(--bg-white);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 var(--space-6);
+}
+
+.header-iconos {
+    color: var(--text-primary);
+    margin-right: var(--space-5);
+    font-size: var(--text-lg);
+    cursor: pointer;
+    transition: opacity var(--transition);
+}
+
+.header-iconos:hover {
+    opacity: 0.7;
+}
+
+.header-perfil {
+    display: flex;
+    align-items: center;
+}
+
+.header-perfil .profesor-nombre {
+    margin-left: var(--space-3);
+    font-weight: var(--font-semibold);
+}
+
+.area-contenido {
+    padding: var(--space-6);
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* ===================
+   TABLAS
+   =================== */
+.tabla-emprendimientos {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--bg-white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: var(--space-5);
+}
+
+.tabla-emprendimientos th {
+    background-color: var(--primary-700);
+    color: white;
+    padding: var(--space-4) var(--space-3);
+    text-align: left;
+    font-weight: var(--font-semibold);
+    font-size: var(--text-sm);
+}
+
+.tabla-emprendimientos td {
+    padding: var(--space-3) var(--space-3);
+    border-bottom: 1px solid var(--border-light);
+    font-size: var(--text-sm);
+}
+
+.tabla-emprendimientos tbody tr:nth-child(even) {
+    background-color: var(--primary-100);
+}
+
+.tabla-emprendimientos tbody tr:hover {
+    background-color: rgba(26, 117, 188, 0.1);
+}
+
+/* ===================
+   BOTONES
+   =================== */
+.btn-tabla {
+    padding: var(--space-2) var(--space-3);
+    margin-right: var(--space-1);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-size: var(--text-sm);
+    font-weight: var(--font-medium);
+    transition: all var(--transition);
+}
+
+.btn-tabla:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+}
+
+.btn-asignar { 
+    background-color: var(--info); 
+    color: white; 
+}
+
+.btn-editar { 
+    background-color: var(--warning); 
+    color: var(--gray-900); 
+}
+
+.btn-eliminar { 
+    background-color: var(--danger); 
+    color: white; 
+}
+
+.btn-retroceder {
+    background-color: var(--secondary);
+    color: white;
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--space-5);
+    font-weight: var(--font-semibold);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.btn-retroceder:hover {
+    background-color: var(--gray-700);
+}
+
+/* ===================
+   RESPONSIVE
+   =================== */
+@media (max-width: 768px) {
+    .contenedor-maestro {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar-maestro {
+        position: fixed;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        z-index: var(--z-fixed);
+        transition: left var(--transition-slow);
+    }
+    
+    .sidebar-maestro.open {
+        left: 0;
+    }
+    
+    .area-contenido {
+        padding: var(--space-4);
+    }
+}

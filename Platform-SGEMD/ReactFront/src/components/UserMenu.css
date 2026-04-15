@@ -1,0 +1,13 @@
+/* UserMenu - Dropdown de usuario en esquina superior derecha */
+.user-menu-dropdown {
+  position: absolute;
+  top: 20px;
+  right: 30px;
+  z-index: 1000;
+}
+
+.user-menu-dropdown .dropdown-menu {
+  right: 0;
+  left: auto;
+  min-width: 200px;
+}

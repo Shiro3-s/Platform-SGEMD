@@ -1,0 +1,363 @@
+/* ============================================
+   SGEMD - Estilos Admin (Usando Variables CSS)
+   ============================================ */
+
+/* ===================
+   LAYOUT
+   =================== */
+.admin-layout {
+    display: grid;
+    grid-template-columns: var(--sidebar-width) 1fr;
+    grid-template-rows: 100vh;
+    overflow: hidden; 
+}
+
+/* ===================
+   SIDEBAR
+   =================== */
+.admin-sidebar {
+    background-color: var(--primary-900);
+    color: white;
+    height: 100%;
+    box-shadow: var(--shadow);
+}
+
+.logo-admin-area {
+    background-color: var(--primary-700);
+    padding: var(--space-4) var(--space-5);
+    margin-bottom: var(--space-1); 
+    position: relative;
+    overflow: hidden;
+    height: var(--header-height); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-semibold);
+    font-size: var(--text-lg);
+}
+
+.logo-admin-area::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px; 
+    height: 100%;
+    background-color: var(--accent); 
+    transform: skewX(-20deg); 
+    transform-origin: top left;
+}
+
+.logo-admin-area .logo-admin-imagen {
+    max-height: 50px;
+    width: auto;
+    object-fit: contain;
+    z-index: 2;
+}
+
+/* ===================
+   MENÚ
+   =================== */
+.admin-menu-group-title {
+    padding: var(--space-3) var(--space-5);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: var(--font-semibold);
+    background-color: var(--primary-900);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+    transition: background-color var(--transition);
+}
+
+.admin-menu-group-title:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.admin-menu-item {
+    padding: var(--space-3) var(--space-5);
+    cursor: pointer;
+    transition: background-color var(--transition);
+    font-weight: var(--font-normal);
+    display: block;
+    color: white;
+    text-decoration: none;
+    text-align: left;
+    font-size: var(--text-sm);
+}
+
+.admin-menu-item:hover,
+.admin-menu-item.activo {
+    background-color: var(--primary-500);
+}
+
+.admin-menu-item.activo-principal {
+    background-color: var(--primary-500); 
+    font-weight: var(--font-semibold);
+}
+
+/* ===================
+   SUBMENÚ
+   =================== */
+.submenu-admin {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.submenu-admin .admin-menu-item {
+    padding-left: var(--space-10);
+    background-color: inherit;
+    text-align: left;
+    font-size: var(--text-sm);
+}
+
+/* ===================
+   CONTENIDO PRINCIPAL
+   =================== */
+.admin-main-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: var(--bg-secondary);
+}
+
+.admin-header {
+    height: var(--header-height); 
+    background-color: var(--bg-white); 
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    padding: 0 var(--space-5);
+}
+
+.admin-header .perfil-admin {
+    display: flex;
+    align-items: center;
+    font-weight: var(--font-semibold);
+    color: var(--text-primary);
+    margin-left: var(--space-4); 
+}
+
+.header-iconos { 
+    color: var(--text-secondary);
+    margin-right: var(--space-4);
+    font-size: var(--text-lg);
+    cursor: pointer;
+    transition: color var(--transition);
+}
+
+.header-iconos:hover {
+    color: var(--primary-700);
+}
+
+.admin-header .perfil-admin .icono-admin {
+    background-color: var(--accent); 
+    color: var(--primary-900); 
+    border-radius: 50%;
+    padding: var(--space-2);
+    margin-right: var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-area-contenido {
+    padding: var(--space-5);
+    flex-grow: 1; 
+    overflow-y: auto; 
+}
+
+/* ===================
+   TARJETAS
+   =================== */
+.card {
+    background-color: var(--bg-white);
+    padding: var(--space-5);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+}
+
+/* ===================
+   FILTROS
+   =================== */
+.asignar-header-filtros {
+    background-color: var(--bg-white);
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: var(--space-5);
+    display: flex;
+    gap: var(--space-4);
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.asignar-header-filtros input,
+.asignar-header-filtros select {
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    flex-grow: 1;
+    min-width: 150px;
+    font-size: var(--text-sm);
+    transition: border-color var(--transition);
+}
+
+.asignar-header-filtros input:focus,
+.asignar-header-filtros select:focus {
+    border-color: var(--primary-500);
+    outline: none;
+}
+
+.asignar-header-filtros .btn-filtro {
+    background-color: var(--primary-700); 
+    color: white;
+    padding: var(--space-3) var(--space-4);
+    border: none;
+    border-radius: var(--border-radius-sm);
+    cursor: pointer;
+    font-weight: var(--font-medium);
+    transition: all var(--transition);
+}
+
+.asignar-header-filtros .btn-filtro:hover {
+    background-color: var(--primary-900);
+    transform: translateY(-1px);
+}
+
+/* ===================
+   CONTENEDOR DE EMPRENDIMIENTOS
+   =================== */
+.emprendimientos-scroll-container {
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: var(--space-5);
+    gap: var(--space-5);
+    margin-bottom: var(--space-8);
+    -webkit-overflow-scrolling: touch;
+}
+
+.base-card {
+    min-width: 250px; 
+    background-color: var(--bg-white);
+    padding: var(--space-5);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    text-align: center;
+    transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.base-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.emprendimiento-card {
+    border-top: 4px solid var(--success);
+    min-height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.emprendimiento-card-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto var(--space-4);
+    border: 2px solid var(--success); 
+    border-radius: var(--border-radius);
+    background-color: var(--success-light); 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===================
+   DOCENTES GRID
+   =================== */
+.docentes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-5);
+    margin-top: var(--space-5);
+}
+
+.persona-card-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto var(--space-4);
+    border: 4px solid var(--gray-200); 
+    border-radius: 50%;
+    background-color: var(--gray-300); 
+}
+
+.persona-card h3 {
+    color: var(--primary-700); 
+    font-size: var(--text-lg);
+    font-weight: var(--font-semibold);
+    margin-bottom: var(--space-1);
+}
+
+/* ===================
+   BOTÓN FIJO
+   =================== */
+.fixed-assign-button {
+    position: sticky;
+    bottom: var(--space-5);
+    width: fit-content;
+    margin-left: auto; 
+    margin-top: var(--space-8);
+    padding: var(--space-3) var(--space-6);
+    background-color: var(--primary-700);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: var(--text-base);
+    cursor: pointer;
+    box-shadow: var(--shadow-lg);
+    transition: all var(--transition);
+}
+
+.fixed-assign-button:hover {
+    background-color: var(--primary-900);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ===================
+   RESPONSIVE
+   =================== */
+@media (max-width: 768px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+    }
+    
+    .admin-sidebar {
+        position: fixed;
+        left: -100%;
+        width: 80%;
+        max-width: 300px;
+        z-index: var(--z-fixed);
+        transition: left var(--transition-slow);
+    }
+    
+    .admin-sidebar.open {
+        left: 0;
+    }
+    
+    .admin-area-contenido {
+        padding: var(--space-4);
+    }
+    
+    .emprendimientos-scroll-container {
+        gap: var(--space-4);
+    }
+    
+    .base-card {
+        min-width: 200px;
+    }
+}
