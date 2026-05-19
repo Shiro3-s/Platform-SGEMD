@@ -39,6 +39,13 @@ const menuStructure = [
   { title: 'Diagnósticos', items: ['Gestionar'] },
 ];
 
+const normalize = (value) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '');
+
 const AdminSidebar = () => {
   const location = useLocation();
   const activePath = location.pathname;
@@ -55,20 +62,22 @@ const AdminSidebar = () => {
   };
 
   const getLinkPath = (groupTitle, itemTitle) => {
-    const base = groupTitle.toLowerCase().replace(/\s/g, '');
-    const item = itemTitle.toLowerCase().replace(/\s/g, '');
+    const base = normalize(groupTitle);
+    const item = normalize(itemTitle);
 
-    if (item === 'completarinformaciónpersonal') return '/admin/perfil';
+    if (item === 'completarinformacionpersonal') return '/admin/perfil';
     if (item === 'asignaraemprendimiento') return '/admin/docentes/asignar';
-    if (item === 'docentes' && groupTitle === 'Gestionar perfiles')
+    if (item === 'docentes' && base === 'gestionarperfiles')
       return '/admin/gestionar/docentes';
-    if (item === 'estudiantes' && groupTitle === 'Gestionar perfiles')
+    if (item === 'estudiantes' && base === 'gestionarperfiles')
       return '/admin/gestionar/estudiantes';
     if (item === 'plandetrabajo') return '/admin/emprendimientos/plan-de-trabajo';
     if (item === 'crearemprendimiento') return '/admin/emprendimientos/crear';
-    if (item === 'crear' && groupTitle === 'Eventos') return '/admin/eventos';
-    if (item === 'editar' && groupTitle === 'Eventos') return '/admin/eventos';
-    if (item === 'gestionar' && groupTitle === 'Diagnósticos') return '/admin/diagnosticos';
+    if (item === 'crear' && base === 'eventos') return '/admin/eventos';
+    if (item === 'editar' && base === 'eventos') return '/admin/eventos';
+    if (item === 'gestionar' && base === 'diagnosticos') return '/admin/diagnosticos';
+    if (item === 'seguimiento' && base === 'docentes') return '/admin/docentes/seguimiento';
+    if (item === 'asesorias' && base === 'docentes') return '/admin/docentes/asesorias';
 
     return `/admin/${base}/${item}`;
   };
@@ -77,20 +86,23 @@ const AdminSidebar = () => {
     <aside className="admin-sidebar">
       <div className="logo-admin-area">
         <img
-          // Ruta absoluta si el logo está en public/
           src="/logo.png"
-          alt="Logo SGEKO Admin"
-          className="logo-admin-imagen" // Nueva clase para estilizar la imagen
+          alt="Logo SGEMD Admin"
+          className="logo-admin-imagen"
         />
       </div>
 
       <nav>
-        {/* Dashboard principal */}
         <Link
           to="/admin"
-          className={`admin-menu-item ${activePath === '/admin' ? 'activo-principal' : ''}`}
+          className={`admin-menu-item ${activePath === '/admin' ? 'activo' : ''}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
         >
-          Dashboard
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Home
         </Link>
 
         {/* Grupos de menú colapsables */}

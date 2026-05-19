@@ -1,17 +1,22 @@
 const { pool } = require('../config/db.config')
 
 exports.findAll = async (filters = {}) => {
-    let query = 'SELECT * FROM asesorias WHERE 1=1';
+    let query = 'SELECT * FROM Asesorias WHERE 1=1';
     const params = [];
     
     if (filters.docenteId) {
-        query += ' AND Docentes_idDocentes = ?';
+        query += ' AND Docente_idUsuarios = ?';
         params.push(filters.docenteId);
     }
     
     if (filters.estudianteId) {
-        query += ' AND Usuarios_idUsuarios = ?';
+        query += ' AND Estudiante_idUsuarios = ?';
         params.push(filters.estudianteId);
+    }
+    
+    if (filters.estado) {
+        query += ' AND EstadoSolicitud = ?';
+        params.push(filters.estado);
     }
     
     const [rows] = await pool.execute(query, params);
@@ -19,19 +24,21 @@ exports.findAll = async (filters = {}) => {
 }
 
 exports.findById = async (id) => {
-    const [rows] = await pool.execute('SELECT * FROM asesorias WHERE idasesorias = ?', [id]);
+    const [rows] = await pool.execute('SELECT * FROM Asesorias WHERE idAsesorias = ?', [id]);
     if (rows.length === 0) throw new Error('Asesoría no encontrada');
     return rows[0];
 }
 
 exports.create = async (data) => {
-    const fechaActual = new Date().toISOString().split('T')[0];
+    const fechaActual = new Date();
     const [result] = await pool.execute(
-        `INSERT INTO asesorias (
+        `INSERT INTO Asesorias (
             Nombre_de_asesoria, Descripcion, Fecha_asesoria, Comentarios,
             Fecha_creacion, Fecha_actualizacion, confirmacion,
-            Usuarios_idUsuarios, Docentes_idDocentes, Modalidad_idModalidad, Fecha_y_Horarios_idFecha_y_Horarios
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            Usuarios_idUsuarios, Docente_idUsuarios, Estudiante_idUsuarios,
+            Modalidad_idModalidad, Fecha_y_Horarios_idFecha_y_Horarios,
+            MotivoSolicitud, EstadoSolicitud
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
             data.Nombre_de_asesoria || null,
             data.Descripcion || null,
@@ -40,13 +47,16 @@ exports.create = async (data) => {
             data.Fecha_creacion || fechaActual,
             data.Fecha_actualizacion || fechaActual,
             data.confirmacion || 'pendiente',
-            data.Estudiantes_idEstudiante || data.Usuarios_idUsuarios || null,
-            data.Docentes_idDocentes || null,
+            data.Usuarios_idUsuarios || null,
+            data.Docente_idUsuarios || null,
+            data.Estudiante_idUsuarios || null,
             data.Modalidad_idModalidad || 1,
-            data.Fecha_y_Horarios_idFecha_y_Horarios || 1
+            data.Fecha_y_Horarios_idFecha_y_Horarios || 1,
+            data.MotivoSolicitud || null,
+            data.EstadoSolicitud || 'pendiente'
         ]
     );
-    return { idasesorias: result.insertId, ...data };
+    return { idAsesorias: result.insertId, ...data };
 }
 
 exports.update = async (id, data) => {
@@ -81,9 +91,13 @@ exports.update = async (id, data) => {
         updates.push('Usuarios_idUsuarios = ?');
         values.push(data.Usuarios_idUsuarios);
     }
-    if (data.Docentes_idDocentes !== undefined) {
-        updates.push('Docentes_idDocentes = ?');
-        values.push(data.Docentes_idDocentes);
+    if (data.Docente_idUsuarios !== undefined) {
+        updates.push('Docente_idUsuarios = ?');
+        values.push(data.Docente_idUsuarios);
+    }
+    if (data.Estudiante_idUsuarios !== undefined) {
+        updates.push('Estudiante_idUsuarios = ?');
+        values.push(data.Estudiante_idUsuarios);
     }
     if (data.Modalidad_idModalidad !== undefined) {
         updates.push('Modalidad_idModalidad = ?');
@@ -93,12 +107,28 @@ exports.update = async (id, data) => {
         updates.push('Fecha_y_Horarios_idFecha_y_Horarios = ?');
         values.push(data.Fecha_y_Horarios_idFecha_y_Horarios);
     }
+    if (data.MotivoSolicitud !== undefined) {
+        updates.push('MotivoSolicitud = ?');
+        values.push(data.MotivoSolicitud);
+    }
+    if (data.EstadoSolicitud !== undefined) {
+        updates.push('EstadoSolicitud = ?');
+        values.push(data.EstadoSolicitud);
+    }
+    if (data.ComentarioDocente !== undefined) {
+        updates.push('ComentarioDocente = ?');
+        values.push(data.ComentarioDocente);
+    }
+    if (data.FechaRespuesta !== undefined) {
+        updates.push('FechaRespuesta = ?');
+        values.push(data.FechaRespuesta);
+    }
     
     if (updates.length === 0) return false;
     
     values.push(id);
     const [result] = await pool.execute(
-        `UPDATE asesorias SET ${updates.join(', ')} WHERE idasesorias = ?`,
+        `UPDATE Asesorias SET ${updates.join(', ')} WHERE idAsesorias = ?`,
         values
     );
     return result.affectedRows > 0;
@@ -106,7 +136,7 @@ exports.update = async (id, data) => {
 
 exports.remove = async (id) => {
     const [result] = await pool.execute(
-        'DELETE FROM asesorias WHERE idasesorias = ?', [id]
+        'DELETE FROM Asesorias WHERE idAsesorias = ?', [id]
     );
     return result.affectedRows > 0;
 }

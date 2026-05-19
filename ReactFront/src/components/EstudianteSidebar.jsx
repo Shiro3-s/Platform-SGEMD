@@ -38,7 +38,27 @@ const menuStructure = [
     { title: 'Eventos', items: ['Ver eventos disponibles'] },
 ];
 
-const EstudianteSidebar = () => {
+const normalize = (value) =>
+    value
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/\s+/g, '');
+
+const hasValue = (value) => String(value || '').trim().length > 0;
+
+const isStudentProfileComplete = (user) => {
+    if (!user) return false;
+    return hasValue(user.Nombre)
+        && hasValue(user.Direccion)
+        && hasValue(user.Telefono)
+        && hasValue(user.Genero)
+        && hasValue(user.Modalidad)
+        && hasValue(user.Semestre)
+        && hasValue(user.FechaNacimiento);
+};
+
+const EstudianteSidebar = ({ user }) => {
     const location = useLocation();
     const activePath = location.pathname;
 
@@ -54,43 +74,58 @@ const EstudianteSidebar = () => {
     };
 
     const getLinkPath = (groupTitle, itemTitle) => {
-        const base = groupTitle.toLowerCase().replace(/\s/g, '');
-        const item = itemTitle.toLowerCase().replace(/\s/g, '');
+        const base = normalize(groupTitle);
+        const item = normalize(itemTitle);
 
-        if (item === 'completarinformaciónpersonal') return '/estudiante/perfil';
-        if (item === 'verdiagnóstico') return '/estudiante/diagnostico';
+        if (item === 'completarinformacionpersonal') return '/estudiante/perfil';
+        if (item === 'completarperfil') return '/estudiante/perfil';
+        if (item === 'verdiagnostico') return '/estudiante/diagnostico';
         if (item === 'plandetrabajo') return '/estudiante/emprendimiento/perfil';
         if (item === 'estadodeseguimiento') return '/estudiante/seguimiento';
         if (item === 'miprogreso') return '/estudiante/progreso';
         if (item === 'docentes') return '/estudiante/recursos/docentes';
-        if (item === 'asesorías') return '/estudiante/recursos/asesorias';
+        if (item === 'asesorias') return '/estudiante/recursos/asesorias';
         if (item === 'vereventosdisponibles') return '/estudiante/eventos';
 
         return `/estudiante/${base}/${item}`;
     };
 
+    const profileItemLabel = isStudentProfileComplete(user) ? 'Mi perfil' : 'Completar perfil';
+    const resolvedMenuStructure = menuStructure.map((group) => (
+        group.title === 'Perfil'
+            ? { ...group, items: [profileItemLabel] }
+            : group
+    ));
+
     return (
-        <aside className="admin-sidebar" style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', width: '250px', minWidth: '250px' }}>
+        <aside
+            className="admin-sidebar"
+            style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', width: '250px', minWidth: '250px', position: 'sticky', top: 0 }}
+        >
             <div className="logo-admin-area" style={{ position: 'sticky', top: 0, zIndex: 10, minHeight: '90px', flexShrink: 0, justifyContent: 'center' }}>
                 <img
                     src="/logo.png"
-                    alt="Logo SGEMD Estudiante"
+                    alt="Logo SGEMD Emprendedor"
                     className="logo-admin-imagen"
                     style={{ maxHeight: '75px', maxWidth: '200px', width: 'auto', height: 'auto' }}
                 />
             </div>
 
             <nav>
-                {/* Dashboard principal */}
                 <Link
                     to="/estudiante"
-                    className={`admin-menu-item ${activePath === '/estudiante' ? 'activo-principal' : ''}`}
+                    className={`admin-menu-item ${activePath === '/estudiante' ? 'activo' : ''}`}
+                    style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
                 >
-                    Dashboard
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        <polyline points="9 22 9 12 15 12 15 22"/>
+                    </svg>
+                    Home
                 </Link>
 
                 {/* Grupos de menú colapsables */}
-                {menuStructure.map((group) => (
+                {resolvedMenuStructure.map((group) => (
                     <div key={group.title}>
                         <div
                             className="admin-menu-group-title"

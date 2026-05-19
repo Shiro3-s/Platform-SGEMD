@@ -1,59 +1,49 @@
-/* ============================================
-   SGEMD - Estilos Maestro (Usando Variables CSS)
-   ============================================ */
+/* ----------------------------------- */
+/* 1. Layout General y Colores Base    */
+/* ----------------------------------- */
 
-/* ===================
-   LAYOUT
-   =================== */
 .contenedor-maestro {
     display: grid;
-    grid-template-columns: var(--sidebar-width) 1fr;
-    grid-template-rows: 100vh;
-    overflow: hidden;
-    background-color: var(--bg-secondary);
+    grid-template-columns: 260px 1fr; /* Sidebar más amplio */
+    grid-template-rows: minmax(100vh, 1fr);
+    overflow: visible;
+    background-color: var(--sgemd-bg);
 }
 
+/* Contenido interno */
 .content-padding {
-    padding: var(--space-6);
+    padding: 25px;
 }
 
-/* ===================
-   TARJETAS
-   =================== */
 .card {
-    background-color: var(--bg-white);
-    padding: var(--space-5);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow);
-    margin-bottom: var(--space-4);
-    transition: box-shadow var(--transition);
+    background-color: #ffffff;
+    padding: 22px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
+    margin-bottom: 15px;
 }
 
-.card:hover {
-    box-shadow: var(--shadow-md);
-}
+/* ----------------------------------- */
+/* 2. Sidebar (SidebarMaestro.jsx)     */
+/* ----------------------------------- */
 
-/* ===================
-   SIDEBAR
-   =================== */
 .sidebar-maestro {
-    background-color: var(--primary-900);
-    color: white;
-    padding-top: var(--space-5);
+    background-color: var(--sgemd-blue-dark);
+    color: var(--sgemd-white);
+    padding-top: 20px;
     height: 100vh;
     overflow-y: auto;
-    box-shadow: var(--shadow-lg);
+    box-shadow: 3px 0 8px rgba(0, 0, 0, 0.15);
+    position: sticky;
+    top: 0;
 }
 
+/* Logo */
 .logo-sgep {
-    background-color: var(--primary-700);
-    padding: var(--space-5);
-    margin-bottom: var(--space-6);
+    background-color: var(--sgemd-blue-vivid);
+    padding: 20px;
+    margin-bottom: 25px;
     position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 90px;
 }
 
 .logo-sgep::before {
@@ -63,70 +53,57 @@
     left: 0;
     width: 22px;
     height: 100%;
-    background-color: var(--accent);
+    background-color: var(--sgemd-yellow);
     transform: skewX(-20deg);
 }
 
-.logo-sgep .logo-imagen {
-    height: 50px;
-    width: auto;
-    object-fit: contain;
-    z-index: 2;
-}
-
-/* ===================
-   MENÚ
-   =================== */
+/* Items del menú */
 .menu-item {
-    padding: var(--space-4) var(--space-5);
+    padding: 14px 22px;
     cursor: pointer;
-    font-weight: var(--font-medium);
+    font-weight: 500;
     display: block;
-    transition: background-color var(--transition), padding-left var(--transition);
-    color: white;
+    transition: background-color 0.2s, padding-left 0.2s;
+    color: var(--sgemd-white);
     text-decoration: none;
-    font-size: var(--text-sm);
 }
 
 .menu-item:hover {
-    background-color: var(--primary-500);
-    padding-left: var(--space-7);
+    background-color: var(--sgemd-blue-vivid);
+    padding-left: 28px;
 }
 
 .menu-item.activo {
-    background-color: var(--primary-700);
-    border-left: 3px solid var(--accent);
+    background-color: var(--sgemd-blue-vivid);
 }
 
-/* ===================
-   SUBMENÚ
-   =================== */
+/* Submenús */
 .submenu {
     list-style: none;
     padding: 0;
     margin: 0;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: var(--sgemd-blue-medium);
 }
 
 .submenu li a {
     display: block;
-    padding: var(--space-3) var(--space-5) var(--space-3) var(--space-11);
-    color: white;
-    font-size: var(--text-sm);
+    padding: 10px 22px 10px 45px;
+    color: var(--sgemd-white);
+    font-size: 0.9rem;
     opacity: 0.9;
-    transition: background-color var(--transition), padding-left var(--transition);
+    transition: background-color 0.2s, padding-left 0.2s;
     text-align: left;
-    text-decoration: none;
 }
 
 .submenu li a:hover {
-    background-color: var(--primary-500);
-    padding-left: calc(var(--space-11) + 4px);
+    background-color: var(--sgemd-blue-vivid);
+    padding-left: 50px;
 }
 
-/* ===================
-   CONTENIDO PRINCIPAL
-   =================== */
+/* ----------------------------------- */
+/* 3. Área de Contenido                */
+/* ----------------------------------- */
+
 .contenido-principal {
     display: flex;
     flex-direction: column;
@@ -134,25 +111,26 @@
 }
 
 .header-superior {
-    height: var(--header-height);
-    background-color: var(--bg-white);
-    border-bottom: 1px solid var(--border-color);
+    height: 60px;
+    background-color: white;
+    border-bottom: 1px solid #ddd;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    padding: 0 var(--space-6);
+    gap: 16px;
+    padding: 0 25px;
 }
 
-.header-iconos {
-    color: var(--text-primary);
-    margin-right: var(--space-5);
-    font-size: var(--text-lg);
-    cursor: pointer;
-    transition: opacity var(--transition);
+.header-right-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-left: auto;
 }
 
-.header-iconos:hover {
-    opacity: 0.7;
+.header-superior h2 {
+    margin: 0;
+    font-size: 1.35rem;
 }
 
 .header-perfil {
@@ -161,124 +139,104 @@
 }
 
 .header-perfil .profesor-nombre {
-    margin-left: var(--space-3);
-    font-weight: var(--font-semibold);
+    margin-left: 10px;
+    font-weight: bold;
 }
 
 .area-contenido {
-    padding: var(--space-6);
+    padding: 25px;
     flex-grow: 1;
     overflow-y: auto;
 }
 
-/* ===================
-   TABLAS
-   =================== */
+/* ----------------------------------- */
+/* 4. Tablas y Botones Comunes         */
+/* ----------------------------------- */
+
 .tabla-emprendimientos {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--bg-white);
-    border-radius: var(--border-radius);
+    background-color: white;
+    border-radius: 6px;
     overflow: hidden;
-    box-shadow: var(--shadow);
-    margin-top: var(--space-5);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
 }
 
+/* Encabezados */
 .tabla-emprendimientos th {
-    background-color: var(--primary-700);
-    color: white;
-    padding: var(--space-4) var(--space-3);
+    background-color: var(--sgemd-blue-vivid);
+    color: var(--sgemd-white);
+    padding: 14px 10px;
     text-align: left;
-    font-weight: var(--font-semibold);
-    font-size: var(--text-sm);
+    font-weight: bold;
 }
 
+/* Filas */
 .tabla-emprendimientos td {
-    padding: var(--space-3) var(--space-3);
-    border-bottom: 1px solid var(--border-light);
-    font-size: var(--text-sm);
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
 }
 
 .tabla-emprendimientos tbody tr:nth-child(even) {
-    background-color: var(--primary-100);
+    background-color: #e5f1f8;
+    color: #000;
 }
 
-.tabla-emprendimientos tbody tr:hover {
-    background-color: rgba(26, 117, 188, 0.1);
-}
-
-/* ===================
-   BOTONES
-   =================== */
+/* Botones Tabla */
 .btn-tabla {
-    padding: var(--space-2) var(--space-3);
-    margin-right: var(--space-1);
+    padding: 6px 12px;
+    margin-right: 4px;
     border: none;
-    border-radius: var(--border-radius-sm);
+    border-radius: 5px;
     cursor: pointer;
-    font-size: var(--text-sm);
-    font-weight: var(--font-medium);
-    transition: all var(--transition);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: transform 0.15s, opacity 0.2s;
 }
 
 .btn-tabla:hover {
+    opacity: 0.9;
     transform: translateY(-1px);
-    box-shadow: var(--shadow);
 }
 
-.btn-asignar { 
-    background-color: var(--info); 
-    color: white; 
-}
+/* Específicos */
+.btn-asignar { background-color: #17a2b8; color: white; }
+.btn-editar  { background-color: #ffc400; color: #333; }
+.btn-eliminar { background-color: #dc3545; color: white; }
 
-.btn-editar { 
-    background-color: var(--warning); 
-    color: var(--gray-900); 
-}
-
-.btn-eliminar { 
-    background-color: var(--danger); 
-    color: white; 
-}
-
+/* Retroceder */
 .btn-retroceder {
-    background-color: var(--secondary);
+    background-color: #6c757d;
     color: white;
-    padding: var(--space-2) var(--space-4);
+    padding: 8px 15px;
     border: none;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: var(--space-5);
-    font-weight: var(--font-semibold);
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-weight: bold;
     cursor: pointer;
-    transition: all var(--transition);
 }
 
-.btn-retroceder:hover {
-    background-color: var(--gray-700);
+.sidebar-maestro {
+    background-color: var(--sgemd-blue-dark);
+    color: var(--sgemd-white);
+    padding-top: 20px;
+    height: 100vh;
 }
 
-/* ===================
-   RESPONSIVE
-   =================== */
-@media (max-width: 768px) {
-    .contenedor-maestro {
-        grid-template-columns: 1fr;
-    }
-    
-    .sidebar-maestro {
-        position: fixed;
-        left: -100%;
-        width: 80%;
-        max-width: 300px;
-        z-index: var(--z-fixed);
-        transition: left var(--transition-slow);
-    }
-    
-    .sidebar-maestro.open {
-        left: 0;
-    }
-    
-    .area-contenido {
-        padding: var(--space-4);
-    }
+.logo-sgep {
+    /* Contenedor del logo: le da altura y centra */
+    display: flex;
+    justify-content: center; /* Centrar horizontalmente */
+    align-items: center; /* Centrar verticalmente */
+    height: 90px; /* Alto del contenedor del logo */
+    margin-bottom: 20px;
+    padding: 0 10px; 
+}
+
+/* Estilos específicos para la imagen */
+.logo-sgep .logo-imagen {
+    height: 50px; /* Altura máxima del logo para que quepa en el contenedor de 60px */
+    width: auto; /* Mantiene la proporción de la imagen */
+    object-fit: contain; /* Asegura que la imagen no se recorte ni se estire */
 }

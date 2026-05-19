@@ -6,7 +6,7 @@ async function updatePassword() {
     host: 'sgemd-db',
     user: 'root',
     password: 'rootpassword',
-    database: 'db_segmed'
+    database: 'DB_SGEMD'
   });
 
   const hash = bcrypt.hashSync('admin123', 10);

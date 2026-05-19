@@ -1,53 +1,42 @@
-// src/pages/Maestro/Maestro.jsx
-
-import React, { useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import SidebarMaestro from '../../components/SidebarMaestro';
 import UserMenu from '../../components/UserMenu';
+import NotificationBell from '../../components/NotificationBell';
 import './Maestro.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
-
-const getAuthHeaders = (includeContentType = true) => {
-  const token = localStorage.getItem('token');
-  const headers = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  if (includeContentType) {
-    headers['Content-Type'] = 'application/json';
-  }
-  return headers;
-};
-
 const Maestro = () => {
+  const { user, logout } = useContext(AuthContext);
   const location = useLocation();
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    
-    fetch(`${API_URL}/segmed/users/me`, {
-      method: 'GET',
-      headers: getAuthHeaders(false),
-      credentials: 'include'
-    })
-      .then(r => r.json())
-      .then(j => setUser(j.data || j));
-  }, []);
+
   const getPageTitle = () => {
+    if (location.pathname === '/maestro' || location.pathname === '/maestro/') return 'Home';
     if (location.pathname.includes('/perfil')) return 'Mi Perfil';
-    if (location.pathname.includes('/asesorias/crear')) return 'Crear Nueva Asesoría';
-    if (location.pathname.includes('/asesorias')) return 'Mis Asesorías';
-    return 'Dashboard Principal';
+    if (location.pathname.includes('/emprendimientos/perfil')) return 'Perfil de Emprendimiento';
+    if (location.pathname.includes('/emprendimientos/seguimiento')) return 'Seguimiento de Emprendimiento';
+    if (location.pathname.includes('/asesorias/crear')) return 'Crear Nueva Asesora';
+    if (location.pathname.includes('/asesorias/historial')) return 'Historial de Asesoras';
+    if (location.pathname.includes('/asesorias/pendientes')) return 'Asesoras Pendientes';
+    if (location.pathname.includes('/asesorias/editar')) return 'Editar Asesoras';
+    if (location.pathname.includes('/asesorias')) return 'Solicitudes de Asesora';
+    if (location.pathname.includes('/eventos/crear')) return 'Publicar Evento';
+    if (location.pathname.includes('/eventos')) return 'Eventos';
+    if (location.pathname.includes('/tareas')) return 'Tareas';
+    if (location.pathname.includes('/diagnosticos')) return 'Diagnsticos';
+    return 'Panel Asesor';
   };
+
   return (
     <div className="contenedor-maestro position-relative">
-      <UserMenu user={user} onLogout={() => { window.location.href = '/'; }} />
-      <SidebarMaestro />
+      <SidebarMaestro user={user} />
       <main className="contenido-principal">
         <header className="header-superior">
           <h2>{getPageTitle()}</h2>
+          <div className="header-right-group">
+            <NotificationBell role="asesor" userId={user?.id} />
+            <UserMenu user={user} onLogout={logout} />
+          </div>
         </header>
         <div className="area-contenido">
           <Outlet />

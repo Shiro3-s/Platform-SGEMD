@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Notificaciones activas">
+  <rect width="128" height="128" fill="none" />
+  <g fill="none" stroke="#4f5154" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M64 16c-15.5 0-28 12.5-28 28v30.8c0 4.2-1.7 8.2-4.7 11.2L24 93h80l-7.3-7c-3-3-4.7-7-4.7-11.2V44c0-15.5-12.5-28-28-28Z" stroke-width="5" fill="#ffd300"/>
+    <path d="M56 98c0 4.4 3.6 8 8 8s8-3.6 8-8" stroke-width="5" fill="none"/>
+    <path d="M14 78c0 0 2 9 7 14" stroke-width="5" stroke="#ffd300"/>
+    <path d="M8 88c0 0 3 12 11 19" stroke-width="5" stroke="#ffd300"/>
+  </g>
+</svg>

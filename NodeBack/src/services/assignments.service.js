@@ -2,33 +2,27 @@ const { pool } = require('../config/db.config')
 
 exports.findAll = async () => {
     const [rows] = await pool.execute(`
-        SELECT a.*, 
-               u_est.Nombre as EstudianteNombre, 
-               u_est.CorreoInstitucional as EstudianteCorreo,
-               u_ment.Nombre as MentorNombre,
-               u_ment.CorreoInstitucional as MentorCorreo,
+        SELECT ea.*, 
+               u_asesor.Nombre as AsesorNombre, 
+               u_asesor.CorreoInstitucional as AsesorCorreo,
                e.Nombre as EmprendimientoNombre
-        FROM asignaciones a
-        LEFT JOIN usuarios u_est ON a.Usuarios_idEstudiante = u_est.idUsuarios
-        LEFT JOIN usuarios u_ment ON a.Usuarios_idMentor = u_ment.idUsuarios
-        LEFT JOIN emprendimiento e ON a.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        FROM Emprendimiento_Asesor ea
+        LEFT JOIN Usuarios u_asesor ON ea.Asesor_idUsuarios = u_asesor.idUsuarios
+        LEFT JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
     `)
     return rows
 }
 
 exports.findById = async (id) => {
     const [rows] = await pool.execute(`
-        SELECT a.*, 
-               u_est.Nombre as EstudianteNombre, 
-               u_est.CorreoInstitucional as EstudianteCorreo,
-               u_ment.Nombre as MentorNombre,
-               u_ment.CorreoInstitucional as MentorCorreo,
+        SELECT ea.*, 
+               u_asesor.Nombre as AsesorNombre, 
+               u_asesor.CorreoInstitucional as AsesorCorreo,
                e.Nombre as EmprendimientoNombre
-        FROM asignaciones a
-        LEFT JOIN usuarios u_est ON a.Usuarios_idEstudiante = u_est.idUsuarios
-        LEFT JOIN usuarios u_ment ON a.Usuarios_idMentor = u_ment.idUsuarios
-        LEFT JOIN emprendimiento e ON a.Emprendimiento_idEmprendimiento = e.idEmprendimiento
-        WHERE a.idAsignacion = ?
+        FROM Emprendimiento_Asesor ea
+        LEFT JOIN Usuarios u_asesor ON ea.Asesor_idUsuarios = u_asesor.idUsuarios
+        LEFT JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        WHERE ea.idAsignacion = ?
     `, [id])
     if (rows.length === 0) throw new Error('Asignación no encontrada')
     return rows[0]
@@ -36,32 +30,28 @@ exports.findById = async (id) => {
 
 exports.findByMentor = async (mentorId) => {
     const [rows] = await pool.execute(`
-        SELECT a.*, 
-               u_est.Nombre as EstudianteNombre, 
-               u_est.CorreoInstitucional as EstudianteCorreo,
-               u_est.Celular as EstudianteCelular,
+        SELECT ea.*, 
                e.Nombre as EmprendimientoNombre,
                e.Descripcion as EmprendimientoDescripcion,
-               et.Etapa as EtapaNombre
-        FROM asignaciones a
-        INNER JOIN usuarios u_est ON a.Usuarios_idEstudiante = u_est.idUsuarios
-        LEFT JOIN emprendimiento e ON a.Emprendimiento_idEmprendimiento = e.idEmprendimiento
-        LEFT JOIN etapaemprendimiento et ON e.EtapaEmprendimiento_idEtapaEmprendimiento = et.idEtapaEmprendimiento
-        WHERE a.Usuarios_idMentor = ? AND a.Estado = 'activa'
+               et.TipoEtapa as EtapaNombre
+        FROM Emprendimiento_Asesor ea
+        INNER JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        LEFT JOIN EtapaEmprendimiento et ON e.EtapaEmprendimiento_idEtapaEmprendimiento = et.idEtapaEmprendimiento
+        WHERE ea.Asesor_idUsuarios = ? AND ea.Estado = 'Activo'
     `, [mentorId])
     return rows
 }
 
 exports.findByEstudiante = async (estudianteId) => {
     const [rows] = await pool.execute(`
-        SELECT a.*, 
-               u_ment.Nombre as MentorNombre,
-               u_ment.CorreoInstitucional as MentorCorreo,
+        SELECT ea.*, 
+               u_asesor.Nombre as AsesorNombre,
+               u_asesor.CorreoInstitucional as AsesorCorreo,
                e.Nombre as EmprendimientoNombre
-        FROM asignaciones a
-        INNER JOIN usuarios u_ment ON a.Usuarios_idMentor = u_ment.idUsuarios
-        LEFT JOIN emprendimiento e ON a.Emprendimiento_idEmprendimiento = e.idEmprendimiento
-        WHERE a.Usuarios_idEstudiante = ? AND a.Estado = 'activa'
+        FROM Emprendimiento_Asesor ea
+        INNER JOIN Usuarios u_asesor ON ea.Asesor_idUsuarios = u_asesor.idUsuarios
+        INNER JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        WHERE e.Usuarios_idUsuarios = ? AND ea.Estado = 'Activo'
     `, [estudianteId])
     return rows
 }
@@ -69,13 +59,14 @@ exports.findByEstudiante = async (estudianteId) => {
 exports.create = async (data) => {
     const fechaActual = new Date()
     const [result] = await pool.execute(
-        `INSERT INTO asignaciones (Usuarios_idMentor, Usuarios_idEstudiante, Emprendimiento_idEmprendimiento, FechaAsignacion, Estado) VALUES (?, ?, ?, ?, ?)`,
+        `INSERT INTO Emprendimiento_Asesor (Asesor_idUsuarios, Emprendimiento_idEmprendimiento, AsignadoPor, FechaCreacion, FechaActualizacion, Estado) VALUES (?, ?, ?, ?, ?, ?)`,
         [
-            data.Usuarios_idMentor,
-            data.Usuarios_idEstudiante,
+            data.Asesor_idUsuarios,
             data.Emprendimiento_idEmprendimiento || null,
+            data.AsignadoPor || null,
             fechaActual,
-            data.Estado || 'activa'
+            fechaActual,
+            data.Estado || 'Activo'
         ]
     )
     return { id: result.insertId, ...data }
@@ -83,15 +74,17 @@ exports.create = async (data) => {
 
 exports.update = async (id, data) => {
     const [result] = await pool.execute(
-        `UPDATE asignaciones SET 
-            Usuarios_idMentor = ?,
+        `UPDATE Emprendimiento_Asesor SET 
+            Asesor_idUsuarios = ?,
             Emprendimiento_idEmprendimiento = ?,
-            Estado = ?
+            Estado = ?,
+            FechaActualizacion = ?
         WHERE idAsignacion = ?`,
         [
-            data.Usuarios_idMentor,
+            data.Asesor_idUsuarios,
             data.Emprendimiento_idEmprendimiento,
             data.Estado,
+            new Date(),
             id
         ]
     )
@@ -100,8 +93,8 @@ exports.update = async (id, data) => {
 
 exports.remove = async (id) => {
     const [result] = await pool.execute(
-        'UPDATE asignaciones SET Estado = "inactiva" WHERE idAsignacion = ?',
-        [id]
+        'UPDATE Emprendimiento_Asesor SET Estado = "Inactivo", FechaActualizacion = ? WHERE idAsignacion = ?',
+        [new Date(), id]
     )
     return result.affectedRows > 0
 }

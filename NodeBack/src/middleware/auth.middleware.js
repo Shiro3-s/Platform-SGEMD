@@ -43,8 +43,8 @@ exports.authenticateToken = (req, res, next) => {
         if (!rolId || typeof rolId === 'string') {
             const rolString = decodedToken.Rol || decodedToken.role || '';
             if (rolString === 'Administrador' || rolString === 'Admin') rolId = 1;
-            else if (rolString === 'Estudiante') rolId = 2;
-            else if (rolString === 'Docente' || rolString === 'Maestro') rolId = 3;
+            else if (rolString === 'Emprendedor' || rolString === 'Estudiante') rolId = 2;
+            else if (rolString === 'Asesor' || rolString === 'Docente' || rolString === 'Maestro') rolId = 3;
             else rolId = parseInt(rolString) || null;
         }
         
@@ -65,7 +65,7 @@ exports.authenticateToken = (req, res, next) => {
     }
 };
 
-// Roles numéricos: 1 = Admin, 2 = Estudiante, 3 = Docente
+// Roles numéricos: 1 = Admin, 2 = Emprendedor, 3 = Asesor
 exports.isAdmin = (req, res, next) => {
     if (!req.user || typeof req.user.Rol === 'undefined' || req.user.Rol !== 1) {
         return res.status(403).json({ 
@@ -76,21 +76,21 @@ exports.isAdmin = (req, res, next) => {
     next();
 };
 
-exports.isTeacher = (req, res, next) => {
+exports.isAsesor = (req, res, next) => {
     if (!req.user || typeof req.user.Rol === 'undefined' || req.user.Rol !== 3) {
         return res.status(403).json({ 
             success: false, 
-            error: 'Se requieren permisos de docente' 
+            error: 'Se requieren permisos de asesor' 
         });
     }
     next();
 };
 
-exports.isStudent = (req, res, next) => {
+exports.isEmprendedor = (req, res, next) => {
     if (!req.user || typeof req.user.Rol === 'undefined' || req.user.Rol !== 2) {
         return res.status(403).json({ 
             success: false, 
-            error: 'Se requieren permisos de estudiante' 
+            error: 'Se requieren permisos de emprendedor' 
         });
     }
     next();

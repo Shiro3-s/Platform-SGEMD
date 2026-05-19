@@ -1,6 +1,7 @@
 // src/pages/Estudiante/DashboardContent.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
@@ -33,7 +34,7 @@ const StatCard = ({ icon, label, value, color }) => (
 );
 
 const DashboardContent = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(AuthContext);
   const [emprendimientos, setEmprendimientos] = useState([]);
   const [asesorias, setAsesorias] = useState([]);
   const [eventos, setEventos] = useState([]);
@@ -43,33 +44,18 @@ const DashboardContent = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
-    if (user?.idUsuarios) {
-      fetchDashboardData();
+    if (!user) {
+      setLoading(false);
+      return;
     }
-  }, [user?.idUsuarios]);
-
-  const fetchUserData = async () => {
-    try {
-      const res = await fetch(`${API_URL}/segmed/users/me`, {
-        method: 'GET',
-        headers: getAuthHeaders(),
-        credentials: 'include'
-      });
-      const data = await res.json();
-      setUser(data.data || data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  };
+    fetchDashboardData();
+  }, [user]);
 
   const fetchDashboardData = async () => {
     try {
+      setLoading(true);
       const headers = getAuthHeaders();
-      const userId = user?.idUsuarios;
+      const userId = user?.id || user?.idUsuarios || user?.raw?.idUsuarios || user?.raw?.idusuarios;
 
       const [empRes, asesoriasRes, eventsRes, tareasRes, avanceRes] = await Promise.all([
         userId ? fetch(`${API_URL}/segmed/entrepreneurship`, { headers }) : Promise.resolve({ json: () => ({ data: [] }) }),
@@ -94,7 +80,13 @@ const DashboardContent = () => {
       setAsesorias(misAsesorias);
 
       const todosEventos = eventsData.data || [];
-      const eventosActivos = todosEventos.filter(e => e.Estado === 'activo');
+      const eventosValidos = todosEventos.filter((evento) => {
+        const nombre = String(evento?.Nombre_evento || '').trim();
+        const descripcion = String(evento?.Descripcion_evento || '').trim();
+        const tipo = String(evento?.Tipo_evento_idTipo_evento ?? '').trim();
+        return nombre.length > 0 && descripcion.length > 0 && tipo.length > 0;
+      });
+      const eventosActivos = eventosValidos.filter(e => e.Estado === 'activo');
       setEventos(eventosActivos);
 
       setTareas(tareasData.data || []);
@@ -111,12 +103,6 @@ const DashboardContent = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (user?.idUsuarios) {
-      fetchDashboardData();
-    }
-  }, [user?.idUsuarios]);
 
   const getEtapaNombre = (id) => {
     const nombres = { 1: 'Ideación', 2: 'Prototipado', 3: 'Validación', 4: 'Lanzamiento' };

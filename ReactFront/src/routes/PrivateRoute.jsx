@@ -1,15 +1,13 @@
-// src/routes/PrivateRoute.jsx
-import React from "react";
+import React, { useContext } from "react";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-// PrivateRoute ahora espera recibir el estado `usuario` desde App y
-// un arreglo `allowedRoles` con los roles permitidos (en minúsculas).
-function PrivateRoute({ usuario, allowedRoles = [], children }) {
-  // No autenticado
-  if (!usuario) return <Navigate to="/" />;
+function PrivateRoute({ allowedRoles = [], children }) {
+  const { user } = useContext(AuthContext);
 
-  // Verificar rol
-  if (!allowedRoles.includes(usuario.rol)) {
+  if (!user) return <Navigate to="/" />;
+
+  if (!allowedRoles.includes(user.rol)) {
     return <Navigate to="/" />;
   }
 

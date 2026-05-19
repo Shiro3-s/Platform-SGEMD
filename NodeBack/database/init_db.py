@@ -1,12 +1,9 @@
 import mysql.connector as msql
-from mysql.connector import Error 
+from mysql.connector import Error
 
 try:
     connection = msql.connect(
-        host="localhost",
-        port="3306",
-        user="root",
-        password=""
+        host="localhost", port="3306", user="root", password=""
     )
 
     if connection.is_connected():
@@ -26,7 +23,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idModulos)
-        ) 
+        )
         """
         cursor.execute(create_Modulos)
 
@@ -38,7 +35,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idMunicipio)
-        ) 
+        )
         """
         cursor.execute(create_Municipios)
 
@@ -50,7 +47,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idProgramaAcademico)
-        ) 
+        )
         """
         cursor.execute(create_ProgramaAcademico)
 
@@ -62,7 +59,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idRoles)
-        ) 
+        )
         """
         cursor.execute(create_Roles)
 
@@ -74,7 +71,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idTipoDocumento)
-        ) 
+        )
         """
         cursor.execute(create_TipoDocumentos)
 
@@ -86,7 +83,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idTipoUsuarios)
-        ) 
+        )
         """
         cursor.execute(create_TipoUsuarios)
 
@@ -98,7 +95,7 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idCentroUniversitarios)
-        ) 
+        )
         """
         cursor.execute(create_CentroUniversitarios)
 
@@ -110,22 +107,22 @@ try:
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idTipoPoblacion)
-        ) 
+        )
         """
         cursor.execute(create_TipoPoblacion)
 
         # Tabla Usuarios con relaciones
         create_Usuarios = """
         CREATE TABLE IF NOT EXISTS Usuarios (
-            idUsuarios INT NOT NULL,
+            idUsuarios INT NOT NULL AUTO_INCREMENT,
             Nombre VARCHAR(45) NOT NULL,
             CorreoInstitucional VARCHAR(45) NOT NULL,
             CorreoPersonal VARCHAR(45),
             Verificado TINYINT(1) NOT NULL DEFAULT 0,
-            Password VARCHAR(255) NOT NULL,  
+            Password VARCHAR(255) NOT NULL,
             Celular VARCHAR(45),
             Telefono VARCHAR(45),
-            Direccion VARCHAR(45),  
+            Direccion VARCHAR(45),
             Genero VARCHAR(45),
             EstadoCivil VARCHAR(45),
             FechaNacimiento DATE,
@@ -140,11 +137,14 @@ try:
             Estado TINYINT not null DEFAULT 1,
             Semestre VARCHAR(45),
             Modalidad VARCHAR(45),
+            CodigoVerificacion VARCHAR(10),
+            CodigoExpiracion DATETIME,
             TipoPoblacion_idTipoPoblacion INT,
-            FechaCreacion DATE,
-            FechaActualizacion DATE,
+            FechaCreacion DATETIME,
+            FechaActualizacion DATETIME,
             img_perfil VARCHAR(255),
             PRIMARY KEY (idUsuarios),
+            UNIQUE INDEX uq_usuarios_correo (CorreoInstitucional),
             INDEX fk_Usuarios_Modulos_idx (Modulos_idModulos),
             INDEX fk_Usuarios_Municipios1_idx (Municipios_idMunicipio),
             INDEX fk_Usuarios_ProgramaAcademico1_idx (ProgramaAcademico_idProgramaAcademico),
@@ -181,44 +181,65 @@ try:
             CONSTRAINT fk_Usuarios_TipoPoblacion1
                 FOREIGN KEY (TipoPoblacion_idTipoPoblacion)
                 REFERENCES TipoPoblacion (idTipoPoblacion)
-        ) 
+        )
         """
         cursor.execute(create_Usuarios)
 
-        # Asegurarse de que la columna img_perfil exista (puede faltar en DB antiguas)
+        create_RegistroPendiente = """
+        CREATE TABLE IF NOT EXISTS RegistroPendiente (
+            idRegistroPendiente INT NOT NULL AUTO_INCREMENT,
+            Nombre VARCHAR(120) NOT NULL,
+            CorreoInstitucional VARCHAR(120) NOT NULL,
+            PasswordHash VARCHAR(255) NOT NULL,
+            CodigoVerificacion VARCHAR(10) NOT NULL,
+            CodigoExpiracion DATETIME NOT NULL,
+            FechaCreacion DATETIME NOT NULL,
+            PRIMARY KEY (idRegistroPendiente),
+            UNIQUE INDEX uq_registro_correo (CorreoInstitucional)
+        )
+        """
+        cursor.execute(create_RegistroPendiente)
+
+        # Ajustes para instalaciones existentes
         try:
             cursor.execute("SHOW COLUMNS FROM Usuarios LIKE 'img_perfil'")
-            col = cursor.fetchone()
-            if not col:
-                print('Añadiendo columna img_perfil a Usuarios...')
-                cursor.execute("ALTER TABLE Usuarios ADD COLUMN img_perfil VARCHAR(255)")
-                print('Columna img_perfil añadida.')
-        except Exception as e:
-            print('Error comprobando/añadiendo img_perfil:', e)
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Usuarios ADD COLUMN img_perfil VARCHAR(255)"
+                )
 
-        # Asegurarse de que la columna Estado exista
-        try:
-            cursor.execute("SHOW COLUMNS FROM Usuarios LIKE 'Estado'")
-            col2 = cursor.fetchone()
-            if not col2:
-                print('Añadiendo columna Estado a Usuarios...')
-                cursor.execute("ALTER TABLE Usuarios ADD COLUMN Estado TINYINT not null DEFAULT 1")
-                print('Columna Estado añadida.')
-        except Exception as e:
-            print('Error comprobando/añadiendo Estado:', e)
+            cursor.execute("SHOW COLUMNS FROM Usuarios LIKE 'CodigoVerificacion'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Usuarios ADD COLUMN CodigoVerificacion VARCHAR(10)"
+                )
 
-        # Asegurarse de que idUsuarios sea AUTO_INCREMENT (si la tabla antigua no lo tiene)
-        try:
-            cursor.execute("SELECT EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Usuarios' AND COLUMN_NAME = 'idUsuarios'")
+            cursor.execute("SHOW COLUMNS FROM Usuarios LIKE 'CodigoExpiracion'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Usuarios ADD COLUMN CodigoExpiracion DATETIME"
+                )
+
+            cursor.execute(
+                "SHOW INDEX FROM Usuarios WHERE Key_name = 'uq_usuarios_correo'"
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Usuarios ADD UNIQUE INDEX uq_usuarios_correo (CorreoInstitucional)"
+                )
+
+            cursor.execute(
+                "SELECT EXTRA FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Usuarios' AND COLUMN_NAME = 'idUsuarios'"
+            )
             extra = cursor.fetchone()
             if extra:
-                extra_val = str(extra[0] or '').lower()
-                if 'auto_increment' not in extra_val:
-                    print('Habilitando AUTO_INCREMENT en idUsuarios...')
-                    cursor.execute('ALTER TABLE Usuarios MODIFY idUsuarios INT NOT NULL AUTO_INCREMENT')
-                    print('AUTO_INCREMENT habilitado en idUsuarios.')
+                extra_val = str(extra[0] or "").lower()
+                if "auto_increment" not in extra_val:
+                    cursor.execute(
+                        "ALTER TABLE Usuarios MODIFY idUsuarios INT NOT NULL AUTO_INCREMENT"
+                    )
         except Exception as e:
-            print('Error comprobando/añadiendo AUTO_INCREMENT a idUsuarios:', e)
+            print("Ajuste de estructura Usuarios no aplicado:", e)
 
         # Tabla EtapaEmprendimiento
         create_EtapaEmprendimiento = """
@@ -229,16 +250,32 @@ try:
             FechaActualizacion DATE NOT NULL,
             TipoEtapa VARCHAR(45) NOT NULL,
             PRIMARY KEY (idEtapaEmprendimiento)
-        ) 
+        )
         """
         cursor.execute(create_EtapaEmprendimiento)
+
+        try:
+            cursor.execute("SELECT COUNT(*) FROM EtapaEmprendimiento")
+            etapas_count = cursor.fetchone()[0]
+            if etapas_count == 0:
+                cursor.execute(
+                    "INSERT INTO EtapaEmprendimiento (Estado, FechaCreacion, FechaActualizacion, TipoEtapa) VALUES (1, CURDATE(), CURDATE(), 'Idea')"
+                )
+                cursor.execute(
+                    "INSERT INTO EtapaEmprendimiento (Estado, FechaCreacion, FechaActualizacion, TipoEtapa) VALUES (1, CURDATE(), CURDATE(), 'Validacion')"
+                )
+                cursor.execute(
+                    "INSERT INTO EtapaEmprendimiento (Estado, FechaCreacion, FechaActualizacion, TipoEtapa) VALUES (1, CURDATE(), CURDATE(), 'Puesta en marcha')"
+                )
+        except Exception as e:
+            print("Carga semilla EtapaEmprendimiento no aplicada:", e)
 
         # Tabla Emprendimiento
         create_Emprendimiento = """
         CREATE TABLE IF NOT EXISTS Emprendimiento (
             idEmprendimiento INT NOT NULL AUTO_INCREMENT,
             Nombre VARCHAR(45) NOT NULL,
-            Descripcion VARCHAR(45) NOT NULL,
+            Descripcion TEXT NOT NULL,
             TipoEmprendimiento VARCHAR(45) NOT NULL,  -- Corregido de TipoEmpreedimiento
             SectorProductivo VARCHAR(45) NOT NULL,    -- Corregido de SectorPruductivo
             RedesSociales TINYINT NOT NULL,
@@ -252,9 +289,35 @@ try:
             CONSTRAINT fk_Emprendimiento_EtapaEmprendimiento1
                 FOREIGN KEY (EtapaEmprendimiento_idEtapaEmprendimiento)
                 REFERENCES EtapaEmprendimiento (idEtapaEmprendimiento)
-        ) 
+        )
         """
         cursor.execute(create_Emprendimiento)
+
+        try:
+            cursor.execute("SHOW COLUMNS FROM Emprendimiento LIKE 'Descripcion'")
+            desc_col = cursor.fetchone()
+            if desc_col:
+                col_type = str(desc_col[1] or '').lower()
+                if col_type.startswith('varchar'):
+                    cursor.execute("ALTER TABLE Emprendimiento MODIFY COLUMN Descripcion TEXT NOT NULL")
+
+            cursor.execute("SHOW COLUMNS FROM Emprendimiento LIKE 'Usuarios_idUsuarios'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Emprendimiento ADD COLUMN Usuarios_idUsuarios INT NULL")
+
+            cursor.execute("SHOW INDEX FROM Emprendimiento WHERE Key_name = 'idx_empr_usuario'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Emprendimiento ADD INDEX idx_empr_usuario (Usuarios_idUsuarios)")
+
+            cursor.execute(
+                "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Emprendimiento' AND COLUMN_NAME = 'Usuarios_idUsuarios' AND REFERENCED_TABLE_NAME = 'Usuarios'"
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Emprendimiento ADD CONSTRAINT fk_empr_usuario FOREIGN KEY (Usuarios_idUsuarios) REFERENCES Usuarios (idUsuarios)"
+                )
+        except Exception as e:
+            print("Ajuste de estructura Emprendimiento no aplicado:", e)
 
         # Tabla Seguimientos
         create_Seguimientos = """
@@ -264,12 +327,73 @@ try:
             TipoSeguimiento VARCHAR(45) NOT NULL,
             Descripcion VARCHAR(45) NOT NULL,
             SeguimientoCol VARCHAR(45) NOT NULL,
+            Emprendimiento_idEmprendimiento INT NULL,
+            Asesor_idUsuarios INT NULL,
             FechaCreacion DATE NOT NULL,
             FechaActualizacion DATE NOT NULL,
             PRIMARY KEY (idSeguimientos)
-        ) 
+        )
         """
         cursor.execute(create_Seguimientos)
+
+        try:
+            cursor.execute("SHOW COLUMNS FROM Seguimientos LIKE 'Usuarios_idUsuarios'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Seguimientos ADD COLUMN Usuarios_idUsuarios INT NULL")
+
+            cursor.execute("SHOW COLUMNS FROM Seguimientos LIKE 'Emprendimiento_idEmprendimiento'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Seguimientos ADD COLUMN Emprendimiento_idEmprendimiento INT NULL")
+
+            cursor.execute("SHOW COLUMNS FROM Seguimientos LIKE 'Asesor_idUsuarios'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Seguimientos ADD COLUMN Asesor_idUsuarios INT NULL")
+
+            cursor.execute("SHOW INDEX FROM Seguimientos WHERE Key_name = 'idx_seg_usuario'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Seguimientos ADD INDEX idx_seg_usuario (Usuarios_idUsuarios)")
+
+            cursor.execute("SHOW INDEX FROM Seguimientos WHERE Key_name = 'idx_seg_empr'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Seguimientos ADD INDEX idx_seg_empr (Emprendimiento_idEmprendimiento)")
+
+            cursor.execute("SHOW INDEX FROM Seguimientos WHERE Key_name = 'idx_seg_asesor'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Seguimientos ADD INDEX idx_seg_asesor (Asesor_idUsuarios)")
+
+            cursor.execute(
+                "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Seguimientos' AND COLUMN_NAME = 'Usuarios_idUsuarios' AND REFERENCED_TABLE_NAME = 'Usuarios'"
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Seguimientos ADD CONSTRAINT fk_seguimiento_usuario FOREIGN KEY (Usuarios_idUsuarios) REFERENCES Usuarios (idUsuarios)"
+                )
+
+            cursor.execute(
+                "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Seguimientos' AND COLUMN_NAME = 'Emprendimiento_idEmprendimiento' AND REFERENCED_TABLE_NAME = 'Emprendimiento'"
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Seguimientos ADD CONSTRAINT fk_seguimiento_empr FOREIGN KEY (Emprendimiento_idEmprendimiento) REFERENCES Emprendimiento (idEmprendimiento)"
+                )
+
+            cursor.execute(
+                "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Seguimientos' AND COLUMN_NAME = 'Asesor_idUsuarios' AND REFERENCED_TABLE_NAME = 'Usuarios'"
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Seguimientos ADD CONSTRAINT fk_seguimiento_asesor FOREIGN KEY (Asesor_idUsuarios) REFERENCES Usuarios (idUsuarios)"
+                )
+        except Exception as e:
+            print("Ajuste de estructura Seguimientos no aplicado:", e)
+
+        # Sincronizar propietario de seguimiento con el propietario del emprendimiento
+        try:
+            cursor.execute(
+                "UPDATE Seguimientos s INNER JOIN Emprendimiento e ON e.idEmprendimiento = s.Emprendimiento_idEmprendimiento SET s.Usuarios_idUsuarios = e.Usuarios_idUsuarios WHERE s.Emprendimiento_idEmprendimiento IS NOT NULL"
+            )
+        except Exception as e:
+            print("Sincronizacion propietario Seguimientos no aplicada:", e)
 
         # Tabla Asistencia
         create_Asistencia = """
@@ -289,7 +413,7 @@ try:
             CONSTRAINT fk_Asistencia_Seguimientos1
                 FOREIGN KEY (Seguimientos_idSeguimientos)
                 REFERENCES Seguimientos (idSeguimientos)
-        ) 
+        )
         """
         cursor.execute(create_Asistencia)
 
@@ -299,7 +423,7 @@ try:
             idSectorEconomico INT NOT NULL AUTO_INCREMENT,
             Nombre VARCHAR(45) NOT NULL,
             PRIMARY KEY (idSectorEconomico)
-        ) 
+        )
         """
         cursor.execute(create_SectorEconomico)
 
@@ -339,7 +463,7 @@ try:
             CONSTRAINT fk_Diagnosticos_Emprendimiento1
                 FOREIGN KEY (Emprendimiento_idEmprendimiento)
                 REFERENCES Emprendimiento (idEmprendimiento)
-        ) 
+        )
         """
         cursor.execute(create_Diagnosticos)
 
@@ -348,13 +472,23 @@ try:
         CREATE TABLE IF NOT EXISTS Modalidad (
             idModalidad INT NOT NULL,
             Presencial TINYINT NOT NULL,
-            Distancia TINYINT NOT NULL,               
-            Enlace_virtual VARCHAR(45) NOT NULL,       
+            Distancia TINYINT NOT NULL,
+            Enlace_virtual VARCHAR(45) NOT NULL,
             Lugar VARCHAR(45) NOT NULL,
             PRIMARY KEY (idModalidad)
-        ) 
+        )
         """
         cursor.execute(create_Modalidad)
+
+        try:
+            cursor.execute("SELECT COUNT(*) FROM Modalidad")
+            modalidad_count = cursor.fetchone()[0]
+            if modalidad_count == 0:
+                cursor.execute(
+                    "INSERT INTO Modalidad (idModalidad, Presencial, Distancia, Enlace_virtual, Lugar) VALUES (1, 1, 0, '', 'Pendiente')"
+                )
+        except Exception as e:
+            print("Carga semilla Modalidad no aplicada:", e)
 
         # Tabla Fecha_y_Horarios
         create_Fecha_y_Horarios = """
@@ -365,24 +499,40 @@ try:
             Fecha_fin DATETIME NOT NULL,
             Hora_fin DATETIME NOT NULL,
             PRIMARY KEY (idFecha_y_Horarios)
-        ) 
+        )
         """
         cursor.execute(create_Fecha_y_Horarios)
+
+        try:
+            cursor.execute("SELECT COUNT(*) FROM Fecha_y_Horarios")
+            fh_count = cursor.fetchone()[0]
+            if fh_count == 0:
+                cursor.execute(
+                    "INSERT INTO Fecha_y_Horarios (idFecha_y_Horarios, Fecha_inicio, Hora_inicio, Fecha_fin, Hora_fin) VALUES (1, NOW(), NOW(), NOW(), NOW())"
+                )
+        except Exception as e:
+            print("Carga semilla Fecha_y_Horarios no aplicada:", e)
 
         # Tabla Asesorias
         create_Asesorias = """
         CREATE TABLE IF NOT EXISTS Asesorias (
             idAsesorias INT NOT NULL AUTO_INCREMENT,
-            Nombre_de_asesoria VARCHAR(45) NOT NULL,
-            Descripcion VARCHAR(45) NOT NULL,
+            Nombre_de_asesoria VARCHAR(120) NOT NULL,
+            Descripcion VARCHAR(255) NOT NULL,
             Fecha_asesoria DATETIME NOT NULL,
-            Comentarios VARCHAR(45) NOT NULL,
+            Comentarios TEXT,
             Fecha_creacion DATETIME NOT NULL,
             Fecha_actualizacion DATETIME NOT NULL,
             confirmacion VARCHAR(45) NOT NULL,
             Usuarios_idUsuarios INT NOT NULL,
             Modalidad_idModalidad INT NOT NULL,
             Fecha_y_Horarios_idFecha_y_Horarios INT NOT NULL,
+            Estudiante_idUsuarios INT,
+            Docente_idUsuarios INT,
+            MotivoSolicitud TEXT,
+            EstadoSolicitud VARCHAR(45) NOT NULL DEFAULT 'pendiente',
+            ComentarioDocente TEXT,
+            FechaRespuesta DATETIME,
             PRIMARY KEY (idAsesorias),
             INDEX fk_Asesorias_Usuarios1_idx (Usuarios_idUsuarios),
             INDEX fk_Asesorias_Modalidad1_idx (Modalidad_idModalidad),
@@ -394,44 +544,247 @@ try:
         """
         cursor.execute(create_Asesorias)
 
+        try:
+            cursor.execute("SHOW COLUMNS FROM Asesorias LIKE 'Estudiante_idUsuarios'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Asesorias ADD COLUMN Estudiante_idUsuarios INT"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM Asesorias LIKE 'Docente_idUsuarios'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Asesorias ADD COLUMN Docente_idUsuarios INT"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM Asesorias LIKE 'MotivoSolicitud'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Asesorias ADD COLUMN MotivoSolicitud TEXT")
+
+            cursor.execute("SHOW COLUMNS FROM Asesorias LIKE 'EstadoSolicitud'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Asesorias ADD COLUMN EstadoSolicitud VARCHAR(45) NOT NULL DEFAULT 'pendiente'"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM Asesorias LIKE 'ComentarioDocente'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Asesorias ADD COLUMN ComentarioDocente TEXT"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM Asesorias LIKE 'FechaRespuesta'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Asesorias ADD COLUMN FechaRespuesta DATETIME"
+                )
+        except Exception as e:
+            print("Ajuste de estructura Asesorias no aplicado:", e)
+
         # Tabla Tipo_evento
         create_Tipo_evento = """
         CREATE TABLE IF NOT EXISTS Tipo_evento (
             idTipo_evento INT NOT NULL,
-            Academico VARCHAR(45) NOT NULL,
-            Cultura VARCHAR(45) NOT NULL,
-            Deportivo VARCHAR(45) NOT NULL,
-            Social VARCHAR(45) NOT NULL,
-            Conferencia VARCHAR(45) NOT NULL,
+            Nombre VARCHAR(80) NOT NULL,
             PRIMARY KEY (idTipo_evento)
         );
         """
         cursor.execute(create_Tipo_evento)
 
+        try:
+            cursor.execute("SHOW COLUMNS FROM Tipo_evento LIKE 'Nombre'")
+            has_nombre = cursor.fetchone()
+            if not has_nombre:
+                cursor.execute("ALTER TABLE Tipo_evento ADD COLUMN Nombre VARCHAR(80)")
+                cursor.execute(
+                    "UPDATE Tipo_evento SET Nombre = 'General' WHERE Nombre IS NULL OR Nombre = ''"
+                )
+                cursor.execute("ALTER TABLE Tipo_evento MODIFY COLUMN Nombre VARCHAR(80) NOT NULL")
+
+            cursor.execute("SHOW COLUMNS FROM Tipo_evento")
+            tipo_evento_columns = [row[0] for row in cursor.fetchall()]
+
+            legacy_cols = [
+                "Academico",
+                "Cultura",
+                "Deportivo",
+                "Social",
+                "Conferencia",
+            ]
+
+            # Compatibilidad con esquemas antiguos: permitir nulos en columnas legacy
+            # para que los nuevos inserts (id + Nombre) no fallen.
+            for col in legacy_cols:
+                if col in tipo_evento_columns:
+                    try:
+                        cursor.execute(
+                            f"ALTER TABLE Tipo_evento MODIFY COLUMN {col} VARCHAR(45) NULL DEFAULT NULL"
+                        )
+                    except Exception:
+                        pass
+
+            extra_cols = [
+                col for col in tipo_evento_columns if col not in ("idTipo_evento", "Nombre")
+            ]
+
+            def upsert_tipo_evento(tipo_id, nombre):
+                if extra_cols:
+                    cols = ["idTipo_evento", "Nombre", *extra_cols]
+                    placeholders = ", ".join(["%s"] * len(cols))
+                    assignments = ", ".join([f"{c} = VALUES({c})" for c in cols if c != "idTipo_evento"])
+                    values = [tipo_id, nombre] + ["N/A" for _ in extra_cols]
+                    cursor.execute(
+                        f"INSERT INTO Tipo_evento ({', '.join(cols)}) VALUES ({placeholders}) ON DUPLICATE KEY UPDATE {assignments}",
+                        values,
+                    )
+                else:
+                    cursor.execute(
+                        "INSERT INTO Tipo_evento (idTipo_evento, Nombre) VALUES (%s, %s) ON DUPLICATE KEY UPDATE Nombre = VALUES(Nombre)",
+                        (tipo_id, nombre),
+                    )
+
+            upsert_tipo_evento(1, "Taller")
+            upsert_tipo_evento(2, "Masterclass")
+        except Exception as e:
+            print("Ajuste de estructura Tipo_evento no aplicado:", e)
+
         # Tabla Eventos
         create_Eventos = """
         CREATE TABLE IF NOT EXISTS Eventos (
-            idEventos INT NOT NULL,
-            Nombre_evento VARCHAR(45) NOT NULL,
-            Descripcion_evento VARCHAR(45) NOT NULL,
-            Tipo_evento_idTipo_evento INT NOT NULL,
-            Modalidad_idModalidad INT NOT NULL,
-            Fecha_y_Horarios_idFecha_y_Horarios INT NOT NULL,
-            Estado VARCHAR(45) NOT NULL,
-            Capacidad_maxima INT NOT NULL,
-            Requiere_registro TINYINT NOT NULL,
+            idEventos INT NOT NULL AUTO_INCREMENT,
+            Nombre_evento VARCHAR(150) NOT NULL,
+            Descripcion_evento TEXT NOT NULL,
+            Link_evento VARCHAR(500),
+            Archivo_url VARCHAR(500),
+            Estado VARCHAR(45) NOT NULL DEFAULT 'Activo',
+            Capacidad_maxima INT NOT NULL DEFAULT 0,
+            Tipo_evento_idTipo_evento INT NOT NULL DEFAULT 1,
+            Creado_por INT,
             Fecha_creacion DATETIME NOT NULL,
             Fecha_actualizacion DATETIME NOT NULL,
             PRIMARY KEY (idEventos),
-            INDEX fk_Eventos_Tipo_evento1_idx (Tipo_evento_idTipo_evento),
-            INDEX fk_Eventos_Modalidad1_idx (Modalidad_idModalidad),
-            INDEX fk_Eventos_Fecha_y_Horarios1_idx (Fecha_y_Horarios_idFecha_y_Horarios),
-            CONSTRAINT fk_Eventos_Tipo_evento1 FOREIGN KEY (Tipo_evento_idTipo_evento) REFERENCES Tipo_evento (idTipo_evento),
-            CONSTRAINT fk_Eventos_Modalidad1 FOREIGN KEY (Modalidad_idModalidad) REFERENCES Modalidad (idModalidad),
-            CONSTRAINT fk_Eventos_Fecha_y_Horarios1 FOREIGN KEY (Fecha_y_Horarios_idFecha_y_Horarios) REFERENCES Fecha_y_Horarios (idFecha_y_Horarios)
+            INDEX idx_evento_tipo (Tipo_evento_idTipo_evento),
+            CONSTRAINT fk_evento_tipo FOREIGN KEY (Tipo_evento_idTipo_evento) REFERENCES Tipo_evento (idTipo_evento)
         );
         """
         cursor.execute(create_Eventos)
+
+        try:
+            cursor.execute("SHOW COLUMNS FROM Eventos LIKE 'Link_evento'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Eventos ADD COLUMN Link_evento VARCHAR(500)"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM Eventos LIKE 'Archivo_url'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Eventos ADD COLUMN Archivo_url VARCHAR(500)"
+                )
+
+            cursor.execute("SHOW COLUMNS FROM Eventos LIKE 'Creado_por'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Eventos ADD COLUMN Creado_por INT")
+
+            cursor.execute("SHOW COLUMNS FROM Eventos LIKE 'Tipo_evento_idTipo_evento'")
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Eventos ADD COLUMN Tipo_evento_idTipo_evento INT NOT NULL DEFAULT 1"
+                )
+
+            # Normalizar datos antes de FK
+            cursor.execute(
+                "UPDATE Eventos SET Tipo_evento_idTipo_evento = 1 WHERE Tipo_evento_idTipo_evento IS NULL OR Tipo_evento_idTipo_evento = 0"
+            )
+            cursor.execute(
+                "UPDATE Eventos e LEFT JOIN Tipo_evento te ON te.idTipo_evento = e.Tipo_evento_idTipo_evento SET e.Tipo_evento_idTipo_evento = 1 WHERE te.idTipo_evento IS NULL"
+            )
+
+            cursor.execute("SHOW INDEX FROM Eventos WHERE Key_name = 'idx_evento_tipo'")
+            if not cursor.fetchone():
+                cursor.execute("ALTER TABLE Eventos ADD INDEX idx_evento_tipo (Tipo_evento_idTipo_evento)")
+
+            cursor.execute(
+                "SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = 'DB_SGEMD' AND TABLE_NAME = 'Eventos' AND COLUMN_NAME = 'Tipo_evento_idTipo_evento' AND REFERENCED_TABLE_NAME = 'Tipo_evento'"
+            )
+            if not cursor.fetchone():
+                cursor.execute(
+                    "ALTER TABLE Eventos ADD CONSTRAINT fk_evento_tipo FOREIGN KEY (Tipo_evento_idTipo_evento) REFERENCES Tipo_evento (idTipo_evento)"
+                )
+        except Exception as e:
+            print("Ajuste de estructura Eventos no aplicado:", e)
+
+        # Renombrar roles oficiales a nomenclatura definitiva
+        try:
+            cursor.execute(
+                "INSERT INTO Roles (idRoles, Nombre, FechaCreacion, FechaActualizacion) VALUES (1, 'Administrador', NOW(), NOW()) ON DUPLICATE KEY UPDATE Nombre = VALUES(Nombre), FechaActualizacion = VALUES(FechaActualizacion)"
+            )
+            cursor.execute(
+                "INSERT INTO Roles (idRoles, Nombre, FechaCreacion, FechaActualizacion) VALUES (2, 'Emprendedor', NOW(), NOW()) ON DUPLICATE KEY UPDATE Nombre = VALUES(Nombre), FechaActualizacion = VALUES(FechaActualizacion)"
+            )
+            cursor.execute(
+                "INSERT INTO Roles (idRoles, Nombre, FechaCreacion, FechaActualizacion) VALUES (3, 'Asesor', NOW(), NOW()) ON DUPLICATE KEY UPDATE Nombre = VALUES(Nombre), FechaActualizacion = VALUES(FechaActualizacion)"
+            )
+        except Exception as e:
+            print("Ajuste de roles oficiales no aplicado:", e)
+
+        # Tabla PlanTrabajo
+        create_PlanTrabajo = """
+        CREATE TABLE IF NOT EXISTS PlanTrabajo (
+            idPlanTrabajo INT NOT NULL AUTO_INCREMENT,
+            Usuarios_idUsuarios INT NOT NULL,
+            Titulo VARCHAR(120) NOT NULL,
+            Objetivo VARCHAR(255),
+            FechaInicio DATE,
+            FechaFin DATE,
+            Estado VARCHAR(45) NOT NULL DEFAULT 'Pendiente',
+            Progreso INT NOT NULL DEFAULT 0,
+            FechaCreacion DATETIME NOT NULL,
+            FechaActualizacion DATETIME NOT NULL,
+            PRIMARY KEY (idPlanTrabajo),
+            INDEX idx_plan_usuario (Usuarios_idUsuarios),
+            CONSTRAINT fk_plantrabajo_usuario FOREIGN KEY (Usuarios_idUsuarios) REFERENCES Usuarios (idUsuarios) ON DELETE CASCADE
+        );
+        """
+        cursor.execute(create_PlanTrabajo)
+
+        create_Emprendimiento_Asesor = """
+        CREATE TABLE IF NOT EXISTS Emprendimiento_Asesor (
+            idAsignacion INT NOT NULL AUTO_INCREMENT,
+            Emprendimiento_idEmprendimiento INT NOT NULL,
+            Asesor_idUsuarios INT NOT NULL,
+            Estado VARCHAR(20) NOT NULL DEFAULT 'Activo',
+            AsignadoPor INT,
+            FechaCreacion DATETIME NOT NULL,
+            FechaActualizacion DATETIME NOT NULL,
+            PRIMARY KEY (idAsignacion),
+            UNIQUE INDEX uq_emprendimiento_asignacion (Emprendimiento_idEmprendimiento),
+            INDEX idx_asignacion_asesor (Asesor_idUsuarios),
+            CONSTRAINT fk_empr_asig_empr FOREIGN KEY (Emprendimiento_idEmprendimiento) REFERENCES Emprendimiento (idEmprendimiento),
+            CONSTRAINT fk_empr_asig_asesor FOREIGN KEY (Asesor_idUsuarios) REFERENCES Usuarios (idUsuarios)
+        );
+        """
+        cursor.execute(create_Emprendimiento_Asesor)
+
+        # Tabla Notificaciones
+        create_Notificaciones = """
+        CREATE TABLE IF NOT EXISTS Notificaciones (
+            idNotificacion INT NOT NULL AUTO_INCREMENT,
+            Usuario_idUsuarios INT NOT NULL,
+            Tipo VARCHAR(60) NOT NULL,
+            Titulo VARCHAR(180) NOT NULL,
+            Mensaje TEXT NOT NULL,
+            RefTipo VARCHAR(60),
+            RefId INT,
+            Leida TINYINT(1) NOT NULL DEFAULT 0,
+            FechaCreacion DATETIME NOT NULL,
+            PRIMARY KEY (idNotificacion),
+            INDEX idx_notif_usuario_leida (Usuario_idUsuarios, Leida),
+            INDEX idx_notif_usuario_fecha (Usuario_idUsuarios, FechaCreacion),
+            CONSTRAINT fk_notif_usuario FOREIGN KEY (Usuario_idUsuarios) REFERENCES Usuarios (idUsuarios) ON DELETE CASCADE
+        );
+        """
+        cursor.execute(create_Notificaciones)
 
         # Tabla Usuarios_has_Eventos
         create_Usuarios_has_Eventos = """
@@ -447,7 +800,7 @@ try:
             CONSTRAINT fk_Usuarios_has_Eventos_Eventos1
                 FOREIGN KEY (Eventos_idEventos)
                 REFERENCES Eventos (idEventos)
-        ) 
+        )
         """
         cursor.execute(create_Usuarios_has_Eventos)
 
@@ -455,7 +808,7 @@ try:
 
 except Error as e:
     print("Error al conectarse a MySQL:", e)
-    
+
 finally:
     if connection and connection.is_connected():
         cursor.close()

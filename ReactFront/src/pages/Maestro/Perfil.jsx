@@ -1,8 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import AccountDeactivated from '../../components/AccountDeactivated';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
+const DEFAULT_AVATAR = '/img/default-avatar.svg';
+
+const splitFullName = (fullName) => {
+  const clean = String(fullName || '').trim().replace(/\s+/g, ' ');
+  if (!clean) return { nombre: '', apellido: '' };
+  const parts = clean.split(' ');
+  if (parts.length === 1) return { nombre: parts[0], apellido: '' };
+  return {
+    nombre: parts[0],
+    apellido: parts.slice(1).join(' '),
+  };
+};
 
 const getAuthHeaders = (includeContentType = true) => {
   const token = localStorage.getItem('token');
@@ -21,12 +32,9 @@ const Perfil = () => {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({});
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarSrc, setAvatarSrc] = useState(DEFAULT_AVATAR);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [tipoDocs, setTipoDocs] = useState([]);
-  const [programas, setProgramas] = useState([]);
-  const [municipios, setMunicipios] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -35,91 +43,106 @@ const Perfil = () => {
       setTimeout(() => { window.location.href = '/'; }, 1500);
       return;
     }
-    loadCatalogos();
-    fetchUser();
-  }, []);
 
-  const loadCatalogos = async () => {
-    const headers = getAuthHeaders();
-    try {
-      const [td, prog, mun] = await Promise.all([
-        fetch(`${API_URL}/segmed/type-doc`, { headers }).then(r => r.json()),
-        fetch(`${API_URL}/segmed/academic-programs`, { headers }).then(r => r.json()),
-        fetch(`${API_URL}/segmed/municipalities`, { headers }).then(r => r.json())
-      ]);
-      setTipoDocs(td.data || td || []);
-      setProgramas(prog.data || prog || []);
-      setMunicipios(mun.data || mun || []);
-    } catch (err) {
-      console.error('Error cargando catálogos:', err);
-    }
-  };
-
-  const fetchUser = () => {
-    const headers = getAuthHeaders(false);
-    fetch(`${API_URL}/segmed/users/me`, { method: 'GET', headers, credentials: 'include' })
-      .then(r => r.json())
-      .then(j => {
+    fetch(`${API_URL}/segmed/users/me`, {
+      method: 'GET',
+      headers: getAuthHeaders(false),
+      credentials: 'include'
+    })
+      .then((r) => r.json())
+      .then((j) => {
         if (!j.success) {
-          setError(j.error || 'Token inválido');
-          setUser(null);
-          setTimeout(() => { window.location.href = '/'; }, 1500);
+          setError(j.error || 'No se pudo cargar el perfil');
           return;
         }
+
         const u = j.data || j;
+        const splitName = splitFullName(u.Nombre);
         setUser(u);
+        setAvatarSrc(u.img_perfil ? `${API_URL}${u.img_perfil}` : DEFAULT_AVATAR);
         setForm({
-          Nombre: u.Nombre || '',
-          CorreoInstitucional: u.CorreoInstitucional || '',
-          CorreoPersonal: u.CorreoPersonal || '',
+          Nombre: splitName.nombre,
+          Apellido: splitName.apellido,
           Direccion: u.Direccion || '',
-          Celular: u.Celular || '',
           Telefono: u.Telefono || '',
           Genero: u.Genero || '',
-          EstadoCivil: u.EstadoCivil || '',
-          FechaNacimiento: u.FechaNacimiento ? u.FechaNacimiento.slice(0,10) : '',
-          TipoDocumentos_idTipoDocumento: u.TipoDocumentos_idTipoDocumento || '',
-          ProgramaAcademico_idProgramaAcademico1: u.ProgramaAcademico_idProgramaAcademico1 || '',
-          Municipios_idMunicipio: u.Municipios_idMunicipio || ''
+          FechaNacimiento: u.FechaNacimiento ? u.FechaNacimiento.slice(0, 10) : '',
         });
-        setLoading(false);
-      })
-      .catch(err => {
+      }).catch(() => {
         setError('No se pudo conectar al servidor');
-        setLoading(false);
       });
-  };
-
-  const handleEdit = () => { setEditMode(true); setSuccess(''); setError(''); };
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: value }));
+    const { name: field, value } = e.target;
+    if (field === 'Telefono') {
+      const numericValue = String(value || '').replace(/\D/g, '').slice(0, 10);
+      setForm((previous) => ({ ...previous, [field]: numericValue }));
+      return;
+    }
+    setForm((previous) => ({ ...previous, [field]: value }));
   };
 
   const handleSave = async () => {
-    setError(''); setSuccess('');
+    setError('');
+    setSuccess('');
+
     try {
+      const fullName = `${form.Nombre || ''} ${form.Apellido || ''}`.trim().replace(/\s+/g, ' ');
       const res = await fetch(`${API_URL}/segmed/users/${user.idUsuarios}`, {
         method: 'PUT',
         headers: getAuthHeaders(true),
         credentials: 'include',
-        body: JSON.stringify(form)
+        body: JSON.stringify({
+          Nombre: fullName,
+          Direccion: form.Direccion,
+          Telefono: form.Telefono,
+          Genero: form.Genero,
+          FechaNacimiento: form.FechaNacimiento || null,
+        })
       });
+
       const json = await res.json();
-      if (json.success) {
-        setSuccess('Perfil actualizado correctamente');
-        setEditMode(false);
-        fetchUser();
-      } else setError(json.error || 'Error');
-    } catch (err) { setError('Error de red'); }
+      if (!json.success) {
+        setError(json.error || 'No se pudo actualizar el perfil');
+        return;
+      }
+
+      setSuccess('Perfil actualizado correctamente');
+      setEditMode(false);
+
+      const profileRes = await fetch(`${API_URL}/segmed/users/me`, {
+        method: 'GET',
+        headers: getAuthHeaders(false),
+        credentials: 'include',
+      });
+      const profileJson = await profileRes.json();
+      const u = profileJson.data || profileJson;
+      const splitName = splitFullName(u.Nombre);
+
+      setUser(u);
+      setAvatarSrc(u.img_perfil ? `${API_URL}${u.img_perfil}` : DEFAULT_AVATAR);
+      setForm((previous) => ({
+        ...previous,
+        Nombre: splitName.nombre,
+        Apellido: splitName.apellido,
+      }));
+    } catch (err) {
+      setError('Error de red al guardar el perfil');
+    }
   };
 
   const handleUploadAvatar = async () => {
-    setError(''); setSuccess('');
-    if (!avatarFile) return setError('Selecciona un archivo');
+    setError('');
+    setSuccess('');
+    if (!avatarFile) {
+      setError('Selecciona un archivo');
+      return;
+    }
+
     const fd = new FormData();
     fd.append('avatar', avatarFile);
+
     try {
       const token = localStorage.getItem('token');
       const res = await fetch(`${API_URL}/segmed/users/${user.idUsuarios}/avatar`, {
@@ -132,56 +155,23 @@ const Perfil = () => {
       if (json.success) {
         setSuccess('Avatar actualizado correctamente');
         setUser({ ...user, img_perfil: json.img_perfil });
-      } else setError(json.error || 'Error');
-    } catch (err) { setError('Error subiendo avatar'); }
-  };
-
-  const handleDeleteAccount = async () => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar tu cuenta?')) return;
-    setError(''); setSuccess('');
-    try {
-      const res = await fetch(`${API_URL}/segmed/users/${user.idUsuarios}`, {
-        method: 'DELETE',
-        headers: getAuthHeaders(true),
-        credentials: 'include'
-      });
-      const j = await res.json();
-      if (j.success) {
-        setSuccess('Cuenta desactivada correctamente');
-        localStorage.removeItem('token');
-        setTimeout(() => { window.location.href = '/'; }, 1500);
+        setAvatarSrc(`${API_URL}${json.img_perfil}`);
+        setAvatarFile(null);
       } else {
-        setError(j.error || 'Error al desactivar la cuenta');
+        setError(json.error || 'Error al subir avatar');
       }
     } catch (err) {
-      setError('Error de conexión: ' + err.message);
+      setError('Error subiendo avatar');
     }
   };
-
-  if (error) return (
-    <div className="container mt-5">
-      <div className="alert alert-danger">{error}</div>
-    </div>
-  );
 
   if (user && user.Estado === 0) {
     return <AccountDeactivated user={user} />;
   }
 
-  if (!user) return <div className="container mt-5">Cargando perfil...</div>;
+  if (error && !user) return <div className="container mt-4"><div className="alert alert-danger mb-0">{error}</div></div>;
 
-  const getTipoDocNombre = (id) => {
-    const td = tipoDocs.find(t => t.idTipoDocumento == id);
-    return td ? td.TipoDocumento : 'Sin completar';
-  };
-  const getProgramaNombre = (id) => {
-    const p = programas.find(pr => pr.idProgramaAcademico == id);
-    return p ? p.Nombre : 'Sin completar';
-  };
-  const getMunicipioNombre = (id) => {
-    const m = municipios.find(mu => mu.idMunicipio == id);
-    return m ? m.Nombre : 'Sin completar';
-  };
+  if (!user) return <div className="container mt-4">Cargando perfil...</div>;
 
   return (
     <div className="container mt-5 position-relative">
@@ -191,72 +181,82 @@ const Perfil = () => {
             <div className="card-header bg-success text-white">
               <h3 className="mb-0">Mi Perfil de Docente</h3>
             </div>
+
             <div className="card-body">
-              {success && <div className="alert alert-success">{success}</div>}
               {error && <div className="alert alert-danger">{error}</div>}
-              <div className="row">
+              {success && <div className="alert alert-success">{success}</div>}
+
+              <div className="row g-4">
                 <div className="col-md-4 text-center">
-                  {user.img_perfil ? (
-                    <img src={`${API_URL}${user.img_perfil}`} alt="avatar" className="rounded-circle mb-2" width={120} height={120} style={{objectFit:'cover'}} />
-                  ) : (
-                    <div className="rounded-circle bg-light mb-2" style={{ width: 120, height: 120, display: 'inline-block' }} />
-                  )}
-                  <div className="mb-3">
+                  <img
+                    src={avatarSrc}
+                    alt="avatar"
+                    className="rounded-circle mb-3"
+                    width={120}
+                    height={120}
+                    style={{ objectFit: 'cover' }}
+                    onError={(event) => {
+                      if (event.currentTarget.src.includes(DEFAULT_AVATAR)) return;
+                      event.currentTarget.src = DEFAULT_AVATAR;
+                    }}
+                  />
+
+                  <div className="mb-2">
                     <input type="file" className="form-control" onChange={(e) => setAvatarFile(e.target.files[0])} />
-                    <button className="btn btn-outline-primary btn-sm mt-2" onClick={handleUploadAvatar}>Subir avatar</button>
                   </div>
+                  <button type="button" className="btn btn-outline-primary btn-sm" onClick={handleUploadAvatar}>Subir avatar</button>
                 </div>
+
                 <div className="col-md-8">
                   {!editMode ? (
                     <>
                       <table className="table table-borderless mb-0">
                         <tbody>
                           <tr><th>Nombre</th><td>{user.Nombre || <span className="text-muted">Sin completar</span>}</td></tr>
-                          <tr><th>Correo Institucional</th><td>{user.CorreoInstitucional || <span className="text-muted">Sin completar</span>}</td></tr>
-                          <tr><th>Correo Personal</th><td>{user.CorreoPersonal || <span className="text-muted">Sin completar</span>}</td></tr>
-                          <tr><th>Celular</th><td>{user.Celular || <span className="text-muted">Sin completar</span>}</td></tr>
-                          <tr><th>Teléfono</th><td>{user.Telefono || <span className="text-muted">Sin completar</span>}</td></tr>
+                          <tr><th>Correo institucional</th><td>{user.CorreoInstitucional || <span className="text-muted">Sin completar</span>}</td></tr>
                           <tr><th>Dirección</th><td>{user.Direccion || <span className="text-muted">Sin completar</span>}</td></tr>
+                          <tr><th>Teléfono</th><td>{user.Telefono || <span className="text-muted">Sin completar</span>}</td></tr>
                           <tr><th>Género</th><td>{user.Genero || <span className="text-muted">Sin completar</span>}</td></tr>
-                          <tr><th>Estado civil</th><td>{user.EstadoCivil || <span className="text-muted">Sin completar</span>}</td></tr>
-                          <tr><th>Tipo Documento</th><td>{getTipoDocNombre(user.TipoDocumentos_idTipoDocumento)}</td></tr>
-                          <tr><th>Programa Académico</th><td>{getProgramaNombre(user.ProgramaAcademico_idProgramaAcademico1)}</td></tr>
-                          <tr><th>Ciudad</th><td>{getMunicipioNombre(user.Municipios_idMunicipio)}</td></tr>
-                          <tr><th>Fecha de nacimiento</th><td>{user.FechaNacimiento ? user.FechaNacimiento.slice(0,10) : <span className="text-muted">Sin completar</span>}</td></tr>
+                          <tr><th>Fecha de cumpleaños</th><td>{user.FechaNacimiento ? user.FechaNacimiento.slice(0, 10) : <span className="text-muted">Sin completar</span>}</td></tr>
                           <tr><th>Última actualización</th><td>{user.FechaActualizacion ? new Date(user.FechaActualizacion).toLocaleString() : 'N/A'}</td></tr>
                         </tbody>
                       </table>
+
                       <div className="mt-3">
-                        <button className="btn btn-success" onClick={handleEdit}>Editar perfil</button>
-                        <button className="btn btn-outline-danger ms-2" onClick={handleDeleteAccount}>Eliminar cuenta</button>
+                        <button type="button" className="btn btn-success" onClick={() => { setEditMode(true); setError(''); setSuccess(''); }}>Editar perfil</button>
                       </div>
                     </>
                   ) : (
-                    <form onSubmit={e => { e.preventDefault(); handleSave(); }}>
+                    <form onSubmit={(e) => { e.preventDefault(); handleSave(); }}>
                       <div className="row g-2">
                         <div className="col-md-6">
                           <label className="form-label">Nombre</label>
-                          <input name="Nombre" className="form-control" value={form.Nombre} onChange={handleChange} />
+                          <input name="Nombre" className="form-control" value={form.Nombre || ''} onChange={handleChange} />
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">Correo Personal</label>
-                          <input name="CorreoPersonal" type="email" className="form-control" value={form.CorreoPersonal} onChange={handleChange} />
-                        </div>
-                        <div className="col-md-6">
-                          <label className="form-label">Celular</label>
-                          <input name="Celular" className="form-control" value={form.Celular} onChange={handleChange} />
-                        </div>
-                        <div className="col-md-6">
-                          <label className="form-label">Teléfono</label>
-                          <input name="Telefono" className="form-control" value={form.Telefono} onChange={handleChange} />
+                          <label className="form-label">Apellido</label>
+                          <input name="Apellido" className="form-control" value={form.Apellido || ''} onChange={handleChange} />
                         </div>
                         <div className="col-md-6">
                           <label className="form-label">Dirección</label>
-                          <input name="Direccion" className="form-control" value={form.Direccion} onChange={handleChange} />
+                          <input name="Direccion" className="form-control" value={form.Direccion || ''} onChange={handleChange} />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="form-label">Teléfono</label>
+                          <input
+                            name="Telefono"
+                            className="form-control"
+                            value={form.Telefono || ''}
+                            onChange={handleChange}
+                            maxLength={10}
+                            inputMode="numeric"
+                            pattern="[0-9]{1,10}"
+                            placeholder="Solo numeros, maximo 10"
+                          />
                         </div>
                         <div className="col-md-6">
                           <label className="form-label">Género</label>
-                          <select name="Genero" className="form-select" value={form.Genero} onChange={handleChange}>
+                          <select name="Genero" className="form-select" value={form.Genero || ''} onChange={handleChange}>
                             <option value="">Selecciona</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Femenino">Femenino</option>
@@ -266,35 +266,11 @@ const Perfil = () => {
                           </select>
                         </div>
                         <div className="col-md-6">
-                          <label className="form-label">Estado civil</label>
-                          <input name="EstadoCivil" className="form-control" value={form.EstadoCivil} onChange={handleChange} />
-                        </div>
-                        <div className="col-md-6">
-                          <label className="form-label">Tipo Documento</label>
-                          <select name="TipoDocumentos_idTipoDocumento" className="form-select" value={form.TipoDocumentos_idTipoDocumento} onChange={handleChange}>
-                            <option value="">Selecciona</option>
-                            {tipoDocs.map(td => <option key={td.idTipoDocumento} value={td.idTipoDocumento}>{td.TipoDocumento}</option>)}
-                          </select>
-                        </div>
-                        <div className="col-md-6">
-                          <label className="form-label">Programa Académico</label>
-                          <select name="ProgramaAcademico_idProgramaAcademico1" className="form-select" value={form.ProgramaAcademico_idProgramaAcademico1} onChange={handleChange}>
-                            <option value="">Selecciona</option>
-                            {programas.map(p => <option key={p.idProgramaAcademico} value={p.idProgramaAcademico}>{p.Nombre}</option>)}
-                          </select>
-                        </div>
-                        <div className="col-md-6">
-                          <label className="form-label">Ciudad</label>
-                          <select name="Municipios_idMunicipio" className="form-select" value={form.Municipios_idMunicipio} onChange={handleChange}>
-                            <option value="">Selecciona</option>
-                            {municipios.map(m => <option key={m.idMunicipio} value={m.idMunicipio}>{m.Nombre}</option>)}
-                          </select>
-                        </div>
-                        <div className="col-md-6">
-                          <label className="form-label">Fecha de nacimiento</label>
-                          <input name="FechaNacimiento" type="date" className="form-control" value={form.FechaNacimiento} onChange={handleChange} />
+                          <label className="form-label">Fecha de cumpleaños</label>
+                          <input name="FechaNacimiento" type="date" className="form-control" value={form.FechaNacimiento || ''} onChange={handleChange} />
                         </div>
                       </div>
+
                       <div className="mt-3">
                         <button type="submit" className="btn btn-success">Guardar cambios</button>
                         <button type="button" className="btn btn-secondary ms-2" onClick={() => setEditMode(false)}>Cancelar</button>

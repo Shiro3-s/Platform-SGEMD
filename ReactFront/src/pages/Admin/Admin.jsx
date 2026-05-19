@@ -1,8 +1,8 @@
 // src/pages/Admin/Admin.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import { BarChart, Bar, PieChart, Pie, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, RadialBarChart, RadialBar, LineChart, Line } from 'recharts';
-import UserMenu from '../../components/UserMenu';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
 
@@ -78,7 +78,7 @@ const StatCard = ({ icon, label, value, color, trend }) => (
 );
 
 const Admin = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({
     totalEmprendimientos: 0,
     estudiantesActivos: 0,
@@ -92,17 +92,6 @@ const Admin = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    
-    fetch(`${API_URL}/segmed/users/me`, {
-      method: 'GET',
-      headers: getAuthHeaders(false),
-      credentials: 'include'
-    })
-      .then(r => r.json())
-      .then(j => setUser(j.data || j));
-
     fetchDashboardData();
   }, []);
 
@@ -212,8 +201,7 @@ const Admin = () => {
 
   if (loading) {
     return (
-      <div className="container position-relative">
-        <UserMenu user={user} onLogout={() => { window.location.href = '/'; }} />
+      <div className="container">
         <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Cargando...</span>
@@ -224,8 +212,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="container position-relative">
-      <UserMenu user={user} onLogout={() => { window.location.href = '/'; }} />
+    <div className="container">
       
       <div style={{ padding: '20px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>

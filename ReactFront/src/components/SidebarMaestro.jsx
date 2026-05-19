@@ -38,7 +38,25 @@ const menuStructure = [
   { title: 'Eventos', items: ['Gestionar Eventos'] },
 ];
 
-const SidebarMaestro = () => {
+const normalize = (value) =>
+  value
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '');
+
+const hasValue = (value) => String(value || '').trim().length > 0;
+
+const isTeacherProfileComplete = (user) => {
+  if (!user) return false;
+  return hasValue(user.Nombre)
+    && hasValue(user.Direccion)
+    && hasValue(user.Telefono)
+    && hasValue(user.Genero)
+    && hasValue(user.FechaNacimiento);
+};
+
+const SidebarMaestro = ({ user }) => {
   const location = useLocation();
   const activePath = location.pathname;
 
@@ -54,44 +72,58 @@ const SidebarMaestro = () => {
   };
 
   const getLinkPath = (groupTitle, itemTitle) => {
-    const base = groupTitle.toLowerCase().replace(/\s/g, '');
-    const item = itemTitle.toLowerCase().replace(/\s/g, '');
+    const base = normalize(groupTitle);
+    const item = normalize(itemTitle);
 
-    if (item === 'completarinformaciónpersonal') return '/maestro/perfil';
+    if (item === 'completarinformacionpersonal') return '/maestro/perfil';
     if (item === 'perfildeemprendimiento') return '/maestro/emprendimientos/perfil';
-    if (item === 'seguimiento') return '/maestro/emprendimientos/seguimiento';
-    if (item === 'tareas') return '/maestro/tareas';
-    if (item === 'misasesorías') return '/maestro/asesorias';
+    if (item === 'seguimiento' && base === 'emprendimientos') return '/maestro/emprendimientos/seguimiento';
+    if (item === 'tareas' && base === 'emprendimientos') return '/maestro/tareas';
+    if (item === 'misasesorias') return '/maestro/asesorias';
     if (item === 'crearasesoria') return '/maestro/asesorias/crear';
     if (item === 'editarasesoria') return '/maestro/asesorias/editar';
-    if (item === 'verdiagnósticos') return '/maestro/diagnosticos';
+    if (item === 'verdiagnosticos') return '/maestro/diagnosticos';
     if (item === 'gestionareventos') return '/maestro/eventos';
 
     return `/maestro/${base}/${item}`;
   };
 
+  const profileItemLabel = isTeacherProfileComplete(user) ? 'Mi perfil' : 'Completar perfil';
+  const resolvedMenuStructure = menuStructure.map((group) => (
+    group.title === 'Perfil'
+      ? { ...group, items: [profileItemLabel] }
+      : group
+  ));
+
   return (
-    <aside className="admin-sidebar" style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', width: '250px', minWidth: '250px' }}>
+    <aside
+      className="admin-sidebar"
+      style={{ height: '100vh', overflowY: 'auto', display: 'flex', flexDirection: 'column', width: '250px', minWidth: '250px', position: 'sticky', top: 0 }}
+    >
       <div className="logo-admin-area" style={{ position: 'sticky', top: 0, zIndex: 10, minHeight: '90px', flexShrink: 0, justifyContent: 'center' }}>
         <img
           src="/logo.png"
-          alt="Logo SGEMD Maestro"
+          alt="Logo SGEMD Asesor"
           className="logo-admin-imagen"
           style={{ maxHeight: '75px', maxWidth: '200px', width: 'auto', height: 'auto' }}
         />
       </div>
 
       <nav>
-        {/* Dashboard principal */}
         <Link
           to="/maestro"
-          className={`admin-menu-item ${activePath === '/maestro' ? 'activo-principal' : ''}`}
+          className={`admin-menu-item ${activePath === '/maestro' ? 'activo' : ''}`}
+          style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
         >
-          Dashboard
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+          Home
         </Link>
 
         {/* Grupos de menú colapsables */}
-        {menuStructure.map((group) => (
+        {resolvedMenuStructure.map((group) => (
           <div key={group.title}>
             <div
               className="admin-menu-group-title"

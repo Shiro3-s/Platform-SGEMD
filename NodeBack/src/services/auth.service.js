@@ -78,10 +78,10 @@ exports.register = async (userData) => {
 
         // 3. Obtener IDs necesarios
         const [[tipoUsuario]] = await pool.execute(
-            "SELECT idTipoUsuarios FROM TipoUsuarios WHERE TipodeUsuario = 'Estudiante' LIMIT 1"
+            "SELECT idTipoUsuarios FROM TipoUsuarios WHERE TipodeUsuario = 'Emprendedor' LIMIT 1"
         );
         const [[rol]] = await pool.execute(
-            "SELECT idRoles FROM Roles WHERE Nombre = 'Estudiante' LIMIT 1"
+            "SELECT idRoles FROM Roles WHERE Nombre = 'Emprendedor' LIMIT 1"
         );
 
         // 4. Insertar usuario

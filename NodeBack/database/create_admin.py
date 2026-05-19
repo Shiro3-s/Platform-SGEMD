@@ -21,12 +21,16 @@ try:
         """, (datetime.now(), datetime.now()))
         
         # Verificar si ya existe el usuario admin
-        cursor.execute("SELECT idUsuarios FROM Usuarios WHERE CorreoInstitucional = 'admin@sgemd.com'")
+        admin_email = "admin24@sgemd.com"
+        admin_password = "Admin2024!"
+
+        cursor.execute("SELECT idUsuarios FROM Usuarios WHERE CorreoInstitucional = %s", (admin_email,))
         existing = cursor.fetchone()
         
         if existing:
-            print("⚠️  El usuario admin@sgemd.com ya existe con ID:", existing[0])
-            print("   Si deseas reestablecerlo, elimínalo primero manualmente de la BD")
+            print("⚠️  El usuario administrador ya existe con ID:", existing[0])
+            print("📧 Correo:", admin_email24)
+            print("🔑 Contraseña:", admin_password)
         else:
             # Obtener el siguiente ID disponible
             cursor.execute("SELECT COALESCE(MAX(idUsuarios), 0) + 1 FROM Usuarios")
@@ -51,7 +55,7 @@ try:
             """, (
                 next_id,
                 'Administrador SGEMD',
-                'admin@sgemd.com',
+                admin_email,
                 password_hash,
                 1,  # Verificado
                 1,  # Rol Admin
@@ -64,8 +68,8 @@ try:
             
             print("✅ Usuario administrador creado exitosamente!")
             print("=" * 50)
-            print("📧 Correo: admin@sgemd.com")
-            print("🔑 Contraseña: Admin2024!")
+            print("📧 Correo:", admin_email)
+            print("🔑 Contraseña:", admin_password)
             print("=" * 50)
             print("⚠️  IMPORTANTE: Cambia esta contraseña después del primer login")
         

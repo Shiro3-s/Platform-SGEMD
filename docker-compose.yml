@@ -15,7 +15,7 @@ services:
       - DB_PORT=3306
       - DB_USER=root
       - DB_PASSWORD=rootpassword
-      - DB_NAME=db_segmed
+      - DB_NAME=DB_SGEMD
       - JWT_SECRET=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIsImVtYWlsIjoidGVzdDJAdW5pbWludXRvLmVkdS5jbyIsInJvbGUiOiJFc3R1ZGlhbnRlIiwidXNlclR5cGUiOiJFc3R1ZGlhbnRlIiwidGltZXN0YW1wIjoxNzU5OTM2NzIxMDExLCJpYXQiOjE3NTk5MzY3MjEsImV4cCI6MTc2MDAyMzEyMX0.P8hK0L02tI2XzAxmV-sSu9e9zN8PI0dP9r0V_XOHTJ8
       - JWT_EXPIRES_IN=24h
       - EMAIL_SERVICE=gmail
@@ -52,7 +52,7 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
-      - MYSQL_DATABASE=db_segmed
+      - MYSQL_DATABASE=DB_SGEMD
       - MYSQL_USER=sgemd_user
       - MYSQL_PASSWORD=sgemd_pass
     volumes:

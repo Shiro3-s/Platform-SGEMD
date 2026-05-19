@@ -1,52 +1,43 @@
-// src/pages/Estudiante/EstudianteLayout.jsx
-import React, { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
-import EstudianteSidebar from "../../components/EstudianteSidebar.jsx"; 
+import React, { useContext } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import EstudianteSidebar from "../../components/EstudianteSidebar.jsx";
 import UserMenu from '../../components/UserMenu';
+import NotificationBell from '../../components/NotificationBell';
 import "./Estudiante.css";
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
-
-const getAuthHeaders = (includeContentType = true) => {
-  const token = localStorage.getItem('token');
-  const headers = {};
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
-  }
-  if (includeContentType) {
-    headers['Content-Type'] = 'application/json';
-  }
-  return headers;
-};
-
 const EstudianteLayout = () => {
-  const [user, setUser] = useState(null);
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    
-    fetch(`${API_URL}/segmed/users/me`, {
-      method: 'GET',
-      headers: getAuthHeaders(false),
-      credentials: 'include'
-    })
-      .then(r => r.json())
-      .then(j => setUser(j.data || j));
-  }, []);
+  const { user, logout } = useContext(AuthContext);
+  const location = useLocation();
+
+  const getPageTitle = () => {
+    const path = location.pathname;
+    if (path === '/estudiante' || path === '/estudiante/') return 'Home';
+    if (path.includes('/estudiante/perfil')) return 'Mi perfil';
+    if (path.includes('/estudiante/diagnostico')) return 'Diagnóstico';
+    if (path.includes('/estudiante/emprendimientos/mi-emprendimiento')) return 'Mi emprendimiento';
+    if (path.includes('/estudiante/emprendimientos/plan-de-trabajo')) return 'Plan de trabajo';
+    if (path.includes('/estudiante/emprendimientos/estado-de-seguimiento')) return 'Estado de seguimiento';
+    if (path.includes('/estudiante/emprendimientos/perfil')) return 'Perfil de Emprendimiento';
+    if (path.includes('/estudiante/recursos/docentes')) return 'Asesores';
+    if (path.includes('/estudiante/recursos/asesorias')) return 'Asesoras';
+    if (path.includes('/estudiante/eventos')) return 'Eventos disponibles';
+    if (path.includes('/estudiante/comparativa')) return 'Comparativa';
+    if (path.includes('/estudiante/progreso')) return 'Progreso';
+    return 'Panel emprendedor';
+  };
+
   return (
     <div className="estudiante-layout position-relative">
-      <UserMenu user={user} onLogout={() => { window.location.href = '/'; }} />
-      {/* Barra lateral */}
-      <EstudianteSidebar />
+      <EstudianteSidebar user={user} />
       <main className="main-content">
         <header className="dashboard-header">
-          <div className="header-right">
-            <span className="icon-link">⚙️</span>
-            <span className="icon-link">ℹ️</span>
-            <span className="icon-link">🔔</span>
+          <strong>{getPageTitle()}</strong>
+          <div className="header-right-group">
+            <NotificationBell role="emprendedor" userId={user?.id} />
+            <UserMenu user={user} onLogout={logout} />
           </div>
         </header>
-        {/* Aquí se cargan las rutas hija */}
         <Outlet />
       </main>
     </div>

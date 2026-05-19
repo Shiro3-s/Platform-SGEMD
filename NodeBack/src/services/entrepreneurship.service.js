@@ -61,11 +61,11 @@ exports.create = async (data) => {
 exports.update = async (id, data) => {
     const fechaActual = new Date().toISOString().split('T')[0];
     const [result] = await pool.execute(
-        `UPDATE emprendimiento SET
+        `UPDATE Emprendimiento SET
             Nombre = ?, Descripcion = ?, TipoEmprendimiento = ?, SectorProductivo = ?,
             RedesSociales = ?, Acompanamiento = ?, FechaActualizacion = ?,
-            ActaCompromiso = ?, EtapaEmprendimiento_idEtapaEmprendimiento = ?
-        WHERE idemprendimiento = ?`,
+            ActaCompromiso = ?, EtapaEmprendimiento_idEtapaEmprendimiento = ?, Usuarios_idUsuarios = ?
+        WHERE idEmprendimiento = ?`,
         [
             data.Nombre || null,
             data.Descripcion || null,
@@ -76,6 +76,7 @@ exports.update = async (id, data) => {
             fechaActual,
             data.ActaCompromiso || null,
             data.EtapaEmprendimiento_idEtapaEmprendimiento || data.Etapaemprendimiento_idEtapaemprendimiento || 1,
+            data.Usuarios_idUsuarios || null,
             id
         ]
     )

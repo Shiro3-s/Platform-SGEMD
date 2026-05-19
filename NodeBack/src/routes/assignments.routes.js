@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const assignmentsController = require('../controllers/assignments.controller');
-const { authenticateToken, isAdmin, isTeacher } = require('../middleware/auth.middleware');
+const { authenticateToken, isAdmin, isAsesor } = require('../middleware/auth.middleware');
 
 router.get('/', authenticateToken, assignmentsController.getAll);
 router.get('/mentor/:mentorId', authenticateToken, assignmentsController.getByMentor);

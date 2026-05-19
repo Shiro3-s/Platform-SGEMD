@@ -1,6 +1,7 @@
 // src/pages/Maestro/MaestroDashboard.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 import { BarChart, Bar, Cell, ResponsiveContainer, XAxis, YAxis, Tooltip } from 'recharts';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3005';
@@ -33,7 +34,7 @@ const StatCard = ({ icon, label, value, color }) => (
 );
 
 const MaestroDashboard = () => {
-  const [user, setUser] = useState(null);
+  const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({
     emprendimientosAsignados: 0,
     asesoriasCompletadas: 0,
@@ -45,23 +46,8 @@ const MaestroDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchUserData();
     fetchDashboardData();
   }, []);
-
-  const fetchUserData = async () => {
-    try {
-      const res = await fetch(`${API_URL}/segmed/users/me`, {
-        method: 'GET',
-        headers: getAuthHeaders(),
-        credentials: 'include'
-      });
-      const data = await res.json();
-      setUser(data.data || data);
-    } catch (error) {
-      console.error('Error fetching user:', error);
-    }
-  };
 
   const fetchDashboardData = async () => {
     try {

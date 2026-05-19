@@ -138,7 +138,14 @@ const EventosEstudiante = () => {
     );
   };
 
-  const eventosFiltrados = eventos.filter(evento => {
+  const eventosValidos = eventos.filter((evento) => {
+    const nombre = String(evento?.Nombre_evento || '').trim();
+    const descripcion = String(evento?.Descripcion_evento || '').trim();
+    const tipo = String(evento?.Tipo_evento_idTipo_evento ?? '').trim();
+    return nombre.length > 0 && descripcion.length > 0 && tipo.length > 0;
+  });
+
+  const eventosFiltrados = eventosValidos.filter(evento => {
     const coincideTipo = !filtroTipo || evento.Tipo_evento_idTipo_evento == filtroTipo;
     const coincideEstado = !filtroEstado || evento.Estado === filtroEstado;
     return coincideTipo && coincideEstado;
