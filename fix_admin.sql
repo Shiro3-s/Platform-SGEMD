@@ -1,1 +1,0 @@
-UPDATE usuarios SET Password='$2b$10$1Imy32xkLinpDQSB52/EseZwqoeLI67VmPr7QuX79HM6hCrsm9xlq' WHERE CorreoInstitucional='admin@sgemd.com';
