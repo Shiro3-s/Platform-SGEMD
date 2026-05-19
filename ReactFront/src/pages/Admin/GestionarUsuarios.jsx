@@ -18,7 +18,7 @@ export default function GestionarUsuarios({ role }) {
     });
 
     const roleId = role === 'Emprendedor' ? 2 : 3;
-    const endpoint = role === 'Emprendedor' ? 'students' : 'teachers';
+    const endpoint = role === 'Emprendedor' ? 'emprendedores' : 'asesores';
     const title = role === 'Emprendedor' ? 'Gestión de Emprendedores' : 'Gestión de Asesores';
 
     const fetchUsers = async () => {
@@ -309,5 +309,4 @@ export default function GestionarUsuarios({ role }) {
         </div>
     );
 }
-
 

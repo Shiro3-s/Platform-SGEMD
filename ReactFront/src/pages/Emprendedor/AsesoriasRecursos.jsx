@@ -41,16 +41,16 @@ const AsesoriasRecursos = () => {
     try {
       const headers = getAuthHeaders();
       
-      const [userRes, teachersRes] = await Promise.all([
+      const [userRes, asesoresRes] = await Promise.all([
         fetch(`${API_URL}/segmed/users/me`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/segmed/users/teachers`, { headers })
+        fetch(`${API_URL}/segmed/users/asesores`, { headers })
       ]);
 
       const userData = await userRes.json();
-      const teachersData = await teachersRes.json();
+      const asesoresData = await asesoresRes.json();
 
       setUser(userData.data || userData);
-      setAsesores(teachersData.data || []);
+      setAsesores(asesoresData.data || []);
 
       const userId = userData.data?.idusuarios || userData.data?.idUsuarios;
       if (userId) {
@@ -125,7 +125,8 @@ const AsesoriasRecursos = () => {
           Fecha_asesoria: solicitud.Fecha_asesoria,
           Comentarios: '',
           Usuarios_idUsuarios: userId,
-          Docentes_idDocentes: AsesorId,
+          Docente_idUsuarios: AsesorId,
+          Estudiante_idUsuarios: userId,
           confirmacion: 'pendiente',
           Modalidad_idModalidad: 1,
           Fecha_y_Horarios_idFecha_y_Horarios: 1,
@@ -152,7 +153,7 @@ const AsesoriasRecursos = () => {
   };
 
   const asesoriasDisponibles = asesorias.filter(a => 
-    a.Estado !== 'cancelada' && !misAsesorias.some(ma => ma.idAsesorias === a.idAsesorias)
+    (a.EstadoSolicitud || a.confirmacion) !== 'cancelada' && !misAsesorias.some(ma => ma.idAsesorias === a.idAsesorias)
   );
 
   if (loading) {
@@ -299,8 +300,8 @@ const AsesoriasRecursos = () => {
                     <tr key={asesoria.idAsesorias}>
                       <td style={{ fontWeight: '500' }}>{asesoria.Nombre_de_asesoria}</td>
                       <td>{formatDate(asesoria.Fecha_asesoria)}</td>
-                      <td>{getAsesorNombre(asesoria.Docentes_idDocentes)}</td>
-                      <td>{getEstadoBadge(asesoria.confirmacion || asesoria.Estado)}</td>
+                      <td>{getAsesorNombre(asesoria.Docente_idUsuarios)}</td>
+                      <td>{getEstadoBadge(asesoria.EstadoSolicitud || asesoria.confirmacion || asesoria.Estado)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -344,12 +345,12 @@ const AsesoriasRecursos = () => {
                         </p>
                       </div>
                       <div>
-                        {getEstadoBadge(asesoria.confirmacion || 'pendiente')}
+                        {getEstadoBadge(asesoria.EstadoSolicitud || asesoria.confirmacion || 'pendiente')}
                       </div>
                     </div>
                     <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #eee' }}>
                       <span style={{ fontSize: '13px', color: '#666' }}>
-                        👤 Asesor: <strong>{getAsesorNombre(asesoria.Docentes_idDocentes)}</strong>
+                        👤 Asesor: <strong>{getAsesorNombre(asesoria.Docente_idUsuarios)}</strong>
                       </span>
                     </div>
                   </div>
@@ -366,5 +367,3 @@ const AsesoriasRecursos = () => {
 };
 
 export default AsesoriasRecursos;
-
-

@@ -53,7 +53,7 @@ const AsesorDiagnostico = () => {
       
       const userRes = await fetch(`${API_URL}/segmed/users/me`, { headers, credentials: 'include' });
       const userData = await userRes.json();
-      const teacherId = userData.data?.idUsuarios;
+      const asesorId = userData.data?.idUsuarios;
 
       const [empRes, diagRes, allAsigRes] = await Promise.all([
         fetch(`${API_URL}/segmed/entrepreneurship`, { headers }),
@@ -68,30 +68,29 @@ const AsesorDiagnostico = () => {
       const todosEmprendimientos = empData.data || [];
       const todosDiagnosticos = diagData.data || [];
       const todasAsignaciones = asigData.data || [];
-      const misAsignaciones = todasAsignaciones.filter(a => a.Usuarios_idMentor === teacherId && a.Estado === 'activa');
+      const misAsignaciones = todasAsignaciones.filter(a => a.Asesor_idUsuarios === asesorId && a.Estado === 'Activo');
       
       setTodasAsignaciones(todasAsignaciones);
       setEmprendimientos(todosEmprendimientos);
       setDiagnosticos(todosDiagnosticos);
 
-      const uniqueEmprendedores = [];
-      const seen = new Set();
+      const emprendedorMap = new Map();
       for (const asig of misAsignaciones) {
-        if (asig.Usuarios_idEmprendedor && !seen.has(asig.Usuarios_idEmprendedor)) {
-          seen.add(asig.Usuarios_idEmprendedor);
-          uniqueEmprendedores.push({
-            idUsuarios: asig.Usuarios_idEmprendedor,
-            Nombre: asig.EmprendedorNombre,
-            CorreoInstitucional: asig.EmprendedorCorreo
+        if (asig.Emprendedor_idUsuarios && !emprendedorMap.has(asig.Emprendedor_idUsuarios)) {
+          emprendedorMap.set(asig.Emprendedor_idUsuarios, {
+            idUsuarios: asig.Emprendedor_idUsuarios,
+            Nombre: asig.EmprendedorNombre || 'Emprendedor',
+            CorreoInstitucional: asig.EmprendedorCorreo || ''
           });
         }
       }
+      const uniqueEmprendedores = Array.from(emprendedorMap.values());
       
       setEmprendedores(uniqueEmprendedores);
 
       if (uniqueEmprendedores.length > 0) {
         setEmprendedoreseleccionado(uniqueEmprendedores[0]);
-        const asigDelPrimero = misAsignaciones.find(a => a.Usuarios_idEmprendedor === uniqueEmprendedores[0].idUsuarios);
+        const asigDelPrimero = misAsignaciones.find(a => a.Emprendedor_idUsuarios === uniqueEmprendedores[0].idUsuarios);
         if (asigDelPrimero && asigDelPrimero.Emprendimiento_idEmprendimiento) {
           const emp = todosEmprendimientos.find(e => e.idEmprendimiento === asigDelPrimero.Emprendimiento_idEmprendimiento);
           setEmprendimientoSeleccionado(emp || null);
@@ -108,13 +107,12 @@ const AsesorDiagnostico = () => {
     }
   };
 
-  const handleSelectEmprendedor = (estId) => {
-    const est = Emprendedores.find(e => e.idUsuarios === estId);
-    setEmprendedoreseleccionado(est);
-    
-    const asig = todasAsignaciones.find(a => a.Usuarios_idEmprendedor === estId);
-    if (asig && asig.Emprendimiento_idEmprendimiento) {
-      const emp = emprendimientos.find(e => e.idEmprendimiento === asig.Emprendimiento_idEmprendimiento);
+  const handleSelectEmprendedor = (emprendedorId) => {
+    const emprendedor = Emprendedores.find(e => e.idUsuarios === emprendedorId);
+    setEmprendedoreseleccionado(emprendedor);
+
+    const emp = emprendimientos.find(e => e.Usuarios_idUsuarios === emprendedorId);
+    if (emp) {
       setEmprendimientoSeleccionado(emp || null);
       if (emp) {
         const diag = diagnosticos.find(d => d.Emprendimiento_idEmprendimiento === emp.idEmprendimiento);
@@ -249,6 +247,3 @@ const AsesorDiagnostico = () => {
 };
 
 export default AsesorDiagnostico;
-
-
-

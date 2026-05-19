@@ -67,7 +67,7 @@ exports.authenticateToken = (req, res, next) => {
 
 // Roles numéricos: 1 = Admin, 2 = Emprendedor, 3 = Asesor
 exports.isAdmin = (req, res, next) => {
-    if (!req.user || typeof req.user.Rol === 'undefined' || req.user.Rol !== 1) {
+    if (!req.user || typeof req.user.Roles_idRoles1 === 'undefined' || req.user.Roles_idRoles1 !== 1) {
         return res.status(403).json({ 
             success: false, 
             error: 'Se requieren permisos de administrador' 
@@ -77,7 +77,7 @@ exports.isAdmin = (req, res, next) => {
 };
 
 exports.isAsesor = (req, res, next) => {
-    if (!req.user || typeof req.user.Rol === 'undefined' || req.user.Rol !== 3) {
+    if (!req.user || typeof req.user.Roles_idRoles1 === 'undefined' || req.user.Roles_idRoles1 !== 3) {
         return res.status(403).json({ 
             success: false, 
             error: 'Se requieren permisos de asesor' 
@@ -87,7 +87,7 @@ exports.isAsesor = (req, res, next) => {
 };
 
 exports.isEmprendedor = (req, res, next) => {
-    if (!req.user || typeof req.user.Rol === 'undefined' || req.user.Rol !== 2) {
+    if (!req.user || typeof req.user.Roles_idRoles1 === 'undefined' || req.user.Roles_idRoles1 !== 2) {
         return res.status(403).json({ 
             success: false, 
             error: 'Se requieren permisos de emprendedor' 

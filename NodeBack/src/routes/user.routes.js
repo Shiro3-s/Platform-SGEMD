@@ -16,7 +16,18 @@ const storage = multer.diskStorage({
     cb(null, `avatar_${Date.now()}${ext}`)
   }
 });
-const upload = multer({ storage });
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const allowed = ['.jpg', '.jpeg', '.png', '.gif'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (!allowed.includes(ext)) {
+      return cb(new Error('Tipo de archivo no permitido. Usa JPG, PNG o GIF.'));
+    }
+    cb(null, true);
+  }
+});
 
 //RUTAS PÚBLICAS
 router.post('/login', usersController.loginUser)
@@ -60,6 +71,8 @@ router.get('/me', authenticateToken, usersController.getMe)
 router.get('/', authenticateToken, usersController.getAllUsers)
 router.get('/students', authenticateToken, usersController.getAllStudents)
 router.get('/teachers', authenticateToken, usersController.getAllTeachers)
+router.get('/emprendedores', authenticateToken, usersController.getAllStudents)
+router.get('/asesores', authenticateToken, usersController.getAllTeachers)
 router.get('/admins', authenticateToken, isAdmin, usersController.getAllAdmins)
 router.post('/:id/reactivate', authenticateToken, isAdmin, usersController.reactivateUser)
 router.post('/:id/request-reactivation', authenticateToken, usersController.requestReactivation)
@@ -72,7 +85,16 @@ router.put('/:id', authenticateToken, usersController.updateUser)
 router.delete('/:id', authenticateToken, usersController.deleteUser)
 
 // Subir/actualizar avatar de usuario
-router.post('/:id/avatar', authenticateToken, upload.single('avatar'), usersController.uploadAvatar)
+router.post(
+  '/:id/avatar',
+  authenticateToken,
+  upload.single('avatar'),
+  (err, req, res, next) => {
+    if (!err) return next();
+    res.status(400).json({ success: false, error: err.message });
+  },
+  usersController.uploadAvatar
+)
 
 //EMPRENDIMIENTOS DE ESTUDIANTE
 router.get('/:id/entrepreneurships', authenticateToken, usersController.getStudentEntrepreneurships)

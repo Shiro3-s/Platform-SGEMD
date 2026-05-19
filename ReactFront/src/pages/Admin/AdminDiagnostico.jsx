@@ -19,6 +19,8 @@ const AdminDiagnostico = () => {
   const [editando, setEditando] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [formData, setFormData] = useState({});
+  const [sectores, setSectores] = useState([]);
+  const [sectores, setSectores] = useState([]);
 
   const camposDiagnostico = [
     { name: 'AreaEstrategia', label: 'Área de Estrategia', type: 'textarea' },
@@ -51,16 +53,19 @@ const AdminDiagnostico = () => {
     try {
       const headers = getAuthHeaders();
       
-      const [empRes, diagRes] = await Promise.all([
+      const [empRes, diagRes, sectoresRes] = await Promise.all([
         fetch(`${API_URL}/segmed/entrepreneurship`, { headers }),
-        fetch(`${API_URL}/segmed/diagnosis`, { headers })
+        fetch(`${API_URL}/segmed/diagnosis`, { headers }),
+        fetch(`${API_URL}/segmed/econo-sector`, { headers })
       ]);
 
       const empData = await empRes.json();
       const diagData = await diagRes.json();
+      const sectoresData = await sectoresRes.json();
 
       setEmprendimientos(empData.data || []);
       setDiagnosticos(diagData.data || []);
+      setSectores(sectoresData.data || []);
 
       if (empData.data?.length > 0) {
         setEmprendimientoSeleccionado(empData.data[0]);
@@ -97,7 +102,7 @@ const AdminDiagnostico = () => {
       const headers = getAuthHeaders();
       const payload = {
         ...formData,
-        FechaEmprendimiento: new Date().toISOString().split('T')[0],
+        FechaEmprendimiento: formData.FechaEmprendimiento || new Date().toISOString().split('T')[0],
         Emprendimiento_idEmprendimiento: emprendimientoSeleccionado.idEmprendimiento
       };
 
@@ -216,6 +221,50 @@ const AdminDiagnostico = () => {
                       </option>
                     ))}
                   </select>
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label"><strong>Sector Económico:</strong></label>
+                  {editando ? (
+                    <select
+                      className="form-select"
+                      name="SectorEconomico_idSectorEconomico"
+                      value={formData.SectorEconomico_idSectorEconomico || ''}
+                      onChange={handleChange}
+                    >
+                      <option value="">Seleccionar...</option>
+                      {sectores.map(sector => (
+                        <option key={sector.idSectorEconomico} value={sector.idSectorEconomico}>
+                          {sector.Nombre}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="form-control-plaintext">
+                      {sectores.find(s => s.idSectorEconomico === diagnostico?.SectorEconomico_idSectorEconomico)?.Nombre || 'Sin sector'}
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6">
+                  <label className="form-label"><strong>Sector Económico:</strong></label>
+                  {editando ? (
+                    <select
+                      className="form-select"
+                      name="SectorEconomico_idSectorEconomico"
+                      value={formData.SectorEconomico_idSectorEconomico || ''}
+                      onChange={handleChange}
+                    >
+                      <option value="">Seleccionar...</option>
+                      {sectores.map(sector => (
+                        <option key={sector.idSectorEconomico} value={sector.idSectorEconomico}>
+                          {sector.Nombre}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div className="form-control-plaintext">
+                      {sectores.find(s => s.idSectorEconomico === diagnostico?.SectorEconomico_idSectorEconomico)?.Nombre || 'Sin sector'}
+                    </div>
+                  )}
                 </div>
                 <div className="col-md-6">
                   <div className="d-flex align-items-center h-100">

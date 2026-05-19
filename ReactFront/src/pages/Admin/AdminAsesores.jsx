@@ -30,8 +30,8 @@ const AdminAsesores = () => {
       const headers = getAuthHeaders();
       
       const [AsesoresRes, EmprendedoresRes, asignacionesRes] = await Promise.all([
-        fetch(`${API_URL}/segmed/users/teachers`, { headers }),
-        fetch(`${API_URL}/segmed/users?role=Emprendedor`, { headers }),
+        fetch(`${API_URL}/segmed/users/asesores`, { headers }),
+        fetch(`${API_URL}/segmed/users/emprendedores`, { headers }),
         fetch(`${API_URL}/segmed/assignments`, { headers })
       ]);
 
@@ -40,7 +40,7 @@ const AdminAsesores = () => {
       const asignacionesData = await asignacionesRes.json();
 
       setAsesores(AsesoresData.data || []);
-      setEmprendedores((EmprendedoresData.data || []).filter(u => u.Roles_idRoles1 === 2));
+      setEmprendedores(EmprendedoresData.data || []);
       setAsignaciones(asignacionesData.data || []);
     } catch (err) {
       console.error('Error:', err);
@@ -55,12 +55,11 @@ const AdminAsesores = () => {
       const res = await fetch(`${API_URL}/segmed/assignments`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({
-          Usuarios_idMentor: parseInt(formAsignacion.AsesorId),
-          Usuarios_idEmprendedor: parseInt(formAsignacion.EmprendedorId),
-          Emprendimiento_idEmprendimiento: formAsignacion.emprendimientoId ? parseInt(formAsignacion.emprendimientoId) : null
-        })
-      });
+          body: JSON.stringify({
+            Asesor_idUsuarios: parseInt(formAsignacion.AsesorId),
+            Emprendimiento_idEmprendimiento: formAsignacion.emprendimientoId ? parseInt(formAsignacion.emprendimientoId) : null
+          })
+        });
       const data = await res.json();
       if (data.success) {
         alert('Asignación creada exitosamente');
@@ -197,7 +196,6 @@ const AdminAsesores = () => {
               <thead className="table-light">
                 <tr>
                   <th>Asesor</th>
-                  <th>Emprendedor</th>
                   <th>Emprendimiento</th>
                   <th>Fecha Asignación</th>
                   <th>Estado</th>
@@ -206,16 +204,15 @@ const AdminAsesores = () => {
               </thead>
               <tbody>
                 {asignaciones.length === 0 ? (
-                  <tr><td colSpan="6" className="text-center text-muted">No hay asignaciones</td></tr>
+                  <tr><td colSpan="5" className="text-center text-muted">No hay asignaciones</td></tr>
                 ) : (
                   asignaciones.map(a => (
                     <tr key={a.idAsignacion}>
-                      <td>{a.MentorNombre || 'Sin asignar'}</td>
-                      <td>{a.EmprendedorNombre || 'Sin asignar'}</td>
+                      <td>{a.AsesorNombre || 'Sin asignar'}</td>
                       <td>{a.EmprendimientoNombre || 'Sin emprendimiento'}</td>
-                      <td>{a.FechaAsignacion}</td>
+                      <td>{a.FechaCreacion ? new Date(a.FechaCreacion).toLocaleDateString('es-CO') : '-'}</td>
                       <td>
-                        <span className={`badge ${a.Estado === 'activa' ? 'bg-success' : 'bg-secondary'}`}>
+                        <span className={`badge ${a.Estado === 'Activo' ? 'bg-success' : 'bg-secondary'}`}>
                           {a.Estado}
                         </span>
                       </td>
@@ -237,4 +234,3 @@ const AdminAsesores = () => {
 };
 
 export default AdminAsesores;
-

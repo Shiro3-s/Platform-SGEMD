@@ -375,8 +375,8 @@ exports.createUser = async (req, res) => {
     console.log('Body recibido en createUser:', req.body);
 
     const data = { ...req.body };
-    // Si es admin (req.user.Rol === 1), permitir crear usuario verificado
-    if (req.user && req.user.Rol === 1) {
+    // Si es admin, permitir crear usuario verificado
+    if (req.user && req.user.Roles_idRoles1 === 1) {
       data.Verificado = 1;
     } else {
       data.Verificado = 0;

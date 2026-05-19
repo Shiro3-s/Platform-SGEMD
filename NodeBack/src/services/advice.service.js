@@ -4,14 +4,14 @@ exports.findAll = async (filters = {}) => {
     let query = 'SELECT * FROM Asesorias WHERE 1=1';
     const params = [];
     
-    if (filters.docenteId) {
+    if (filters.asesorId) {
         query += ' AND Docente_idUsuarios = ?';
-        params.push(filters.docenteId);
+        params.push(filters.asesorId);
     }
     
-    if (filters.estudianteId) {
+    if (filters.emprendedorId) {
         query += ' AND Estudiante_idUsuarios = ?';
-        params.push(filters.estudianteId);
+        params.push(filters.emprendedorId);
     }
     
     if (filters.estado) {

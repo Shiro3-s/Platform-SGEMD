@@ -21,7 +21,7 @@ const AsesoresRecursos = () => {
 
   const fetchAsesores = async () => {
     try {
-      const res = await fetch(`${API_URL}/segmed/users/teachers`, {
+      const res = await fetch(`${API_URL}/segmed/users/asesores`, {
         method: 'GET',
         headers: getAuthHeaders(),
         credentials: 'include'

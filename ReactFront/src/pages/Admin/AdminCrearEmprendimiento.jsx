@@ -146,8 +146,7 @@ const AdminCrearEmprendimiento = () => {
               method: 'POST',
               headers: getAuthHeaders(),
               body: JSON.stringify({
-                Emprendedor_idEmprendedor: EmprendedorId,
-                Docentes_idDocentes: AsesorId,
+                Asesor_idUsuarios: AsesorId,
                 Emprendimiento_idEmprendimiento: empId
               }),
               credentials: 'include'
@@ -279,9 +278,9 @@ const AdminCrearEmprendimiento = () => {
                   style={{ height: '200px' }}
                   required
                 >
-                  {Emprendedores.map(est => (
-                    <option key={est.idUsuarios || est.idusuarios} value={est.idUsuarios || est.idusuarios}>
-                      {est.Nombre} ({est.CorreoInstitucional})
+                  {Emprendedores.map(emprendedor => (
+                    <option key={emprendedor.idUsuarios || emprendedor.idusuarios} value={emprendedor.idUsuarios || emprendedor.idusuarios}>
+                      {emprendedor.Nombre} ({emprendedor.CorreoInstitucional})
                     </option>
                   ))}
                 </select>
@@ -297,9 +296,9 @@ const AdminCrearEmprendimiento = () => {
                   onChange={handleAsesorChange}
                   style={{ height: '200px' }}
                 >
-                  {Asesores.map(doc => (
-                    <option key={doc.idUsuarios || doc.idusuarios} value={doc.idUsuarios || doc.idusuarios}>
-                      {doc.Nombre} ({doc.CorreoInstitucional})
+                  {Asesores.map(asesor => (
+                    <option key={asesor.idUsuarios || asesor.idusuarios} value={asesor.idUsuarios || asesor.idusuarios}>
+                      {asesor.Nombre} ({asesor.CorreoInstitucional})
                     </option>
                   ))}
                 </select>
@@ -332,5 +331,4 @@ const AdminCrearEmprendimiento = () => {
 };
 
 export default AdminCrearEmprendimiento;
-
 

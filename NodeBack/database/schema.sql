@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS roles (
 -- Insertar roles por defecto
 INSERT INTO roles (idRoles, Nombre, FechaCreacion, FechaActualizacion) VALUES 
 (1, 'Administrador', NOW(), NOW()),
-(2, 'Estudiante', NOW(), NOW()),
-(3, 'Maestro', NOW(), NOW());
+(2, 'Emprendedor', NOW(), NOW()),
+(3, 'Asesor', NOW(), NOW());
 
 -- TipoDocumentos
 CREATE TABLE IF NOT EXISTS tipodocumentos (
@@ -80,9 +80,9 @@ CREATE TABLE IF NOT EXISTS tipousuarios (
 );
 
 INSERT INTO tipousuarios (idTipoUsuarios, TipodeUsuario, FechaCreacion, FechaActualizacion) VALUES
-(1, 'Estudiante', NOW(), NOW()),
+(1, 'Emprendedor', NOW(), NOW()),
 (2, 'Egresado', NOW(), NOW()),
-(3, 'Docente', NOW(), NOW()),
+(3, 'Asesor', NOW(), NOW()),
 (4, 'Administrativo', NOW(), NOW());
 
 -- TipoPoblacion
@@ -262,27 +262,27 @@ CREATE TABLE IF NOT EXISTS diagnosticos (
     idDiagnosticos INT NOT NULL AUTO_INCREMENT,
     FechaEmprendimiento DATE,
     AreaEstrategia VARCHAR(45),
-    Diferencial TINYINT,
-    Planeacion TINYINT,
+    Diferencial TEXT,
+    Planeacion TEXT,
     MercadoObjetivo VARCHAR(45),
-    Tendencias TINYINT,
-    Canales TINYINT,
+    Tendencias TEXT,
+    Canales TEXT,
     DescripcionPromocion TEXT,
     SectorEconomico_idSectorEconomico INT,
     Emprendimiento_idEmprendimiento INT,
-    Presentacion TINYINT,
-    PasosElaboracion TINYINT,
-    SituacionFinanciera TINYINT,
+    Presentacion TEXT,
+    PasosElaboracion TEXT,
+    SituacionFinanciera TEXT,
     FuenteFinanciero TEXT,
-    EstructuraOrganica TINYINT,
-    ConocimientoLegal TINYINT,
+    EstructuraOrganica TEXT,
+    ConocimientoLegal TEXT,
     MetodologiaInnovacion TEXT,
     HerramientaTecnologicas TEXT,
     Marca TEXT,
-    AplicacionMetodologia TINYINT,
-    ImpactoAmbiental TINYINT,
-    ImpactoSocial TINYINT,
-    Viabilidad TINYINT,
+    AplicacionMetodologia TEXT,
+    ImpactoAmbiental TEXT,
+    ImpactoSocial TEXT,
+    Viabilidad TEXT,
     PRIMARY KEY (idDiagnosticos),
     FOREIGN KEY (SectorEconomico_idSectorEconomico) REFERENCES sectoreconomico(idSectorEconomico),
     FOREIGN KEY (Emprendimiento_idEmprendimiento) REFERENCES emprendimiento(idEmprendimiento)
@@ -323,12 +323,17 @@ CREATE TABLE IF NOT EXISTS asesorias (
     Fecha_actualizacion DATETIME NOT NULL,
     confirmacion VARCHAR(20) DEFAULT 'pendiente',
     Usuarios_idUsuarios INT NOT NULL,
-    Docentes_idDocentes INT,
+    Docente_idUsuarios INT,
+    Estudiante_idUsuarios INT,
     Modalidad_idModalidad INT NOT NULL,
     Fecha_y_Horarios_idFecha_y_Horarios INT NOT NULL,
+    MotivoSolicitud TEXT,
+    EstadoSolicitud VARCHAR(45) NOT NULL DEFAULT 'pendiente',
+    ComentarioDocente TEXT,
+    FechaRespuesta DATETIME,
     PRIMARY KEY (idAsesorias),
     FOREIGN KEY (Usuarios_idUsuarios) REFERENCES usuarios(idUsuarios),
-    FOREIGN KEY (Docentes_idDocentes) REFERENCES usuarios(idUsuarios),
+    FOREIGN KEY (Docente_idUsuarios) REFERENCES usuarios(idUsuarios),
     FOREIGN KEY (Modalidad_idModalidad) REFERENCES modalidad(idModalidad),
     FOREIGN KEY (Fecha_y_Horarios_idFecha_y_Horarios) REFERENCES fecha_y_Horarios(idFecha_y_Horarios)
 );
@@ -390,18 +395,19 @@ CREATE TABLE IF NOT EXISTS codigosverificacion (
     PRIMARY KEY (idCodigo)
 );
 
--- Tabla para relación docente-estudiante (asignaciones)
-CREATE TABLE IF NOT EXISTS asignaciones (
+-- Tabla para relación asesor-emprendimiento (asignaciones)
+CREATE TABLE IF NOT EXISTS Emprendimiento_Asesor (
     idAsignacion INT NOT NULL AUTO_INCREMENT,
-    Usuarios_idMentor INT NOT NULL,
-    Usuarios_idEstudiante INT NOT NULL,
-    Emprendimiento_idEmprendimiento INT,
-    FechaAsignacion DATE NOT NULL,
-    Estado VARCHAR(20) DEFAULT 'activa',
+    Emprendimiento_idEmprendimiento INT NOT NULL,
+    Asesor_idUsuarios INT NOT NULL,
+    Estado VARCHAR(20) NOT NULL DEFAULT 'Activo',
+    AsignadoPor INT,
+    FechaCreacion DATETIME NOT NULL,
+    FechaActualizacion DATETIME NOT NULL,
+    UNIQUE INDEX uq_emprendimiento_asignacion (Emprendimiento_idEmprendimiento),
     PRIMARY KEY (idAsignacion),
-    FOREIGN KEY (Usuarios_idMentor) REFERENCES usuarios(idUsuarios),
-    FOREIGN KEY (Usuarios_idEstudiante) REFERENCES usuarios(idUsuarios),
-    FOREIGN KEY (Emprendimiento_idEmprendimiento) REFERENCES emprendimiento(idEmprendimiento)
+    FOREIGN KEY (Emprendimiento_idEmprendimiento) REFERENCES emprendimiento(idEmprendimiento),
+    FOREIGN KEY (Asesor_idUsuarios) REFERENCES usuarios(idUsuarios)
 );
 
 -- Tabla para evaluación de habilidades

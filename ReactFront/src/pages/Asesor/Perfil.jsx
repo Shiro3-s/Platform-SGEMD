@@ -161,7 +161,7 @@ const Perfil = () => {
         setError(json.error || 'Error al subir avatar');
       }
     } catch (err) {
-      setError('Error subiendo avatar');
+      setError(err?.message || 'Error subiendo avatar');
     }
   };
 
@@ -288,4 +288,3 @@ const Perfil = () => {
 };
 
 export default Perfil;
-

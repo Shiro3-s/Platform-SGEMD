@@ -18,18 +18,18 @@ exports.getById = async (req, res) => {
     }
 };
 
-exports.getByMentor = async (req, res) => {
+exports.getByAsesor = async (req, res) => {
     try {
-        const data = await assignments.findByMentor(req.params.mentorId);
+        const data = await assignments.findByMentor(req.params.asesorId);
         res.json({ success: true, data: data });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });
     }
 };
 
-exports.getByEstudiante = async (req, res) => {
+exports.getByEmprendedor = async (req, res) => {
     try {
-        const data = await assignments.findByEstudiante(req.params.estudianteId);
+        const data = await assignments.findByEstudiante(req.params.emprendedorId);
         res.json({ success: true, data: data });
     } catch (error) {
         res.status(500).json({ success: false, error: error.message });

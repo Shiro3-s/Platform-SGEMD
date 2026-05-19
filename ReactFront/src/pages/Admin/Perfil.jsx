@@ -139,8 +139,10 @@ const Perfil = () => {
         setUser({ ...user, img_perfil: json.img_perfil });
         setAvatarSrc(`${API_URL}${json.img_perfil}`);
       } else setError(json.error || 'Error');
-    } catch (err) { setError('Error subiendo avatar'); }
-  };
+    } catch (err) {
+      setError(err?.message || 'Error subiendo avatar');
+    }
+};
 
   if (error) return (
     <div className="container mt-5">

@@ -4,8 +4,8 @@ const assignmentsController = require('../controllers/assignments.controller');
 const { authenticateToken, isAdmin, isAsesor } = require('../middleware/auth.middleware');
 
 router.get('/', authenticateToken, assignmentsController.getAll);
-router.get('/mentor/:mentorId', authenticateToken, assignmentsController.getByMentor);
-router.get('/estudiante/:estudianteId', authenticateToken, assignmentsController.getByEstudiante);
+router.get('/asesor/:asesorId', authenticateToken, assignmentsController.getByAsesor);
+router.get('/emprendedor/:emprendedorId', authenticateToken, assignmentsController.getByEmprendedor);
 router.get('/:id', authenticateToken, assignmentsController.getById);
 router.post('/', authenticateToken, isAdmin, assignmentsController.create);
 router.put('/:id', authenticateToken, isAdmin, assignmentsController.update);

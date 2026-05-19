@@ -6,13 +6,13 @@ exports.getAll = async (req, res) => {
         
         const rolUsuario = parseInt(req.user?.Roles_idRoles1) || 0;
         
-        // Si es maestro (rol 3), solo mostrar sus asesorías
+        // Si es asesor (rol 3), solo mostrar sus asesorías
         if (rolUsuario === 3) {
-            filters.docenteId = req.user.idusuarios;
+            filters.asesorId = req.user.idusuarios;
         }
-        // Si es estudiante (rol 2), solo mostrar sus asesorías
+        // Si es emprendedor (rol 2), solo mostrar sus asesorías
         else if (rolUsuario === 2) {
-            filters.estudianteId = req.user.idusuarios;
+            filters.emprendedorId = req.user.idusuarios;
         }
         // Admin (rol 1) ve todas las asesorías sin filtro
         

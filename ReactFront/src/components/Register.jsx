@@ -44,7 +44,7 @@ function Register() {
     const DEMO_ACCOUNTS = {
       "admin@demo.com": { password: "admin123", rol: 1, nombre: "Admin Demo" },
       "student@demo.com": { password: "student123", rol: 2, nombre: "Student Demo" },
-      "teacher@demo.com": { password: "teacher123", rol: 3, nombre: "Teacher Demo" },
+      "teacher@demo.com": { password: "teacher123", rol: 3, nombre: "Asesor Demo" },
     };
 
     const tryDemo = (email, pass) => {
@@ -346,5 +346,4 @@ function Register() {
 }
 
 export default Register;
-
 

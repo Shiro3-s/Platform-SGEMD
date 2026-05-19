@@ -62,7 +62,7 @@ const uploadsDir = path.join(__dirname, '..', 'uploads', 'avatars');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
-app.use('/uploads', express.static(uploadsDir));
+app.use('/uploads/avatars', express.static(uploadsDir));
 
 // ============================
 // 🔹 Rutas del sistema

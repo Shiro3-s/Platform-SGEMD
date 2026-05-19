@@ -6,7 +6,7 @@ exports.findAll = async () => {
 }
 
 exports.findById = async (id) => {
-    const [rows] = await pool.execute('SELECT * FROM diagnosticos WHERE iddiagnosticos = ?', [id])
+    const [rows] = await pool.execute('SELECT * FROM diagnosticos WHERE idDiagnosticos = ?', [id])
     if (rows.length === 0) throw new Error('Diagnóstico no encontrado')
     return rows[0]
 }
@@ -53,7 +53,7 @@ exports.create = async (data) => {
             data.Viabilidad
         ]
     )
-    return { id: result.insertId, ...data }
+    return { idDiagnosticos: result.insertId, ...data }
 }
 
 exports.update = async (id, data) => {
@@ -66,7 +66,7 @@ exports.update = async (id, data) => {
             EstructuraOrganica = ?, ConocimientoLegal = ?, MetodologiaInnovacion = ?,
             HerramientaTecnologicas = ?, Marca = ?, AplicacionMetodologia = ?,
             ImpactoAmbiental = ?, ImpactoSocial = ?, Viabilidad = ?
-        WHERE iddiagnosticos = ?`,
+        WHERE idDiagnosticos = ?`,
         [
             data.FechaEmprendimiento,
             data.AreaEstrategia,
@@ -99,7 +99,7 @@ exports.update = async (id, data) => {
 
 exports.remove = async (id) => {
     const [result] = await pool.execute(
-        'DELETE FROM diagnosticos WHERE iddiagnosticos = ?', [id]
+        'DELETE FROM diagnosticos WHERE idDiagnosticos = ?', [id]
     )
     return result.affectedRows > 0
 }

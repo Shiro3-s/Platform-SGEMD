@@ -5,10 +5,14 @@ exports.findAll = async () => {
         SELECT ea.*, 
                u_asesor.Nombre as AsesorNombre, 
                u_asesor.CorreoInstitucional as AsesorCorreo,
-               e.Nombre as EmprendimientoNombre
+               e.Nombre as EmprendimientoNombre,
+               e.Usuarios_idUsuarios as Emprendedor_idUsuarios,
+               u_emprendedor.Nombre as EmprendedorNombre,
+               u_emprendedor.CorreoInstitucional as EmprendedorCorreo
         FROM Emprendimiento_Asesor ea
         LEFT JOIN Usuarios u_asesor ON ea.Asesor_idUsuarios = u_asesor.idUsuarios
         LEFT JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        LEFT JOIN Usuarios u_emprendedor ON e.Usuarios_idUsuarios = u_emprendedor.idUsuarios
     `)
     return rows
 }
@@ -18,10 +22,14 @@ exports.findById = async (id) => {
         SELECT ea.*, 
                u_asesor.Nombre as AsesorNombre, 
                u_asesor.CorreoInstitucional as AsesorCorreo,
-               e.Nombre as EmprendimientoNombre
+               e.Nombre as EmprendimientoNombre,
+               e.Usuarios_idUsuarios as Emprendedor_idUsuarios,
+               u_emprendedor.Nombre as EmprendedorNombre,
+               u_emprendedor.CorreoInstitucional as EmprendedorCorreo
         FROM Emprendimiento_Asesor ea
         LEFT JOIN Usuarios u_asesor ON ea.Asesor_idUsuarios = u_asesor.idUsuarios
         LEFT JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        LEFT JOIN Usuarios u_emprendedor ON e.Usuarios_idUsuarios = u_emprendedor.idUsuarios
         WHERE ea.idAsignacion = ?
     `, [id])
     if (rows.length === 0) throw new Error('Asignación no encontrada')
@@ -33,9 +41,13 @@ exports.findByMentor = async (mentorId) => {
         SELECT ea.*, 
                e.Nombre as EmprendimientoNombre,
                e.Descripcion as EmprendimientoDescripcion,
-               et.TipoEtapa as EtapaNombre
+               et.TipoEtapa as EtapaNombre,
+               e.Usuarios_idUsuarios as Emprendedor_idUsuarios,
+               u_emprendedor.Nombre as EmprendedorNombre,
+               u_emprendedor.CorreoInstitucional as EmprendedorCorreo
         FROM Emprendimiento_Asesor ea
         INNER JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        LEFT JOIN Usuarios u_emprendedor ON e.Usuarios_idUsuarios = u_emprendedor.idUsuarios
         LEFT JOIN EtapaEmprendimiento et ON e.EtapaEmprendimiento_idEtapaEmprendimiento = et.idEtapaEmprendimiento
         WHERE ea.Asesor_idUsuarios = ? AND ea.Estado = 'Activo'
     `, [mentorId])
@@ -47,10 +59,14 @@ exports.findByEstudiante = async (estudianteId) => {
         SELECT ea.*, 
                u_asesor.Nombre as AsesorNombre,
                u_asesor.CorreoInstitucional as AsesorCorreo,
-               e.Nombre as EmprendimientoNombre
+               e.Nombre as EmprendimientoNombre,
+               e.Usuarios_idUsuarios as Emprendedor_idUsuarios,
+               u_emprendedor.Nombre as EmprendedorNombre,
+               u_emprendedor.CorreoInstitucional as EmprendedorCorreo
         FROM Emprendimiento_Asesor ea
         INNER JOIN Usuarios u_asesor ON ea.Asesor_idUsuarios = u_asesor.idUsuarios
         INNER JOIN Emprendimiento e ON ea.Emprendimiento_idEmprendimiento = e.idEmprendimiento
+        LEFT JOIN Usuarios u_emprendedor ON e.Usuarios_idUsuarios = u_emprendedor.idUsuarios
         WHERE e.Usuarios_idUsuarios = ? AND ea.Estado = 'Activo'
     `, [estudianteId])
     return rows
