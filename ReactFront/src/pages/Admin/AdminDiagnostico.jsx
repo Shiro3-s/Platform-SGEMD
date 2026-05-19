@@ -20,7 +20,6 @@ const AdminDiagnostico = () => {
   const [guardando, setGuardando] = useState(false);
   const [formData, setFormData] = useState({});
   const [sectores, setSectores] = useState([]);
-  const [sectores, setSectores] = useState([]);
 
   const camposDiagnostico = [
     { name: 'AreaEstrategia', label: 'Área de Estrategia', type: 'textarea' },
