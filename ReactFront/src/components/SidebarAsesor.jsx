@@ -1,4 +1,4 @@
-// src/components/SidebarMaestro.jsx
+// src/components/SidebarAsesor.jsx
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -56,7 +56,7 @@ const isTeacherProfileComplete = (user) => {
     && hasValue(user.FechaNacimiento);
 };
 
-const SidebarMaestro = ({ user }) => {
+const SidebarAsesor = ({ user }) => {
   const location = useLocation();
   const activePath = location.pathname;
 
@@ -75,17 +75,17 @@ const SidebarMaestro = ({ user }) => {
     const base = normalize(groupTitle);
     const item = normalize(itemTitle);
 
-    if (item === 'completarinformacionpersonal') return '/maestro/perfil';
-    if (item === 'perfildeemprendimiento') return '/maestro/emprendimientos/perfil';
-    if (item === 'seguimiento' && base === 'emprendimientos') return '/maestro/emprendimientos/seguimiento';
-    if (item === 'tareas' && base === 'emprendimientos') return '/maestro/tareas';
-    if (item === 'misasesorias') return '/maestro/asesorias';
-    if (item === 'crearasesoria') return '/maestro/asesorias/crear';
-    if (item === 'editarasesoria') return '/maestro/asesorias/editar';
-    if (item === 'verdiagnosticos') return '/maestro/diagnosticos';
-    if (item === 'gestionareventos') return '/maestro/eventos';
+    if (item === 'completarinformacionpersonal') return '/asesor/perfil';
+    if (item === 'perfildeemprendimiento') return '/asesor/emprendimientos/perfil';
+    if (item === 'seguimiento' && base === 'emprendimientos') return '/asesor/emprendimientos/seguimiento';
+    if (item === 'tareas' && base === 'emprendimientos') return '/asesor/tareas';
+    if (item === 'misasesorias') return '/asesor/asesorias';
+    if (item === 'crearasesoria') return '/asesor/asesorias/crear';
+    if (item === 'editarasesoria') return '/asesor/asesorias/editar';
+    if (item === 'verdiagnosticos') return '/asesor/diagnosticos';
+    if (item === 'gestionareventos') return '/asesor/eventos';
 
-    return `/maestro/${base}/${item}`;
+    return `/asesor/${base}/${item}`;
   };
 
   const profileItemLabel = isTeacherProfileComplete(user) ? 'Mi perfil' : 'Completar perfil';
@@ -111,8 +111,8 @@ const SidebarMaestro = ({ user }) => {
 
       <nav>
         <Link
-          to="/maestro"
-          className={`admin-menu-item ${activePath === '/maestro' ? 'activo' : ''}`}
+          to="/asesor"
+          className={`admin-menu-item ${activePath === '/asesor' ? 'activo' : ''}`}
           style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -157,4 +157,6 @@ const SidebarMaestro = ({ user }) => {
   );
 };
 
-export default SidebarMaestro;
+export default SidebarAsesor;
+
+

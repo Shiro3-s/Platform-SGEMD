@@ -13,11 +13,11 @@ const getAuthHeaders = () => {
 const AsesoriasRecursos = () => {
   const [asesorias, setAsesorias] = useState([]);
   const [misAsesorias, setMisAsesorias] = useState([]);
-  const [docentes, setDocentes] = useState([]);
+  const [asesores, setAsesores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [searchParams] = useSearchParams();
-  const docenteSeleccionado = searchParams.get('docente');
+  const Asesoreseleccionado = searchParams.get('asesor');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [solicitud, setSolicitud] = useState({
     Nombre_de_asesoria: '',
@@ -29,13 +29,13 @@ const AsesoriasRecursos = () => {
 
   useEffect(() => {
     fetchData();
-  }, [docenteSeleccionado]);
+  }, [Asesoreseleccionado]);
 
   useEffect(() => {
-    if (mostrarFormulario && !docenteSeleccionado) {
+    if (mostrarFormulario && !Asesoreseleccionado) {
       setMostrarFormulario(false);
     }
-  }, [docenteSeleccionado, mostrarFormulario]);
+  }, [Asesoreseleccionado, mostrarFormulario]);
 
   const fetchData = async () => {
     try {
@@ -50,7 +50,7 @@ const AsesoriasRecursos = () => {
       const teachersData = await teachersRes.json();
 
       setUser(userData.data || userData);
-      setDocentes(teachersData.data || []);
+      setAsesores(teachersData.data || []);
 
       const userId = userData.data?.idusuarios || userData.data?.idUsuarios;
       if (userId) {
@@ -63,7 +63,7 @@ const AsesoriasRecursos = () => {
         setMisAsesorias(mias);
       }
 
-      if (docenteSeleccionado) {
+      if (Asesoreseleccionado) {
         setMostrarFormulario(true);
       }
     } catch (err) {
@@ -102,9 +102,9 @@ const AsesoriasRecursos = () => {
     );
   };
 
-  const getDocenteNombre = (docenteId) => {
-    const docente = docentes.find(d => d.idusuarios === docenteId || d.idUsuarios === docenteId);
-    return docente?.Nombre || 'Docente';
+  const getAsesorNombre = (AsesorId) => {
+    const asesor = asesores.find(d => d.idusuarios === AsesorId || d.idUsuarios === AsesorId);
+    return asesor?.Nombre || 'Asesor';
   };
 
   const handleEnviarSolicitud = async (e) => {
@@ -114,7 +114,7 @@ const AsesoriasRecursos = () => {
 
     try {
       const userId = user?.idusuarios || user?.idUsuarios;
-      const docenteId = docenteSeleccionado;
+      const AsesorId = Asesoreseleccionado;
 
       const response = await fetch(`${API_URL}/segmed/advice`, {
         method: 'POST',
@@ -125,7 +125,7 @@ const AsesoriasRecursos = () => {
           Fecha_asesoria: solicitud.Fecha_asesoria,
           Comentarios: '',
           Usuarios_idUsuarios: userId,
-          Docentes_idDocentes: docenteId,
+          Docentes_idDocentes: AsesorId,
           confirmacion: 'pendiente',
           Modalidad_idModalidad: 1,
           Fecha_y_Horarios_idFecha_y_Horarios: 1,
@@ -168,7 +168,7 @@ const AsesoriasRecursos = () => {
   return (
     <div style={{ padding: '20px' }}>
       {/* Formulario de solicitud de asesoría */}
-      {mostrarFormulario && docenteSeleccionado ? (
+      {mostrarFormulario && Asesoreseleccionado ? (
         <div className="card" style={{ maxWidth: '600px', margin: '0 auto', border: '2px solid #1a75bc' }}>
           <div className="card-header" style={{ backgroundColor: '#1a75bc', color: 'white' }}>
             <h5 style={{ margin: 0 }}>📝 Solicitar Asesoría</h5>
@@ -181,11 +181,11 @@ const AsesoriasRecursos = () => {
             )}
             <form onSubmit={handleEnviarSolicitud}>
               <div className="mb-3">
-                <label className="form-label">Docente</label>
+                <label className="form-label">Asesor</label>
                 <input 
                   type="text" 
                   className="form-control" 
-                  value={getDocenteNombre(parseInt(docenteSeleccionado))} 
+                  value={getAsesorNombre(parseInt(Asesoreseleccionado))} 
                   disabled 
                 />
               </div>
@@ -252,7 +252,7 @@ const AsesoriasRecursos = () => {
           <p style={{ color: '#666', margin: 0 }}>Gestión de asesorías disponibles y solicitadas</p>
         </div>
         <Link 
-          to="/estudiante/recursos/docentes"
+          to="/emprendedor/recursos/asesores"
           style={{
             padding: '10px 20px',
             backgroundColor: '#1a75bc',
@@ -277,7 +277,7 @@ const AsesoriasRecursos = () => {
               <p style={{ fontSize: '32px', marginBottom: '10px' }}>📋</p>
               <p>No tienes asesorías registradas</p>
               <Link 
-                to="/estudiante/recursos/docentes"
+                to="/emprendedor/recursos/asesores"
                 style={{ color: '#1a75bc', fontWeight: 'bold' }}
               >
                 Solicitar una asesoría →
@@ -290,7 +290,7 @@ const AsesoriasRecursos = () => {
                   <tr>
                     <th>Nombre</th>
                     <th>Fecha</th>
-                    <th>Docente</th>
+                    <th>Asesor</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
@@ -299,7 +299,7 @@ const AsesoriasRecursos = () => {
                     <tr key={asesoria.idAsesorias}>
                       <td style={{ fontWeight: '500' }}>{asesoria.Nombre_de_asesoria}</td>
                       <td>{formatDate(asesoria.Fecha_asesoria)}</td>
-                      <td>{getDocenteNombre(asesoria.Docentes_idDocentes)}</td>
+                      <td>{getAsesorNombre(asesoria.Docentes_idDocentes)}</td>
                       <td>{getEstadoBadge(asesoria.confirmacion || asesoria.Estado)}</td>
                     </tr>
                   ))}
@@ -349,7 +349,7 @@ const AsesoriasRecursos = () => {
                     </div>
                     <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid #eee' }}>
                       <span style={{ fontSize: '13px', color: '#666' }}>
-                        👤 Docente: <strong>{getDocenteNombre(asesoria.Docentes_idDocentes)}</strong>
+                        👤 Asesor: <strong>{getAsesorNombre(asesoria.Docentes_idDocentes)}</strong>
                       </span>
                     </div>
                   </div>
@@ -366,3 +366,5 @@ const AsesoriasRecursos = () => {
 };
 
 export default AsesoriasRecursos;
+
+

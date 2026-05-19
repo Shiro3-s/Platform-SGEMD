@@ -11,16 +11,16 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const MaestroTareas = () => {
+const AsesorTareas = () => {
   const location = useLocation();
   const [emprendimientos, setEmprendimientos] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
+  const [Emprendedores, setEmprendedores] = useState([]);
   const [selectedEmp, setSelectedEmp] = useState(null);
   const [tareas, setTareas] = useState([]);
   const [avance, setAvance] = useState({ total: 0, completadas: 0, avance: 0 });
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const [newTarea, setNewTarea] = useState({ Titulo: '', Descripcion: '', FechaLimite: '', EstudianteId: '' });
+  const [newTarea, setNewTarea] = useState({ Titulo: '', Descripcion: '', FechaLimite: '', EmprendedorId: '' });
 
   useEffect(() => {
     fetchData();
@@ -39,8 +39,8 @@ const MaestroTareas = () => {
       const usersData = await usersRes.json();
 
       const usuarios = usersData.data || [];
-      const estudiantesAll = usuarios.filter(u => u.Roles_idRoles1 === 2);
-      setEstudiantes(estudiantesAll);
+      const EmprendedoresAll = usuarios.filter(u => u.Roles_idRoles1 === 2);
+      setEmprendedores(EmprendedoresAll);
       
       const emprendimientosAll = empData.data || [];
       setEmprendimientos(emprendimientosAll);
@@ -80,7 +80,7 @@ const MaestroTareas = () => {
         body: JSON.stringify({
           ...newTarea,
           Emprendimiento_idEmprendimiento: selectedEmp,
-          Usuario_idUsuarios: parseInt(newTarea.EstudianteId)
+          Usuario_idUsuarios: parseInt(newTarea.EmprendedorId)
         }),
         credentials: 'include'
       });
@@ -88,7 +88,7 @@ const MaestroTareas = () => {
       if (data.success) {
         alert('Tarea creada');
         setShowModal(false);
-        setNewTarea({ Titulo: '', Descripcion: '', FechaLimite: '', EstudianteId: '' });
+        setNewTarea({ Titulo: '', Descripcion: '', FechaLimite: '', EmprendedorId: '' });
         handleSelectEmprendimiento(selectedEmp);
       }
     } catch (err) {
@@ -131,9 +131,9 @@ const MaestroTareas = () => {
     { name: 'Pendientes', value: Math.max(0, avance.total - avance.completadas), color: '#ffc400' }
   ];
 
-  const getEstudianteNombre = (userId) => {
-    const est = estudiantes.find(e => (e.idusuarios || e.idUsuarios) === userId);
-    return est?.Nombre || 'Estudiante';
+  const getEmprendedorNombre = (userId) => {
+    const est = Emprendedores.find(e => (e.idusuarios || e.idUsuarios) === userId);
+    return est?.Nombre || 'Emprendedor';
   };
 
   if (loading) {
@@ -202,7 +202,7 @@ const MaestroTareas = () => {
                             <thead style={{ backgroundColor: '#f4f4f4' }}>
                               <tr>
                                 <th>Título</th>
-                                <th>Estudiante</th>
+                                <th>Emprendedor</th>
                                 <th>Fecha Límite</th>
                                 <th>Estado</th>
                                 <th>Acción</th>
@@ -219,7 +219,7 @@ const MaestroTareas = () => {
                                       </p>
                                     )}
                                   </td>
-                                  <td>{getEstudianteNombre(tarea.Usuario_idUsuarios)}</td>
+                                  <td>{getEmprendedorNombre(tarea.Usuario_idUsuarios)}</td>
                                   <td>{formatDate(tarea.FechaLimite)}</td>
                                   <td>
                                     <span style={{ 
@@ -324,15 +324,15 @@ const MaestroTareas = () => {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Estudiante *</label>
+                    <label className="form-label">Emprendedor *</label>
                     <select
                       className="form-select"
-                      value={newTarea.EstudianteId}
-                      onChange={(e) => setNewTarea({ ...newTarea, EstudianteId: e.target.value })}
+                      value={newTarea.EmprendedorId}
+                      onChange={(e) => setNewTarea({ ...newTarea, EmprendedorId: e.target.value })}
                       required
                     >
                       <option value="">Seleccionar...</option>
-                      {estudiantes.map(est => (
+                      {Emprendedores.map(est => (
                         <option key={est.idusuarios || est.idUsuarios} value={est.idusuarios || est.idUsuarios}>
                           {est.Nombre}
                         </option>
@@ -364,4 +364,6 @@ const MaestroTareas = () => {
   );
 };
 
-export default MaestroTareas;
+export default AsesorTareas;
+
+

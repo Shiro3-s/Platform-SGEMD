@@ -9,15 +9,15 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const AdminDocentes = () => {
-  const [docentes, setDocentes] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
+const AdminAsesores = () => {
+  const [Asesores, setAsesores] = useState([]);
+  const [Emprendedores, setEmprendedores] = useState([]);
   const [asignaciones, setAsignaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const [mostrarAsignar, setMostrarAsignar] = useState(false);
   const [formAsignacion, setFormAsignacion] = useState({
-    docenteId: '',
-    estudianteId: '',
+    AsesorId: '',
+    EmprendedorId: '',
     emprendimientoId: ''
   });
 
@@ -29,18 +29,18 @@ const AdminDocentes = () => {
     try {
       const headers = getAuthHeaders();
       
-      const [docentesRes, estudiantesRes, asignacionesRes] = await Promise.all([
+      const [AsesoresRes, EmprendedoresRes, asignacionesRes] = await Promise.all([
         fetch(`${API_URL}/segmed/users/teachers`, { headers }),
-        fetch(`${API_URL}/segmed/users?role=estudiante`, { headers }),
+        fetch(`${API_URL}/segmed/users?role=Emprendedor`, { headers }),
         fetch(`${API_URL}/segmed/assignments`, { headers })
       ]);
 
-      const docentesData = await docentesRes.json();
-      const estudiantesData = await estudiantesRes.json();
+      const AsesoresData = await AsesoresRes.json();
+      const EmprendedoresData = await EmprendedoresRes.json();
       const asignacionesData = await asignacionesRes.json();
 
-      setDocentes(docentesData.data || []);
-      setEstudiantes(estudiantesData.users?.filter(u => u.Roles_idRoles1 === 2) || []);
+      setAsesores(AsesoresData.data || []);
+      setEmprendedores(EmprendedoresData.users?.filter(u => u.Roles_idRoles1 === 2) || []);
       setAsignaciones(asignacionesData.data || []);
     } catch (err) {
       console.error('Error:', err);
@@ -56,8 +56,8 @@ const AdminDocentes = () => {
         method: 'POST',
         headers: getAuthHeaders(),
         body: JSON.stringify({
-          Usuarios_idMentor: parseInt(formAsignacion.docenteId),
-          Usuarios_idEstudiante: parseInt(formAsignacion.estudianteId),
+          Usuarios_idMentor: parseInt(formAsignacion.AsesorId),
+          Usuarios_idEmprendedor: parseInt(formAsignacion.EmprendedorId),
           Emprendimiento_idEmprendimiento: formAsignacion.emprendimientoId ? parseInt(formAsignacion.emprendimientoId) : null
         })
       });
@@ -66,7 +66,7 @@ const AdminDocentes = () => {
         alert('Asignación creada exitosamente');
         fetchData();
         setMostrarAsignar(false);
-        setFormAsignacion({ docenteId: '', estudianteId: '', emprendimientoId: '' });
+        setFormAsignacion({ AsesorId: '', EmprendedorId: '', emprendimientoId: '' });
       } else {
         alert('Error: ' + data.error);
       }
@@ -76,7 +76,7 @@ const AdminDocentes = () => {
   };
 
   const handleDesasignar = async (id) => {
-    if (!confirm('¿Está seguro de eliminar esta asignación?')) return;
+    if (!window.confirm('¿Está seguro de eliminar esta asignación?')) return;
     try {
       const res = await fetch(`${API_URL}/segmed/assignments/${id}`, {
         method: 'DELETE',
@@ -100,7 +100,7 @@ const AdminDocentes = () => {
     <div className="container mt-4">
       <div className="card shadow-sm">
         <div className="card-header bg-white d-flex justify-content-between align-items-center">
-          <h4 className="mb-0">👨‍🏫 Gestión de Docentes y Asignaciones</h4>
+          <h4 className="mb-0">👨‍🏫 Gestión de Asesores y Asignaciones</h4>
           <button className="btn btn-primary" onClick={() => setMostrarAsignar(true)}>
             + Nueva Asignación
           </button>
@@ -116,29 +116,29 @@ const AdminDocentes = () => {
                 <form onSubmit={handleAsignar}>
                   <div className="row">
                     <div className="col-md-4 mb-3">
-                      <label className="form-label">Docente (Mentor)</label>
+                      <label className="form-label">Asesor (Mentor)</label>
                       <select 
                         className="form-select"
-                        value={formAsignacion.docenteId}
-                        onChange={(e) => setFormAsignacion({...formAsignacion, docenteId: e.target.value})}
+                        value={formAsignacion.AsesorId}
+                        onChange={(e) => setFormAsignacion({...formAsignacion, AsesorId: e.target.value})}
                         required
                       >
-                        <option value="">Seleccionar docente...</option>
-                        {docentes.map(d => (
+                        <option value="">Seleccionar Asesor...</option>
+                        {Asesores.map(d => (
                           <option key={d.idUsuarios} value={d.idUsuarios}>{d.Nombre}</option>
                         ))}
                       </select>
                     </div>
                     <div className="col-md-4 mb-3">
-                      <label className="form-label">Estudiante</label>
+                      <label className="form-label">Emprendedor</label>
                       <select 
                         className="form-select"
-                        value={formAsignacion.estudianteId}
-                        onChange={(e) => setFormAsignacion({...formAsignacion, estudianteId: e.target.value})}
+                        value={formAsignacion.EmprendedorId}
+                        onChange={(e) => setFormAsignacion({...formAsignacion, EmprendedorId: e.target.value})}
                         required
                       >
-                        <option value="">Seleccionar estudiante...</option>
-                        {estudiantes.map(e => (
+                        <option value="">Seleccionar Emprendedor...</option>
+                        {Emprendedores.map(e => (
                           <option key={e.idUsuarios} value={e.idUsuarios}>{e.Nombre}</option>
                         ))}
                       </select>
@@ -163,8 +163,8 @@ const AdminDocentes = () => {
             </div>
           )}
 
-          {/* Lista de docentes */}
-          <h5 className="mb-3">Docentes Registrados</h5>
+          {/* Lista de Asesores */}
+          <h5 className="mb-3">Asesores Registrados</h5>
           <div className="table-responsive mb-4">
             <table className="table table-hover">
               <thead className="table-light">
@@ -175,14 +175,14 @@ const AdminDocentes = () => {
                 </tr>
               </thead>
               <tbody>
-                {docentes.length === 0 ? (
-                  <tr><td colSpan="3" className="text-center text-muted">No hay docentes registrados</td></tr>
+                {Asesores.length === 0 ? (
+                  <tr><td colSpan="3" className="text-center text-muted">No hay Asesores registrados</td></tr>
                 ) : (
-                  docentes.map(d => (
+                  Asesores.map(d => (
                     <tr key={d.idUsuarios}>
                       <td>{d.Nombre}</td>
                       <td>{d.CorreoInstitucional}</td>
-                      <td>{d.TipodeUsuario || 'Maestro'}</td>
+                      <td>{d.TipodeUsuario || 'Asesor'}</td>
                     </tr>
                   ))
                 )}
@@ -196,8 +196,8 @@ const AdminDocentes = () => {
             <table className="table table-hover">
               <thead className="table-light">
                 <tr>
-                  <th>Docente</th>
-                  <th>Estudiante</th>
+                  <th>Asesor</th>
+                  <th>Emprendedor</th>
                   <th>Emprendimiento</th>
                   <th>Fecha Asignación</th>
                   <th>Estado</th>
@@ -211,7 +211,7 @@ const AdminDocentes = () => {
                   asignaciones.map(a => (
                     <tr key={a.idAsignacion}>
                       <td>{a.MentorNombre || 'Sin asignar'}</td>
-                      <td>{a.EstudianteNombre || 'Sin asignar'}</td>
+                      <td>{a.EmprendedorNombre || 'Sin asignar'}</td>
                       <td>{a.EmprendimientoNombre || 'Sin emprendimiento'}</td>
                       <td>{a.FechaAsignacion}</td>
                       <td>
@@ -236,4 +236,5 @@ const AdminDocentes = () => {
   );
 };
 
-export default AdminDocentes;
+export default AdminAsesores;
+

@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const DiagnosticoEstudiante = () => {
+const DiagnosticoEmprendedor = () => {
   const [diagnostico, setDiagnostico] = useState(null);
   const [emprendimiento, setEmprendimiento] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -152,4 +152,5 @@ const DiagnosticoEstudiante = () => {
   );
 };
 
-export default DiagnosticoEstudiante;
+export default DiagnosticoEmprendedor;
+

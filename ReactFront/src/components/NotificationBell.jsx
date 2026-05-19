@@ -25,9 +25,9 @@ function NotificationBell({ role, userId }) {
   const [unread, setUnread] = useState(0);
 
   const targetPath = useMemo(() => {
-    if (role === 'asesor') return '/maestro/asesorias';
-    if (role === 'emprendedor') return '/estudiante/recursos/asesorias';
-    return '/admin/docentes/asesorias';
+    if (role === 'asesor') return '/asesor/asesorias';
+    if (role === 'emprendedor') return '/emprendedor/recursos/asesorias';
+    return '/admin/asesores/asesorias';
   }, [role]);
 
   const loadNotifications = async () => {
@@ -186,3 +186,7 @@ function NotificationBell({ role, userId }) {
 }
 
 export default NotificationBell;
+
+
+
+

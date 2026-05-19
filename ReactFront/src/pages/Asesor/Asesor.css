@@ -2,7 +2,7 @@
 /* 1. Layout General y Colores Base    */
 /* ----------------------------------- */
 
-.contenedor-maestro {
+.contenedor-Asesor {
     display: grid;
     grid-template-columns: 260px 1fr; /* Sidebar más amplio */
     grid-template-rows: minmax(100vh, 1fr);
@@ -24,10 +24,10 @@
 }
 
 /* ----------------------------------- */
-/* 2. Sidebar (SidebarMaestro.jsx)     */
+/* 2. Sidebar (SidebarAsesor.jsx)     */
 /* ----------------------------------- */
 
-.sidebar-maestro {
+.sidebar-Asesor {
     background-color: var(--sgemd-blue-dark);
     color: var(--sgemd-white);
     padding-top: 20px;
@@ -217,7 +217,7 @@
     cursor: pointer;
 }
 
-.sidebar-maestro {
+.sidebar-Asesor {
     background-color: var(--sgemd-blue-dark);
     color: var(--sgemd-white);
     padding-top: 20px;
@@ -240,3 +240,4 @@
     width: auto; /* Mantiene la proporción de la imagen */
     object-fit: contain; /* Asegura que la imagen no se recorte ni se estire */
 }
+

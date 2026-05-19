@@ -4,15 +4,15 @@ import './UserMenu.css';
 
 const getRolLabel = (rol) => {
   if (rol === 1 || rol === 'Administrador' || rol === 'Admin' || rol === 'administrador') return 'Administrador';
-  if (rol === 2 || rol === 'Emprendedor' || rol === 'Estudiante' || rol === 'emprendedor') return 'Emprendedor';
-  if (rol === 3 || rol === 'Asesor' || rol === 'Docente' || rol === 'Maestro' || rol === 'asesor') return 'Asesor';
+  if (rol === 2 || rol === 'Emprendedor' || rol === 'emprendedor') return 'Emprendedor';
+  if (rol === 3 || rol === 'Asesor' || rol === 'asesor') return 'Asesor';
   return 'Usuario';
 };
 
 const getRolHref = (rol) => {
   if (rol === 1 || rol === 'Administrador' || rol === 'Admin' || rol === 'administrador') return '/admin';
-  if (rol === 2 || rol === 'Emprendedor' || rol === 'Estudiante' || rol === 'emprendedor') return '/estudiante';
-  if (rol === 3 || rol === 'Asesor' || rol === 'Docente' || rol === 'Maestro' || rol === 'asesor') return '/maestro';
+  if (rol === 2 || rol === 'Emprendedor' || rol === 'emprendedor') return '/emprendedor';
+  if (rol === 3 || rol === 'Asesor' || rol === 'asesor') return '/asesor';
   return '/';
 };
 
@@ -77,3 +77,6 @@ export default function UserMenu({ user, onLogout }) {
     </div>
   );
 }
+
+
+

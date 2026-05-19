@@ -12,7 +12,7 @@ const getAuthHeaders = () => {
 
 const Asesorias = () => {
   const [asesorias, setAsesorias] = useState([]);
-  const [estudiantes, setEstudiantes] = useState([]);
+  const [Emprendedores, setEmprendedores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [dropdownAbierto, setDropdownAbierto] = useState(null);
@@ -38,8 +38,8 @@ const Asesorias = () => {
         setAsesorias(asesoriasData.data || []);
       }
       if (usersData.success && usersData.data) {
-        const estudiantesFiltrados = usersData.data.filter(u => u.Roles_idRoles1 === 2);
-        setEstudiantes(estudiantesFiltrados);
+        const EmprendedoresFiltrados = usersData.data.filter(u => u.Roles_idRoles1 === 2);
+        setEmprendedores(EmprendedoresFiltrados);
       }
     } catch (err) {
       console.error('Error:', err);
@@ -49,9 +49,9 @@ const Asesorias = () => {
     }
   };
 
-  const getEstudianteNombre = (estudianteId) => {
-    const estudiante = estudiantes.find(e => e.idusuarios === estudianteId || e.idUsuarios === estudianteId);
-    return estudiante?.Nombre || 'Estudiante';
+  const getEmprendedorNombre = (EmprendedorId) => {
+    const Emprendedor = Emprendedores.find(e => e.idusuarios === EmprendedorId || e.idUsuarios === EmprendedorId);
+    return Emprendedor?.Nombre || 'Emprendedor';
   };
 
   const formatDate = (dateStr) => {
@@ -166,8 +166,8 @@ const Asesorias = () => {
                 <p className="mb-0">{formatDate(asesoriaSeleccionada.Fecha_asesoria)}</p>
               </div>
               <div className="mb-3">
-                <strong>Estudiante:</strong>
-                <p className="mb-0">{getEstudianteNombre(asesoriaSeleccionada.Usuarios_idUsuarios)}</p>
+                <strong>Emprendedor:</strong>
+                <p className="mb-0">{getEmprendedorNombre(asesoriaSeleccionada.Usuarios_idUsuarios)}</p>
               </div>
               <div className="mb-3">
                 <strong>Estado:</strong>
@@ -198,7 +198,7 @@ const Asesorias = () => {
       <div className="card shadow-sm">
         <div className="card-header bg-white d-flex justify-content-between align-items-center" style={{ backgroundColor: '#0c4a6e', color: 'white' }}>
           <h4 className="mb-0">📚 Gestión de Asesorías</h4>
-          <Link to="/maestro/asesorias/crear" className="btn btn-light btn-sm">
+          <Link to="/asesor/asesorias/crear" className="btn btn-light btn-sm">
             + Nueva Asesoría
           </Link>
         </div>
@@ -209,7 +209,7 @@ const Asesorias = () => {
             <div className="text-center py-5">
               <p style={{ fontSize: '48px', marginBottom: '15px' }}>📭</p>
               <p className="text-muted">No hay asesorías registradas</p>
-              <Link to="/maestro/asesorias/crear" className="btn btn-primary">
+              <Link to="/asesor/asesorias/crear" className="btn btn-primary">
                 Crear Primera Asesoría
               </Link>
             </div>
@@ -220,7 +220,7 @@ const Asesorias = () => {
                   <tr>
                     <th>Nombre</th>
                     <th>Fecha</th>
-                    <th>Estudiante</th>
+                    <th>Emprendedor</th>
                     <th>Descripción</th>
                     <th>Estado</th>
                     <th style={{ width: '180px' }}>Acciones</th>
@@ -231,7 +231,7 @@ const Asesorias = () => {
                     <tr key={asesoria.idAsesorias}>
                       <td style={{ fontWeight: '500' }}>{asesoria.Nombre_de_asesoria}</td>
                       <td>{formatDate(asesoria.Fecha_asesoria)}</td>
-                      <td>{getEstudianteNombre(asesoria.Usuarios_idUsuarios)}</td>
+                      <td>{getEmprendedorNombre(asesoria.Usuarios_idUsuarios)}</td>
                       <td>
                         <div style={{ maxWidth: '250px' }}>
                           <span style={{ 
@@ -285,7 +285,7 @@ const Asesorias = () => {
                             <li><button className="dropdown-item" onClick={() => handleCambiarEstado(asesoria.idAsesorias, 'completada')}>✓ Completar</button></li>
                             <li><button className="dropdown-item text-danger" onClick={() => handleCambiarEstado(asesoria.idAsesorias, 'cancelada')}>✗ Cancelar</button></li>
                             <li><hr className="dropdown-divider" /></li>
-                            <li><Link className="dropdown-item" to={`/maestro/asesorias/editar?id=${asesoria.idAsesorias}`}>Editar</Link></li>
+                            <li><Link className="dropdown-item" to={`/asesor/asesorias/editar?id=${asesoria.idAsesorias}`}>Editar</Link></li>
                           </ul>
                         </div>
                         </div>
@@ -303,3 +303,6 @@ const Asesorias = () => {
 };
 
 export default Asesorias;
+
+
+

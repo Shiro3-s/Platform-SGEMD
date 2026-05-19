@@ -262,7 +262,7 @@
     background-color: #e8f5e9; 
 }
 
-.docentes-grid {
+.Asesores-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
@@ -300,3 +300,5 @@
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+

@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const EventosEstudiante = () => {
+const EventosEmprendedor = () => {
   const [eventos, setEventos] = useState([]);
   const [tiposEvento, setTiposEvento] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -303,4 +303,5 @@ const EventosEstudiante = () => {
   );
 };
 
-export default EventosEstudiante;
+export default EventosEmprendedor;
+

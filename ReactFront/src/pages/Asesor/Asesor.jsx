@@ -1,17 +1,17 @@
 import React, { useContext } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import SidebarMaestro from '../../components/SidebarMaestro';
+import SidebarAsesor from '../../components/SidebarAsesor';
 import UserMenu from '../../components/UserMenu';
 import NotificationBell from '../../components/NotificationBell';
-import './Maestro.css';
+import './Asesor.css';
 
-const Maestro = () => {
+const Asesor = () => {
   const { user, logout } = useContext(AuthContext);
   const location = useLocation();
 
   const getPageTitle = () => {
-    if (location.pathname === '/maestro' || location.pathname === '/maestro/') return 'Home';
+    if (location.pathname === '/asesor' || location.pathname === '/asesor/') return 'Home';
     if (location.pathname.includes('/perfil')) return 'Mi Perfil';
     if (location.pathname.includes('/emprendimientos/perfil')) return 'Perfil de Emprendimiento';
     if (location.pathname.includes('/emprendimientos/seguimiento')) return 'Seguimiento de Emprendimiento';
@@ -28,8 +28,8 @@ const Maestro = () => {
   };
 
   return (
-    <div className="contenedor-maestro position-relative">
-      <SidebarMaestro user={user} />
+    <div className="contenedor-Asesor position-relative">
+      <SidebarAsesor user={user} />
       <main className="contenido-principal">
         <header className="header-superior">
           <h2>{getPageTitle()}</h2>
@@ -46,4 +46,6 @@ const Maestro = () => {
   );
 };
 
-export default Maestro;
+export default Asesor;
+
+

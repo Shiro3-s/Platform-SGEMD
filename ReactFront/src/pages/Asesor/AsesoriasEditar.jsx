@@ -89,7 +89,7 @@ const AsesoriasEditar = () => {
 
       if (data.success) {
         alert('Asesoría actualizada exitosamente');
-        navigate('/maestro/asesorias');
+        navigate('/asesor/asesorias');
       } else {
         setError(data.error || 'Error al actualizar');
       }
@@ -114,7 +114,7 @@ const AsesoriasEditar = () => {
 
       if (data.success) {
         alert('Asesoría eliminada');
-        navigate('/maestro/asesorias');
+        navigate('/asesor/asesorias');
       } else {
         setError(data.error || 'Error al eliminar');
       }
@@ -138,7 +138,7 @@ const AsesoriasEditar = () => {
       <div style={{ padding: '20px' }}>
         <div className="alert alert-warning">
           Selecciona una asesoría para editar.
-          <Link to="/maestro/asesorias" className="btn btn-sm btn-primary ms-2">
+          <Link to="/asesor/asesorias" className="btn btn-sm btn-primary ms-2">
             Ver Asesorías
           </Link>
         </div>
@@ -228,7 +228,7 @@ const AsesoriasEditar = () => {
                 {saving ? 'Guardando...' : '💾 Guardar Cambios'}
               </button>
               <Link 
-                to="/maestro/asesorias" 
+                to="/asesor/asesorias" 
                 className="btn btn-secondary"
               >
                 Cancelar

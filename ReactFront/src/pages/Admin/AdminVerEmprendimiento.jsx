@@ -15,7 +15,7 @@ const AdminVerEmprendimiento = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [emprendimiento, setEmprendimiento] = useState(null);
-  const [estudiante, setEstudiante] = useState(null);
+  const [Emprendedor, setEmprendedor] = useState(null);
   const [tareas, setTareas] = useState([]);
   const [avance, setAvance] = useState({ total: 0, completadas: 0, avance: 0 });
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const AdminVerEmprendimiento = () => {
         if (empData.data.Usuarios_idUsuarios) {
           const userRes = await fetch(`${API_URL}/segmed/users/${empData.data.Usuarios_idUsuarios}`, { headers });
           const userData = await userRes.json();
-          if (userData.success) setEstudiante(userData.data);
+          if (userData.success) setEmprendedor(userData.data);
         }
       }
 
@@ -62,9 +62,9 @@ const AdminVerEmprendimiento = () => {
   const handleCrearTarea = async (e) => {
     e.preventDefault();
     
-    const usuarioId = estudiante?.idusuarios || estudiante?.idUsuarios;
+    const usuarioId = Emprendedor?.idusuarios || Emprendedor?.idUsuarios;
     if (!usuarioId) {
-      alert('No hay un estudiante asignado a este emprendimiento. Asigna uno primero antes de crear tareas.');
+      alert('No hay un Emprendedor asignado a este emprendimiento. Asigna uno primero antes de crear tareas.');
       return;
     }
 
@@ -164,8 +164,8 @@ const AdminVerEmprendimiento = () => {
                   <p><strong>Fecha Creación:</strong> {formatDate(emprendimiento?.FechaCreacion)}</p>
                 </div>
                 <div className="col-md-6">
-                  <p><strong>Estudiante:</strong> {estudiante?.Nombre || 'No asignado'}</p>
-                  <p><strong>Email:</strong> {estudiante?.CorreoInstitucional || '-'}</p>
+                  <p><strong>Emprendedor:</strong> {Emprendedor?.Nombre || 'No asignado'}</p>
+                  <p><strong>Email:</strong> {Emprendedor?.CorreoInstitucional || '-'}</p>
                   <p><strong>Etapa:</strong> #{emprendimiento?.EtapaEmprendimiento_idEtapaEmprendimiento}</p>
                 </div>
               </div>
@@ -359,3 +359,4 @@ const AdminVerEmprendimiento = () => {
 };
 
 export default AdminVerEmprendimiento;
+

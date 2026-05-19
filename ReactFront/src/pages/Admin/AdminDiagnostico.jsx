@@ -139,7 +139,7 @@ const AdminDiagnostico = () => {
 
   const handleEliminar = async () => {
     if (!diagnostico) return;
-    if (!confirm('¿Estás seguro de eliminar este diagnóstico?')) return;
+    if (!window.confirm('¿Estás seguro de eliminar este diagnóstico?')) return;
 
     try {
       const headers = getAuthHeaders();

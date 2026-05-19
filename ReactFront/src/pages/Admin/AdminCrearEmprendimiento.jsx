@@ -12,8 +12,8 @@ const getAuthHeaders = () => {
 
 const AdminCrearEmprendimiento = () => {
   const navigate = useNavigate();
-  const [estudiantes, setEstudiantes] = useState([]);
-  const [docentes, setDocentes] = useState([]);
+  const [Emprendedores, setEmprendedores] = useState([]);
+  const [Asesores, setAsesores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -22,8 +22,8 @@ const AdminCrearEmprendimiento = () => {
     Descripcion: '',
     TipoEmprendimiento: '',
     SectorProductivo: '',
-    EstudiantesSeleccionados: [],
-    DocentesSeleccionados: []
+    EmprendedoresSeleccionados: [],
+    AsesoresSeleccionados: []
   });
 
   useEffect(() => {
@@ -40,8 +40,8 @@ const AdminCrearEmprendimiento = () => {
       const data = await res.json();
       
       if (data.data) {
-        setEstudiantes(data.data.filter(u => u.Roles_idRoles1 === 2));
-        setDocentes(data.data.filter(u => u.Roles_idRoles1 === 3));
+        setEmprendedores(data.data.filter(u => u.Roles_idRoles1 === 2));
+        setAsesores(data.data.filter(u => u.Roles_idRoles1 === 3));
       }
     } catch (err) {
       console.error('Error:', err);
@@ -56,7 +56,7 @@ const AdminCrearEmprendimiento = () => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleEstudianteChange = (e) => {
+  const handleEmprendedorChange = (e) => {
     const options = e.target.options;
     const values = [];
     for (let i = 0; i < options.length; i++) {
@@ -64,10 +64,10 @@ const AdminCrearEmprendimiento = () => {
         values.push(parseInt(options[i].value));
       }
     }
-    setForm(prev => ({ ...prev, EstudiantesSeleccionados: values }));
+    setForm(prev => ({ ...prev, EmprendedoresSeleccionados: values }));
   };
 
-  const handleDocenteChange = (e) => {
+  const handleAsesorChange = (e) => {
     const options = e.target.options;
     const values = [];
     for (let i = 0; i < options.length; i++) {
@@ -75,7 +75,7 @@ const AdminCrearEmprendimiento = () => {
         values.push(parseInt(options[i].value));
       }
     }
-    setForm(prev => ({ ...prev, DocentesSeleccionados: values }));
+    setForm(prev => ({ ...prev, AsesoresSeleccionados: values }));
   };
 
   const handleSubmit = async (e) => {
@@ -98,8 +98,8 @@ const AdminCrearEmprendimiento = () => {
       setSaving(false);
       return;
     }
-    if (form.EstudiantesSeleccionados.length === 0) {
-      alert('Debes seleccionar al menos un estudiante');
+    if (form.EmprendedoresSeleccionados.length === 0) {
+      alert('Debes seleccionar al menos un Emprendedor');
       setSaving(false);
       return;
     }
@@ -108,13 +108,13 @@ const AdminCrearEmprendimiento = () => {
       let creados = 0;
       let erroresMsg = [];
 
-      for (const estudianteId of form.EstudiantesSeleccionados) {
+      for (const EmprendedorId of form.EmprendedoresSeleccionados) {
         const payload = {
           Nombre: form.Nombre,
           Descripcion: form.Descripcion || '',
           TipoEmprendimiento: form.TipoEmprendimiento,
           SectorProductivo: form.SectorProductivo,
-          Usuarios_idUsuarios: estudianteId,
+          Usuarios_idUsuarios: EmprendedorId,
           EtapaEmprendimiento_idEtapaEmprendimiento: 1,
           RedesSociales: 0,
           Acompanamiento: 0
@@ -133,21 +133,21 @@ const AdminCrearEmprendimiento = () => {
         console.log('Respuesta:', res.status, data);
 
         if (!res.ok || !data.success) {
-          erroresMsg.push(`Estudiante ${estudianteId}: ${data.error || 'Error ' + res.status}`);
+          erroresMsg.push(`Emprendedor ${EmprendedorId}: ${data.error || 'Error ' + res.status}`);
           continue;
         }
 
         creados++;
 
-        if (form.DocentesSeleccionados.length > 0) {
+        if (form.AsesoresSeleccionados.length > 0) {
           const empId = data.data?.idEmprendimiento || data.data?.id;
-          for (const docenteId of form.DocentesSeleccionados) {
+          for (const AsesorId of form.AsesoresSeleccionados) {
             await fetch(`${API_URL}/segmed/assignments`, {
               method: 'POST',
               headers: getAuthHeaders(),
               body: JSON.stringify({
-                Estudiante_idEstudiante: estudianteId,
-                Docente_idDocente: docenteId,
+                Emprendedor_idEmprendedor: EmprendedorId,
+                Docentes_idDocentes: AsesorId,
                 Emprendimiento_idEmprendimiento: empId
               }),
               credentials: 'include'
@@ -270,16 +270,16 @@ const AdminCrearEmprendimiento = () => {
             <div className="row">
               <div className="col-md-6 mb-3">
                 <label className="form-label" style={{ fontWeight: 'bold', color: '#0c4a6e' }}>
-                  Seleccionar Estudiante(s) *
+                  Seleccionar Emprendedor(s) *
                 </label>
                 <select
                   className="form-select"
                   multiple
-                  onChange={handleEstudianteChange}
+                  onChange={handleEmprendedorChange}
                   style={{ height: '200px' }}
                   required
                 >
-                  {estudiantes.map(est => (
+                  {Emprendedores.map(est => (
                     <option key={est.idUsuarios || est.idusuarios} value={est.idUsuarios || est.idusuarios}>
                       {est.Nombre} ({est.CorreoInstitucional})
                     </option>
@@ -289,15 +289,15 @@ const AdminCrearEmprendimiento = () => {
               </div>
               <div className="col-md-6 mb-3">
                 <label className="form-label" style={{ fontWeight: 'bold', color: '#0c4a6e' }}>
-                  Seleccionar Docente(s) - Opcional
+                  Seleccionar Asesor(s) - Opcional
                 </label>
                 <select
                   className="form-select"
                   multiple
-                  onChange={handleDocenteChange}
+                  onChange={handleAsesorChange}
                   style={{ height: '200px' }}
                 >
-                  {docentes.map(doc => (
+                  {Asesores.map(doc => (
                     <option key={doc.idUsuarios || doc.idusuarios} value={doc.idUsuarios || doc.idusuarios}>
                       {doc.Nombre} ({doc.CorreoInstitucional})
                     </option>
@@ -332,3 +332,5 @@ const AdminCrearEmprendimiento = () => {
 };
 
 export default AdminCrearEmprendimiento;
+
+

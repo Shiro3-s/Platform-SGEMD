@@ -1,4 +1,4 @@
-// src/components/EstudianteSidebar.jsx
+// src/components/EmprendedorSidebar.jsx
 
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -34,7 +34,7 @@ const menuStructure = [
     { title: 'Perfil', items: ['Completar información personal'] },
     { title: 'Diagnóstico', items: ['Ver diagnóstico'] },
     { title: 'Emprendimientos', items: ['Plan de Trabajo', 'Estado de Seguimiento', 'Mi Progreso'] },
-    { title: 'Recursos', items: ['Docentes', 'Asesorías'] },
+    { title: 'Recursos', items: ['Asesores', 'Asesorías'] },
     { title: 'Eventos', items: ['Ver eventos disponibles'] },
 ];
 
@@ -58,7 +58,7 @@ const isStudentProfileComplete = (user) => {
         && hasValue(user.FechaNacimiento);
 };
 
-const EstudianteSidebar = ({ user }) => {
+const EmprendedorSidebar = ({ user }) => {
     const location = useLocation();
     const activePath = location.pathname;
 
@@ -77,17 +77,17 @@ const EstudianteSidebar = ({ user }) => {
         const base = normalize(groupTitle);
         const item = normalize(itemTitle);
 
-        if (item === 'completarinformacionpersonal') return '/estudiante/perfil';
-        if (item === 'completarperfil') return '/estudiante/perfil';
-        if (item === 'verdiagnostico') return '/estudiante/diagnostico';
-        if (item === 'plandetrabajo') return '/estudiante/emprendimiento/perfil';
-        if (item === 'estadodeseguimiento') return '/estudiante/seguimiento';
-        if (item === 'miprogreso') return '/estudiante/progreso';
-        if (item === 'docentes') return '/estudiante/recursos/docentes';
-        if (item === 'asesorias') return '/estudiante/recursos/asesorias';
-        if (item === 'vereventosdisponibles') return '/estudiante/eventos';
+        if (item === 'completarinformacionpersonal') return '/emprendedor/perfil';
+        if (item === 'completarperfil') return '/emprendedor/perfil';
+        if (item === 'verdiagnostico') return '/emprendedor/diagnostico';
+        if (item === 'plandetrabajo') return '/emprendedor/emprendimiento/perfil';
+        if (item === 'estadodeseguimiento') return '/emprendedor/seguimiento';
+        if (item === 'miprogreso') return '/emprendedor/progreso';
+        if (item === 'asesores') return '/emprendedor/recursos/asesores';
+        if (item === 'asesorias') return '/emprendedor/recursos/asesorias';
+        if (item === 'vereventosdisponibles') return '/emprendedor/eventos';
 
-        return `/estudiante/${base}/${item}`;
+        return `/emprendedor/${base}/${item}`;
     };
 
     const profileItemLabel = isStudentProfileComplete(user) ? 'Mi perfil' : 'Completar perfil';
@@ -113,8 +113,8 @@ const EstudianteSidebar = ({ user }) => {
 
             <nav>
                 <Link
-                    to="/estudiante"
-                    className={`admin-menu-item ${activePath === '/estudiante' ? 'activo' : ''}`}
+                    to="/emprendedor"
+                    className={`admin-menu-item ${activePath === '/emprendedor' ? 'activo' : ''}`}
                     style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600' }}
                 >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -159,4 +159,7 @@ const EstudianteSidebar = ({ user }) => {
     );
 };
 
-export default EstudianteSidebar;
+export default EmprendedorSidebar;
+
+
+

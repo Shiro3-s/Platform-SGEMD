@@ -5,7 +5,7 @@ const AdminAsignar = () => {
   const navigate = useNavigate();
 
   React.useEffect(() => {
-    navigate('/admin/docentes/gestion');
+    navigate('/admin/asesores/gestion');
   }, [navigate]);
 
   return (
@@ -18,3 +18,5 @@ const AdminAsignar = () => {
 };
 
 export default AdminAsignar;
+
+

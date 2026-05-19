@@ -13,13 +13,13 @@ export default function GestionarUsuarios({ role }) {
         Nombre: '',
         CorreoInstitucional: '',
         Password: '',
-        Roles_idRoles1: role === 'estudiante' ? 2 : 3,
+        Roles_idRoles1: role === 'Emprendedor' ? 2 : 3,
         Estado: 1
     });
 
-    const roleId = role === 'estudiante' ? 2 : 3;
-    const endpoint = role === 'estudiante' ? 'students' : 'teachers';
-    const title = role === 'estudiante' ? 'Gestión de Estudiantes' : 'Gestión de Docentes';
+    const roleId = role === 'Emprendedor' ? 2 : 3;
+    const endpoint = role === 'Emprendedor' ? 'students' : 'teachers';
+    const title = role === 'Emprendedor' ? 'Gestión de Emprendedores' : 'Gestión de Asesores';
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -134,7 +134,7 @@ export default function GestionarUsuarios({ role }) {
                     <h4 className="mb-0 text-primary">{title}</h4>
                     <button onClick={openCreateModal} className="btn btn-primary">
                         <i className="bi bi-plus-lg me-2"></i>
-                        + Nuevo {role === 'estudiante' ? 'Estudiante' : 'Docente'}
+                        + Nuevo {role === 'Emprendedor' ? 'Emprendedor' : 'Asesor'}
                     </button>
                 </div>
 
@@ -309,3 +309,5 @@ export default function GestionarUsuarios({ role }) {
         </div>
     );
 }
+
+

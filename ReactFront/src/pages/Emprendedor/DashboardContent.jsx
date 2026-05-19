@@ -1,4 +1,4 @@
-// src/pages/Estudiante/DashboardContent.jsx
+// src/pages/emprendedor/DashboardContent.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -153,7 +153,7 @@ const DashboardContent = () => {
         🎓 Mi Panel - SGEMD
       </h1>
       <p style={{ color: '#666', marginBottom: '30px' }}>
-        Bienvenido, {user?.Nombre || 'Estudiante'}. Aquí puedes seguir el avance de tu emprendimiento.
+        Bienvenido, {user?.Nombre || 'Emprendedor'}. Aquí puedes seguir el avance de tu emprendimiento.
       </p>
 
       {/* Mi Emprendimiento(s) */}
@@ -226,7 +226,7 @@ const DashboardContent = () => {
                 ))}
               </div>
               <Link 
-                to="/estudiante/emprendimiento/perfil" 
+                to="/emprendedor/emprendimiento/perfil" 
                 style={{ 
                   display: 'inline-block', 
                   marginTop: '10px',
@@ -260,7 +260,7 @@ const DashboardContent = () => {
             <p style={{ fontSize: '48px', marginBottom: '15px' }}>📝</p>
             <p style={{ fontSize: '18px', marginBottom: '20px' }}>Aún no has registrado tu emprendimiento</p>
             <Link 
-              to="/estudiante/emprendimiento/perfil" 
+              to="/emprendedor/emprendimiento/perfil" 
               style={{ 
                 display: 'inline-block', 
                 padding: '12px 24px', 
@@ -354,7 +354,7 @@ const DashboardContent = () => {
                   </div>
                 </div>
               ))}
-              <Link to="/estudiante/progreso" style={{ color: '#1a75bc', textDecoration: 'none', fontWeight: 'bold' }}>
+              <Link to="/emprendedor/progreso" style={{ color: '#1a75bc', textDecoration: 'none', fontWeight: 'bold' }}>
                 Ver historial completo →
               </Link>
             </div>
@@ -389,7 +389,7 @@ const DashboardContent = () => {
                   </div>
                 </div>
               ))}
-              <Link to="/estudiante/eventos" style={{ color: '#1a75bc', textDecoration: 'none', fontWeight: 'bold' }}>
+              <Link to="/emprendedor/eventos" style={{ color: '#1a75bc', textDecoration: 'none', fontWeight: 'bold' }}>
                 Ver todos los eventos →
               </Link>
             </div>
@@ -400,16 +400,16 @@ const DashboardContent = () => {
       {/* Accesos rápidos */}
       <Card title="Accesos Rápidos" icon="⚡">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '15px' }}>
-          <Link to="/estudiante/perfil" style={quickLinkStyle}>
+          <Link to="/emprendedor/perfil" style={quickLinkStyle}>
             ⚙️ Mi Perfil
           </Link>
-          <Link to="/estudiante/emprendimiento/perfil" style={quickLinkStyle}>
+          <Link to="/emprendedor/emprendimiento/perfil" style={quickLinkStyle}>
             📝 Mi Proyecto
           </Link>
-          <Link to="/estudiante/progreso" style={quickLinkStyle}>
+          <Link to="/emprendedor/progreso" style={quickLinkStyle}>
             📊 Ver Progreso
           </Link>
-          <Link to="/estudiante/eventos" style={quickLinkStyle}>
+          <Link to="/emprendedor/eventos" style={quickLinkStyle}>
             🎉 Ver Eventos
           </Link>
         </div>
@@ -431,3 +431,5 @@ const quickLinkStyle = {
 };
 
 export default DashboardContent;
+
+

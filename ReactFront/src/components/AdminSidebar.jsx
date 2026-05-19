@@ -32,9 +32,9 @@ const IconAngleDown = (props) => (
 
 const menuStructure = [
   { title: 'Perfil', items: ['Completar información personal'] },
-  { title: 'Gestionar perfiles', items: ['Docentes', 'Estudiantes'] },
+  { title: 'Gestionar perfiles', items: ['Asesores', 'Emprendedores'] },
   { title: 'Emprendimientos', items: ['Plan de trabajo', 'Crear Emprendimiento'] },
-  { title: 'Docentes', items: ['Asignar a emprendimiento', 'Seguimiento', 'Asesorias'] },
+  { title: 'Asesores', items: ['Asignar a emprendimiento', 'Seguimiento', 'Asesorias'] },
   { title: 'Eventos', items: ['Crear', 'Editar'] },
   { title: 'Diagnósticos', items: ['Gestionar'] },
 ];
@@ -51,7 +51,7 @@ const AdminSidebar = () => {
   const activePath = location.pathname;
 
   // Abiertos por defecto
-  const [openMenus, setOpenMenus] = useState(['Perfil', 'Docentes', 'Emprendimientos']);
+  const [openMenus, setOpenMenus] = useState(['Perfil', 'Asesores', 'Emprendimientos']);
 
   const toggleMenu = (title) => {
     setOpenMenus((prev) =>
@@ -66,18 +66,18 @@ const AdminSidebar = () => {
     const item = normalize(itemTitle);
 
     if (item === 'completarinformacionpersonal') return '/admin/perfil';
-    if (item === 'asignaraemprendimiento') return '/admin/docentes/asignar';
-    if (item === 'docentes' && base === 'gestionarperfiles')
-      return '/admin/gestionar/docentes';
-    if (item === 'estudiantes' && base === 'gestionarperfiles')
-      return '/admin/gestionar/estudiantes';
+    if (item === 'asignaraemprendimiento') return '/admin/asesores/asignar';
+    if (item === 'asesores' && base === 'gestionarperfiles')
+      return '/admin/gestionar/asesores';
+    if (item === 'emprendedores' && base === 'gestionarperfiles')
+      return '/admin/gestionar/emprendedores';
     if (item === 'plandetrabajo') return '/admin/emprendimientos/plan-de-trabajo';
     if (item === 'crearemprendimiento') return '/admin/emprendimientos/crear';
     if (item === 'crear' && base === 'eventos') return '/admin/eventos';
     if (item === 'editar' && base === 'eventos') return '/admin/eventos';
     if (item === 'gestionar' && base === 'diagnosticos') return '/admin/diagnosticos';
-    if (item === 'seguimiento' && base === 'docentes') return '/admin/docentes/seguimiento';
-    if (item === 'asesorias' && base === 'docentes') return '/admin/docentes/asesorias';
+    if (item === 'seguimiento' && base === 'asesores') return '/admin/asesores/seguimiento';
+    if (item === 'asesorias' && base === 'asesores') return '/admin/asesores/asesorias';
 
     return `/admin/${base}/${item}`;
   };
@@ -141,3 +141,6 @@ const AdminSidebar = () => {
 };
 
 export default AdminSidebar;
+
+
+

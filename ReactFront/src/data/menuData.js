@@ -1,7 +1,7 @@
 // src/data/menuData.js
 
-// === Menú para Estudiante ===
-export const ESTUDIANTE_MENU = [
+// === Menú para Emprendedor ===
+export const Emprendedor_MENU = [
   { name: "Diagnóstico", path: "/" },
 
   {
@@ -22,7 +22,7 @@ export const ESTUDIANTE_MENU = [
   { name: "Plan de Trabajo", path: "/plan" },
   { name: "Estado de Seguimiento", path: "/seguimiento" },
 
-  { name: "Docentes", path: "/docentes" },
+  { name: "Asesores", path: "/asesores" },
   { name: "Asesorías", path: "/asesorias" },
 
   {
@@ -33,8 +33,8 @@ export const ESTUDIANTE_MENU = [
   }
 ];
 
-// === Menú para Maestro ===
-export const MAESTRO_MENU = [
+// === Menú para Asesor ===
+export const Asesor_MENU = [
   { name: "Dashboard", path: "/" },
 
   {
@@ -70,11 +70,14 @@ export const ADMIN_MENU = [
   {
     name: "Gestión",
     submenus: [
-      { name: "Docentes", path: "/gestionar/docentes" },
-      { name: "Estudiantes", path: "/gestionar/estudiantes" },
-      { name: "Asignación de Docentes", path: "/gestionar/asignacion" }
+      { name: "Asesores", path: "/gestionar/asesores" },
+      { name: "Emprendedores", path: "/gestionar/emprendedores" },
+      { name: "Asignación de Asesores", path: "/gestionar/asignacion" }
     ]
   },
 
   { name: "Eventos", path: "/eventos" }
 ];
+
+
+

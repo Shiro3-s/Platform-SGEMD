@@ -179,7 +179,7 @@ const Perfil = () => {
         <div className="col-md-10">
           <div className="card shadow">
             <div className="card-header bg-success text-white">
-              <h3 className="mb-0">Mi Perfil de Docente</h3>
+              <h3 className="mb-0">Mi Perfil de Asesor</h3>
             </div>
 
             <div className="card-body">
@@ -288,3 +288,4 @@ const Perfil = () => {
 };
 
 export default Perfil;
+

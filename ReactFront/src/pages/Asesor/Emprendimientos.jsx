@@ -140,7 +140,7 @@ const EmpPerfil = () => {
                       <p><strong>Descripción:</strong> {emp.Descripcion || 'Sin descripción'}</p>
                     </div>
                     <div className="card-footer" style={{ borderRadius: '0 0 12px 12px' }}>
-                      <Link to={`/maestro/emprendimientos/seguimiento?id=${emp.idEmprendimiento}`} className="btn btn-sm" style={{ backgroundColor: '#1a75bc', color: 'white' }}>
+                      <Link to={`/asesor/emprendimientos/seguimiento?id=${emp.idEmprendimiento}`} className="btn btn-sm" style={{ backgroundColor: '#1a75bc', color: 'white' }}>
                         Ver Seguimiento
                       </Link>
                     </div>

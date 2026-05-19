@@ -12,7 +12,7 @@ const getAuthHeaders = () => {
 
 const AsesoriasCrear = () => {
   const navigate = useNavigate();
-  const [estudiantes, setEstudiantes] = useState([]);
+  const [Emprendedores, setEmprendedores] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [user, setUser] = useState(null);
@@ -20,7 +20,7 @@ const AsesoriasCrear = () => {
     Nombre_de_asesoria: '',
     Descripcion: '',
     Fecha_asesoria: '',
-    Estudiantes_idEstudiante: ''
+    Emprendedores_idEmprendedor: ''
   });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -49,8 +49,8 @@ const AsesoriasCrear = () => {
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const buscarEstudiantes = async () => {
-    if (estudiantes.length > 0) return;
+  const buscarEmprendedores = async () => {
+    if (Emprendedores.length > 0) return;
     
     setLoading(true);
     setError('');
@@ -66,11 +66,11 @@ const AsesoriasCrear = () => {
       console.log('Users response:', res.status, data);
       
       if (data.success && data.data) {
-        const estudiantesFiltrados = data.data.filter(u => u.Roles_idRoles1 === 2);
-        setEstudiantes(estudiantesFiltrados);
+        const EmprendedoresFiltrados = data.data.filter(u => u.Roles_idRoles1 === 2);
+        setEmprendedores(EmprendedoresFiltrados);
         
-        if (estudiantesFiltrados.length === 0) {
-          setError('No se encontraron estudiantes');
+        if (EmprendedoresFiltrados.length === 0) {
+          setError('No se encontraron Emprendedores');
         }
       } else {
         setError('Error al cargar usuarios: ' + (data.error || ''));
@@ -99,14 +99,14 @@ const AsesoriasCrear = () => {
       setSaving(false);
       return;
     }
-    if (!form.Estudiantes_idEstudiante) {
-      setError('Selecciona un estudiante');
+    if (!form.Emprendedores_idEmprendedor) {
+      setError('Selecciona un Emprendedor');
       setSaving(false);
       return;
     }
 
     try {
-      const docenteId = user?.idusuarios || user?.idUsuarios;
+      const AsesorId = user?.idusuarios || user?.idUsuarios;
       
       const res = await fetch(`${API_URL}/segmed/advice`, {
         method: 'POST',
@@ -116,8 +116,8 @@ const AsesoriasCrear = () => {
           Descripcion: form.Descripcion || '',
           Fecha_asesoria: form.Fecha_asesoria,
           confirmacion: 'pendiente',
-          Usuarios_idUsuarios: parseInt(form.Estudiantes_idEstudiante),
-          Docentes_idDocentes: docenteId,
+          Usuarios_idUsuarios: parseInt(form.Emprendedores_idEmprendedor),
+          Asesores_idAsesores: AsesorId,
           Modalidad_idModalidad: 1,
           Fecha_y_Horarios_idFecha_y_Horarios: 1,
           Fecha_creacion: new Date().toISOString().split('T')[0],
@@ -131,7 +131,7 @@ const AsesoriasCrear = () => {
       if (data.success) {
         setSuccess('Asesoría creada exitosamente');
         setTimeout(() => {
-          navigate('/maestro/asesorias');
+          navigate('/asesor/asesorias');
         }, 1500);
       } else {
         setError(data.error || 'Error al crear asesoría');
@@ -224,7 +224,7 @@ const AsesoriasCrear = () => {
               />
             </div>
 
-            {/* Estudiante */}
+            {/* Emprendedor */}
             <div style={{ marginBottom: '20px' }}>
               <label style={{ 
                 display: 'block', 
@@ -232,13 +232,13 @@ const AsesoriasCrear = () => {
                 fontWeight: '600', 
                 color: '#0c4a6e' 
               }}>
-                Estudiante *
+                Emprendedor *
               </label>
               
-              {estudiantes.length === 0 ? (
+              {Emprendedores.length === 0 ? (
                 <button
                   type="button"
-                  onClick={buscarEstudiantes}
+                  onClick={buscarEmprendedores}
                   className="btn"
                   style={{ 
                     backgroundColor: '#1a75bc', 
@@ -248,13 +248,13 @@ const AsesoriasCrear = () => {
                   }}
                   disabled={loading}
                 >
-                  {loading ? 'Cargando estudiantes...' : '🔍 Buscar Estudiantes'}
+                  {loading ? 'Cargando Emprendedores...' : '🔍 Buscar Emprendedores'}
                 </button>
               ) : (
                 <select
                   className="form-select"
-                  name="Estudiantes_idEstudiante"
-                  value={form.Estudiantes_idEstudiante}
+                  name="Emprendedores_idEmprendedor"
+                  value={form.Emprendedores_idEmprendedor}
                   onChange={handleChange}
                   style={{ 
                     padding: '12px', 
@@ -264,10 +264,10 @@ const AsesoriasCrear = () => {
                   }}
                   required
                 >
-                  <option value="">Seleccionar estudiante...</option>
-                  {estudiantes.map(est => (
+                  <option value="">Seleccionar Emprendedor...</option>
+                  {Emprendedores.map(est => (
                     <option key={est.idusuarios || est.idUsuarios} value={est.idusuarios || est.idUsuarios}>
-                      {est.Nombre || 'Estudiante sin nombre'}
+                      {est.Nombre || 'Emprendedor sin nombre'}
                     </option>
                   ))}
                 </select>
@@ -345,7 +345,7 @@ const AsesoriasCrear = () => {
                 {saving ? '⏳ Guardando...' : '💾 Crear Asesoría'}
               </button>
               <Link 
-                to="/maestro/asesorias" 
+                to="/asesor/asesorias" 
                 className="btn"
                 style={{ 
                   backgroundColor: '#6b7280', 
@@ -366,3 +366,5 @@ const AsesoriasCrear = () => {
 };
 
 export default AsesoriasCrear;
+
+

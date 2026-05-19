@@ -9,7 +9,7 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const MaestroEventos = () => {
+const AsesorEventos = () => {
   const [eventos, setEventos] = useState([]);
   const [tiposEvento, setTiposEvento] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -315,4 +315,4 @@ const MaestroEventos = () => {
   );
 };
 
-export default MaestroEventos;
+export default AsesorEventos;

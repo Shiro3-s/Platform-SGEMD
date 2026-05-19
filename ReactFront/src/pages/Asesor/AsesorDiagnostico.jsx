@@ -10,12 +10,12 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const MaestroDiagnostico = () => {
-  const [estudiantes, setEstudiantes] = useState([]);
+const AsesorDiagnostico = () => {
+  const [Emprendedores, setEmprendedores] = useState([]);
   const [emprendimientos, setEmprendimientos] = useState([]);
   const [diagnosticos, setDiagnosticos] = useState([]);
   const [todasAsignaciones, setTodasAsignaciones] = useState([]);
-  const [estudianteSeleccionado, setEstudianteSeleccionado] = useState(null);
+  const [Emprendedoreseleccionado, setEmprendedoreseleccionado] = useState(null);
   const [emprendimientoSeleccionado, setEmprendimientoSeleccionado] = useState(null);
   const [diagnostico, setDiagnostico] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -74,24 +74,24 @@ const MaestroDiagnostico = () => {
       setEmprendimientos(todosEmprendimientos);
       setDiagnosticos(todosDiagnosticos);
 
-      const uniqueEstudiantes = [];
+      const uniqueEmprendedores = [];
       const seen = new Set();
       for (const asig of misAsignaciones) {
-        if (asig.Usuarios_idEstudiante && !seen.has(asig.Usuarios_idEstudiante)) {
-          seen.add(asig.Usuarios_idEstudiante);
-          uniqueEstudiantes.push({
-            idUsuarios: asig.Usuarios_idEstudiante,
-            Nombre: asig.EstudianteNombre,
-            CorreoInstitucional: asig.EstudianteCorreo
+        if (asig.Usuarios_idEmprendedor && !seen.has(asig.Usuarios_idEmprendedor)) {
+          seen.add(asig.Usuarios_idEmprendedor);
+          uniqueEmprendedores.push({
+            idUsuarios: asig.Usuarios_idEmprendedor,
+            Nombre: asig.EmprendedorNombre,
+            CorreoInstitucional: asig.EmprendedorCorreo
           });
         }
       }
       
-      setEstudiantes(uniqueEstudiantes);
+      setEmprendedores(uniqueEmprendedores);
 
-      if (uniqueEstudiantes.length > 0) {
-        setEstudianteSeleccionado(uniqueEstudiantes[0]);
-        const asigDelPrimero = misAsignaciones.find(a => a.Usuarios_idEstudiante === uniqueEstudiantes[0].idUsuarios);
+      if (uniqueEmprendedores.length > 0) {
+        setEmprendedoreseleccionado(uniqueEmprendedores[0]);
+        const asigDelPrimero = misAsignaciones.find(a => a.Usuarios_idEmprendedor === uniqueEmprendedores[0].idUsuarios);
         if (asigDelPrimero && asigDelPrimero.Emprendimiento_idEmprendimiento) {
           const emp = todosEmprendimientos.find(e => e.idEmprendimiento === asigDelPrimero.Emprendimiento_idEmprendimiento);
           setEmprendimientoSeleccionado(emp || null);
@@ -108,11 +108,11 @@ const MaestroDiagnostico = () => {
     }
   };
 
-  const handleSelectEstudiante = (estId) => {
-    const est = estudiantes.find(e => e.idUsuarios === estId);
-    setEstudianteSeleccionado(est);
+  const handleSelectEmprendedor = (estId) => {
+    const est = Emprendedores.find(e => e.idUsuarios === estId);
+    setEmprendedoreseleccionado(est);
     
-    const asig = todasAsignaciones.find(a => a.Usuarios_idEstudiante === estId);
+    const asig = todasAsignaciones.find(a => a.Usuarios_idEmprendedor === estId);
     if (asig && asig.Emprendimiento_idEmprendimiento) {
       const emp = emprendimientos.find(e => e.idEmprendimiento === asig.Emprendimiento_idEmprendimiento);
       setEmprendimientoSeleccionado(emp || null);
@@ -142,19 +142,19 @@ const MaestroDiagnostico = () => {
     <div style={{ padding: '20px' }}>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 style={{ color: '#0c4a6e', marginBottom: '5px' }}>📋 Diagnósticos de Estudiantes</h1>
-          <p style={{ color: '#666', margin: 0 }}>Visualiza los diagnósticos de tus estudiantes asignados</p>
+          <h1 style={{ color: '#0c4a6e', marginBottom: '5px' }}>📋 Diagnósticos de Emprendedores</h1>
+          <p style={{ color: '#666', margin: 0 }}>Visualiza los diagnósticos de tus Emprendedores asignados</p>
         </div>
-        <Link to="/maestro" className="btn btn-outline-secondary">← Volver al Panel</Link>
+        <Link to="/asesor" className="btn btn-outline-secondary">← Volver al Panel</Link>
       </div>
 
-      {estudiantes.length === 0 ? (
+      {Emprendedores.length === 0 ? (
         <div className="card">
           <div className="card-body text-center" style={{ padding: '50px' }}>
             <p style={{ fontSize: '48px', marginBottom: '15px' }}>👨‍🏫</p>
-            <h4 style={{ color: '#0c4a6e' }}>Sin estudiantes asignados</h4>
-            <p className="text-muted">No tienes estudiantes asignados a tus emprendimientos.</p>
-            <p className="text-muted">El administrador debe asignarte estudiantes primero.</p>
+            <h4 style={{ color: '#0c4a6e' }}>Sin Emprendedores asignados</h4>
+            <p className="text-muted">No tienes Emprendedores asignados a tus emprendimientos.</p>
+            <p className="text-muted">El administrador debe asignarte Emprendedores primero.</p>
           </div>
         </div>
       ) : (
@@ -163,13 +163,13 @@ const MaestroDiagnostico = () => {
             <div className="card-body">
               <div className="row">
                 <div className="col-md-6">
-                  <label className="form-label"><strong>Seleccionar Estudiante:</strong></label>
+                  <label className="form-label"><strong>Seleccionar Emprendedor:</strong></label>
                   <select 
                     className="form-select"
-                    value={estudianteSeleccionado?.idUsuarios || ''}
-                    onChange={(e) => handleSelectEstudiante(parseInt(e.target.value))}
+                    value={Emprendedoreseleccionado?.idUsuarios || ''}
+                    onChange={(e) => handleSelectEmprendedor(parseInt(e.target.value))}
                   >
-                    {estudiantes.map(est => (
+                    {Emprendedores.map(est => (
                       <option key={est.idUsuarios} value={est.idUsuarios}>
                         {est.Nombre} - {est.CorreoInstitucional}
                       </option>
@@ -195,7 +195,7 @@ const MaestroDiagnostico = () => {
             <div className="card">
               <div className="card-header" style={{ backgroundColor: '#0c4a6e', color: 'white' }}>
                 <h5 style={{ margin: 0 }}>📋 Diagnóstico: {emprendimientoSeleccionado.Nombre}</h5>
-                <small>{estudianteSeleccionado?.Nombre}</small>
+                <small>{Emprendedoreseleccionado?.Nombre}</small>
               </div>
               
               <div className="card-body">
@@ -234,7 +234,7 @@ const MaestroDiagnostico = () => {
                     </div>
                     <h5 style={{ color: '#ffc107', marginBottom: '10px' }}>Diagnóstico Pendiente</h5>
                     <p style={{ color: '#666', marginBottom: '20px' }}>
-                      Este estudiante no tiene un diagnóstico registrado.
+                      Este Emprendedor no tiene un diagnóstico registrado.
                     </p>
                     <p className="text-muted">El administrador debe crear el diagnóstico.</p>
                   </div>
@@ -248,4 +248,7 @@ const MaestroDiagnostico = () => {
   );
 };
 
-export default MaestroDiagnostico;
+export default AsesorDiagnostico;
+
+
+

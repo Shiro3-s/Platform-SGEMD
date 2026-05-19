@@ -95,7 +95,7 @@ const EmpSeguimiento = () => {
   };
 
   const handleDeleteNote = async (notaId) => {
-    if (!confirm('¿Eliminar esta nota?')) return;
+    if (!window.confirm('¿Eliminar esta nota?')) return;
     
     try {
       const res = await fetch(`${API_URL}/segmed/tracing/${notaId}`, {
@@ -130,7 +130,7 @@ const EmpSeguimiento = () => {
       <div style={{ padding: '20px' }}>
         <div className="alert alert-warning">
           Selecciona un emprendimiento para ver su seguimiento.
-          <Link to="/maestro/emprendimientos/perfil" className="btn btn-sm btn-primary ms-2">
+          <Link to="/asesor/emprendimientos/perfil" className="btn btn-sm btn-primary ms-2">
             Ver Emprendimientos
           </Link>
         </div>
@@ -223,7 +223,7 @@ const EmpSeguimiento = () => {
           
           <div style={{ marginTop: '20px' }}>
             <Link 
-              to="/maestro/emprendimientos/perfil" 
+              to="/asesor/emprendimientos/perfil" 
               className="btn btn-secondary"
             >
               ← Volver a Emprendimientos
@@ -236,3 +236,4 @@ const EmpSeguimiento = () => {
 };
 
 export default EmpSeguimiento;
+

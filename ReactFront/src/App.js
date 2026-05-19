@@ -15,35 +15,35 @@ import AdminUsuarios from "./pages/Admin/Usuarios.jsx";
 import GestionarUsuarios from "./pages/Admin/GestionarUsuarios.jsx";
 import AdminPlanTrabajo from "./pages/Admin/AdminPlanTrabajo.jsx";
 import AdminEventos from "./pages/Admin/AdminEventos.jsx";
-import AdminDocentes from "./pages/Admin/AdminDocentes.jsx";
+import AdminAsesores from "./pages/Admin/AdminAsesores.jsx";
 import AdminCrearEmprendimiento from "./pages/Admin/AdminCrearEmprendimiento.jsx";
 import AdminVerEmprendimiento from "./pages/Admin/AdminVerEmprendimiento.jsx";
 import AdminDiagnostico from "./pages/Admin/AdminDiagnostico.jsx";
 
-import Maestro from "./pages/Maestro/Maestro.jsx";
-import MaestroDashboard from "./pages/Maestro/MaestroDashboard.jsx";
-import MaestroPerfil from "./pages/Maestro/Perfil.jsx";
-import MaestroAsesorias from "./pages/Maestro/Asesorias.jsx";
-import MaestroAsesoriasCrear from "./pages/Maestro/AsesoriasCrear.jsx";
-import MaestroAsesoriasEditar from "./pages/Maestro/AsesoriasEditar.jsx";
-import MaestroEmprendimientos from "./pages/Maestro/Emprendimientos.jsx";
-import MaestroEmpSeguimiento from "./pages/Maestro/EmpSeguimiento.jsx";
-import MaestroTareas from "./pages/Maestro/MaestroTareas.jsx";
-import MaestroDiagnostico from "./pages/Maestro/MaestroDiagnostico.jsx";
-import MaestroEventos from "./pages/Maestro/MaestroEventos.jsx";
+import Asesor from "./pages/Asesor/Asesor.jsx";
+import AsesorDashboard from "./pages/Asesor/AsesorDashboard.jsx";
+import AsesorPerfil from "./pages/Asesor/Perfil.jsx";
+import AsesorAsesorias from "./pages/Asesor/Asesorias.jsx";
+import AsesorAsesoriasCrear from "./pages/Asesor/AsesoriasCrear.jsx";
+import AsesorAsesoriasEditar from "./pages/Asesor/AsesoriasEditar.jsx";
+import AsesorEmprendimientos from "./pages/Asesor/Emprendimientos.jsx";
+import AsesorEmpSeguimiento from "./pages/Asesor/EmpSeguimiento.jsx";
+import AsesorTareas from "./pages/Asesor/AsesorTareas.jsx";
+import AsesorDiagnostico from "./pages/Asesor/AsesorDiagnostico.jsx";
+import AsesorEventos from "./pages/Asesor/AsesorEventos.jsx";
 
-import EstudianteLayout from "./pages/Estudiante/EstudianteLayout.jsx";
-import EstudianteDashboard from "./pages/Estudiante/DashboardContent.jsx";
-import EstudiantePerfil from "./pages/Estudiante/Perfil.jsx";
-import EstudianteProgreso from "./pages/Estudiante/Progreso.jsx";
-import EstudiantePerfilEmp from "./pages/Estudiante/PerfilEmprendimiento.jsx";
-import EstudiantePlan from "./pages/Estudiante/PlanTrabajo.jsx";
-import EstudianteSeguimiento from "./pages/Estudiante/Seguimiento.jsx";
-import EstudianteComparativa from "./pages/Estudiante/Comparativa.jsx";
-import DocentesRecursos from "./pages/Estudiante/DocentesRecursos.jsx";
-import AsesoriasRecursos from "./pages/Estudiante/AsesoriasRecursos.jsx";
-import EventosEstudiante from "./pages/Estudiante/EventosEstudiante.jsx";
-import DiagnosticoEstudiante from "./pages/Estudiante/Diagnostico.jsx";
+import EmprendedorLayout from "./pages/Emprendedor/EmprendedorLayout.jsx";
+import EmprendedorDashboard from "./pages/Emprendedor/DashboardContent.jsx";
+import EmprendedorPerfil from "./pages/Emprendedor/Perfil.jsx";
+import EmprendedorProgreso from "./pages/Emprendedor/Progreso.jsx";
+import EmprendedorPerfilEmp from "./pages/Emprendedor/PerfilEmprendimiento.jsx";
+import EmprendedorPlan from "./pages/Emprendedor/PlanTrabajo.jsx";
+import EmprendedorSeguimiento from "./pages/Emprendedor/Seguimiento.jsx";
+import EmprendedorComparativa from "./pages/Emprendedor/Comparativa.jsx";
+import AsesoresRecursos from "./pages/Emprendedor/AsesoresRecursos.jsx";
+import AsesoriasRecursos from "./pages/Emprendedor/AsesoriasRecursos.jsx";
+import EventosEmprendedor from "./pages/Emprendedor/EventosEmprendedor.jsx";
+import DiagnosticoEmprendedor from "./pages/Emprendedor/Diagnostico.jsx";
 
 function AppContent() {
   const { user, loading, logout } = useContext(AuthContext);
@@ -89,44 +89,44 @@ function AppContent() {
           <Route path="/register" element={<Register />} />
 
           <Route
-            path="/estudiante"
+            path="/emprendedor"
             element={
               <PrivateRoute allowedRoles={["emprendedor"]}>
-                <EstudianteLayout />
+                <EmprendedorLayout />
               </PrivateRoute>
             }
           >
-            <Route index element={<EstudianteDashboard />} />
-            <Route path="perfil" element={<EstudiantePerfil />} />
-            <Route path="progreso" element={<EstudianteProgreso />} />
-            <Route path="emprendimiento/perfil" element={<EstudiantePerfilEmp />} />
-            <Route path="plan" element={<EstudiantePlan />} />
-            <Route path="seguimiento" element={<EstudianteSeguimiento />} />
-            <Route path="comparativa" element={<EstudianteComparativa />} />
-            <Route path="recursos/docentes" element={<DocentesRecursos />} />
+            <Route index element={<EmprendedorDashboard />} />
+            <Route path="perfil" element={<EmprendedorPerfil />} />
+            <Route path="progreso" element={<EmprendedorProgreso />} />
+            <Route path="emprendimiento/perfil" element={<EmprendedorPerfilEmp />} />
+            <Route path="plan" element={<EmprendedorPlan />} />
+            <Route path="seguimiento" element={<EmprendedorSeguimiento />} />
+            <Route path="comparativa" element={<EmprendedorComparativa />} />
+            <Route path="recursos/asesores" element={<AsesoresRecursos />} />
             <Route path="recursos/asesorias" element={<AsesoriasRecursos />} />
-            <Route path="eventos" element={<EventosEstudiante />} />
-            <Route path="diagnostico" element={<DiagnosticoEstudiante />} />
+            <Route path="eventos" element={<EventosEmprendedor />} />
+            <Route path="diagnostico" element={<DiagnosticoEmprendedor />} />
           </Route>
 
           <Route
-            path="/maestro"
+            path="/asesor"
             element={
               <PrivateRoute allowedRoles={["asesor"]}>
-                <Maestro />
+                <Asesor />
               </PrivateRoute>
             }
           >
-            <Route index element={<MaestroDashboard />} />
-            <Route path="perfil" element={<MaestroPerfil />} />
-            <Route path="asesorias" element={<MaestroAsesorias />} />
-            <Route path="asesorias/crear" element={<MaestroAsesoriasCrear />} />
-            <Route path="asesorias/editar" element={<MaestroAsesoriasEditar />} />
-            <Route path="emprendimientos/perfil" element={<MaestroEmprendimientos />} />
-            <Route path="emprendimientos/seguimiento" element={<MaestroEmpSeguimiento />} />
-            <Route path="tareas" element={<MaestroTareas />} />
-            <Route path="diagnosticos" element={<MaestroDiagnostico />} />
-            <Route path="eventos" element={<MaestroEventos />} />
+            <Route index element={<AsesorDashboard />} />
+            <Route path="perfil" element={<AsesorPerfil />} />
+            <Route path="asesorias" element={<AsesorAsesorias />} />
+            <Route path="asesorias/crear" element={<AsesorAsesoriasCrear />} />
+            <Route path="asesorias/editar" element={<AsesorAsesoriasEditar />} />
+            <Route path="emprendimientos/perfil" element={<AsesorEmprendimientos />} />
+            <Route path="emprendimientos/seguimiento" element={<AsesorEmpSeguimiento />} />
+            <Route path="tareas" element={<AsesorTareas />} />
+            <Route path="diagnosticos" element={<AsesorDiagnostico />} />
+            <Route path="eventos" element={<AsesorEventos />} />
           </Route>
 
           <Route
@@ -140,10 +140,10 @@ function AppContent() {
             <Route index element={<AdminPage />} />
             <Route path="perfil" element={<AdminPerfil />} />
             <Route path="usuarios" element={<AdminUsuarios />} />
-            <Route path="docentes/asignar" element={<AdminAsignar />} />
-            <Route path="docentes/gestion" element={<AdminDocentes />} />
-            <Route path="gestionar/docentes" element={<GestionarUsuarios role="docente" />} />
-            <Route path="gestionar/estudiantes" element={<GestionarUsuarios role="estudiante" />} />
+            <Route path="asesores/asignar" element={<AdminAsignar />} />
+            <Route path="asesores/gestion" element={<AdminAsesores />} />
+            <Route path="gestionar/asesores" element={<GestionarUsuarios role="asesor" />} />
+            <Route path="gestionar/emprendedores" element={<GestionarUsuarios role="emprendedor" />} />
             <Route path="emprendimientos/plan-de-trabajo" element={<AdminPlanTrabajo />} />
             <Route path="emprendimientos/crear" element={<AdminCrearEmprendimiento />} />
             <Route path="emprendimientos/ver/:id" element={<AdminVerEmprendimiento />} />
@@ -167,3 +167,11 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+

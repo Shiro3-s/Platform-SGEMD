@@ -10,16 +10,16 @@ const getAuthHeaders = () => {
   return headers;
 };
 
-const DocentesRecursos = () => {
-  const [docentes, setDocentes] = useState([]);
+const AsesoresRecursos = () => {
+  const [asesores, setAsesores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState('');
 
   useEffect(() => {
-    fetchDocentes();
+    fetchAsesores();
   }, []);
 
-  const fetchDocentes = async () => {
+  const fetchAsesores = async () => {
     try {
       const res = await fetch(`${API_URL}/segmed/users/teachers`, {
         method: 'GET',
@@ -28,7 +28,7 @@ const DocentesRecursos = () => {
       });
       const data = await res.json();
       if (data.success) {
-        setDocentes(data.data || []);
+        setAsesores(data.data || []);
       }
     } catch (err) {
       console.error('Error:', err);
@@ -37,9 +37,9 @@ const DocentesRecursos = () => {
     }
   };
 
-  const docentesFiltrados = docentes.filter(docente =>
-    docente.Nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
-    docente.CorreoInstitucional?.toLowerCase().includes(busqueda.toLowerCase())
+  const asesoresFiltrados = asesores.filter(asesor =>
+    asesor.Nombre?.toLowerCase().includes(busqueda.toLowerCase()) ||
+    asesor.CorreoInstitucional?.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   if (loading) {
@@ -56,8 +56,8 @@ const DocentesRecursos = () => {
     <div style={{ padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <div>
-          <h1 style={{ color: '#0c4a6e', marginBottom: '5px' }}>👨‍🏫 Docentes</h1>
-          <p style={{ color: '#666', margin: 0 }}>Listado de docentes disponibles como recurso de apoyo</p>
+          <h1 style={{ color: '#0c4a6e', marginBottom: '5px' }}>👨‍🏫 Asesores</h1>
+          <p style={{ color: '#666', margin: 0 }}>Listado de asesores disponibles como recurso de apoyo</p>
         </div>
       </div>
 
@@ -77,17 +77,17 @@ const DocentesRecursos = () => {
         </div>
       </div>
 
-      {docentesFiltrados.length === 0 ? (
+      {asesoresFiltrados.length === 0 ? (
         <div className="card">
           <div className="card-body text-center" style={{ padding: '40px' }}>
             <p style={{ fontSize: '48px', marginBottom: '15px' }}>👨‍🏫</p>
-            <p style={{ color: '#666' }}>No hay docentes disponibles</p>
+            <p style={{ color: '#666' }}>No hay asesores disponibles</p>
           </div>
         </div>
       ) : (
         <div className="row">
-          {docentesFiltrados.map((docente) => (
-            <div key={docente.idusuarios} className="col-md-4 mb-4">
+          {asesoresFiltrados.map((asesor) => (
+            <div key={asesor.idusuarios} className="col-md-4 mb-4">
               <div className="card h-100" style={{ borderRadius: '10px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
                 <div className="card-body">
                   <div style={{ display: 'flex', alignItems: 'center', marginBottom: '15px' }}>
@@ -104,33 +104,33 @@ const DocentesRecursos = () => {
                       fontWeight: 'bold',
                       marginRight: '15px'
                     }}>
-                      {docente.Nombre?.charAt(0).toUpperCase()}
+                      {asesor.Nombre?.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <h5 style={{ margin: 0, color: '#0c4a6e' }}>{docente.Nombre}</h5>
-                      <span style={{ fontSize: '12px', color: '#666' }}>Docente</span>
+                      <h5 style={{ margin: 0, color: '#0c4a6e' }}>{asesor.Nombre}</h5>
+                      <span style={{ fontSize: '12px', color: '#666' }}>Asesor</span>
                     </div>
                   </div>
                   <div style={{ fontSize: '14px', color: '#555' }}>
                     <p style={{ marginBottom: '8px' }}>
                       <strong>📧 Correo:</strong><br />
-                      <span style={{ color: '#1a75bc' }}>{docente.CorreoInstitucional || 'No disponible'}</span>
+                      <span style={{ color: '#1a75bc' }}>{asesor.CorreoInstitucional || 'No disponible'}</span>
                     </p>
-                    {docente.Celular && (
+                    {asesor.Celular && (
                       <p style={{ marginBottom: '8px' }}>
-                        <strong>📱 Celular:</strong> {docente.Celular}
+                        <strong>📱 Celular:</strong> {asesor.Celular}
                       </p>
                     )}
-                    {docente.ProgramaAcademico_idProgramaAcademico1 && (
+                    {asesor.ProgramaAcademico_idProgramaAcademico1 && (
                       <p style={{ marginBottom: '0' }}>
-                        <strong>🎓 Programa:</strong> #{docente.ProgramaAcademico_idProgramaAcademico1}
+                        <strong>🎓 Programa:</strong> #{asesor.ProgramaAcademico_idProgramaAcademico1}
                       </p>
                     )}
                   </div>
                 </div>
                 <div className="card-footer" style={{ backgroundColor: '#f8f9fa', borderTop: '1px solid #eee' }}>
-                  <Link 
-                    to={`/estudiante/recursos/asesorias?docente=${docente.idusuarios}`}
+                  <Link
+                    to={`/emprendedor/recursos/asesorias?asesor=${asesor.idusuarios}`}
                     style={{
                       display: 'block',
                       textAlign: 'center',
@@ -154,4 +154,4 @@ const DocentesRecursos = () => {
   );
 };
 
-export default DocentesRecursos;
+export default AsesoresRecursos;

@@ -1,7 +1,7 @@
 /* ============================================================
-   ESTUDIANTE LAYOUT GENERAL
+   Emprendedor LAYOUT GENERAL
    ============================================================ */
-.estudiante-layout {
+.emprendedor-layout {
   display: flex;
   min-height: 100vh;
   align-items: stretch;
@@ -199,3 +199,4 @@
 .nps-label.promoters {
   color: #06d6a0;
 }
+

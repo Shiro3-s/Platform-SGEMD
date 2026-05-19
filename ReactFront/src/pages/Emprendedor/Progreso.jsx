@@ -331,7 +331,7 @@ const Progreso = () => {
                     </div>
                   </div>
                   <Link 
-                    to="/estudiante/emprendimiento/perfil"
+                    to="/emprendedor/emprendimiento/perfil"
                     className="btn btn-sm"
                     style={{ backgroundColor: '#1a75bc', color: 'white' }}
                   >
@@ -394,3 +394,4 @@ const Progreso = () => {
 };
 
 export default Progreso;
+

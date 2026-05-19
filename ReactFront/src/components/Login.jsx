@@ -38,8 +38,8 @@ function Login() {
       localStorage.setItem("token", `demo-token-${demo.rol}`);
       updateUser({ idUsuarios: 0, Nombre: demo.nombre, Roles_idRoles1: demo.rol, CorreoInstitucional: correo.trim() });
       if (rol === "administrador") navigate("/admin");
-      else if (rol === "asesor") navigate("/maestro");
-      else if (rol === "emprendedor") navigate("/estudiante");
+      else if (rol === "asesor") navigate("/asesor");
+      else if (rol === "emprendedor") navigate("/emprendedor");
       setIsSubmitting(false);
       return;
     }
@@ -69,8 +69,8 @@ function Login() {
           const userRol = user.Rol || user.Roles_idRoles1;
           const rol = rolesMap[userRol] || "desconocido";
           if (rol === "administrador") navigate("/admin");
-          else if (rol === "asesor") navigate("/maestro");
-          else if (rol === "emprendedor") navigate("/estudiante");
+          else if (rol === "asesor") navigate("/asesor");
+          else if (rol === "emprendedor") navigate("/emprendedor");
           else setMensaje("Rol desconocido.");
         } else {
           setMensaje("No se recibió un rol válido del servidor.");
@@ -111,3 +111,5 @@ function Login() {
 }
 
 export default Login;
+
+

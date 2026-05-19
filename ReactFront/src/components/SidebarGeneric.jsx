@@ -13,7 +13,7 @@ const IconArrow = ({ isOpen }) => (
 
 /**
  * Sidebar Genérico
- * @param {string} basePath - Ruta base del rol ("/admin", "/estudiante", etc.)
+ * @param {string} basePath - Ruta base del rol ("/admin", "/emprendedor", etc.)
  * @param {array} menuData - Estructura del menú
  * @param {string} roleClass - Clase CSS del sidebar
  * @param {string} logoText - Texto que aparece al lado del logo
@@ -110,3 +110,4 @@ function SidebarGeneric({ basePath, menuData, roleClass, logoText }) {
 }
 
 export default SidebarGeneric;
+

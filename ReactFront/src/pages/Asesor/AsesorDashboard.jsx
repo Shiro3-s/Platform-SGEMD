@@ -1,4 +1,4 @@
-// src/pages/Maestro/MaestroDashboard.jsx
+// src/pages/Asesor/AsesorDashboard.jsx
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
@@ -33,13 +33,13 @@ const StatCard = ({ icon, label, value, color }) => (
   </div>
 );
 
-const MaestroDashboard = () => {
+const AsesorDashboard = () => {
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({
     emprendimientosAsignados: 0,
     asesoriasCompletadas: 0,
     asesoriasPendientes: 0,
-    estudiantesAtendidos: 0,
+    EmprendedoresAtendidos: 0,
   });
   const [emprendimientos, setEmprendimientos] = useState([]);
   const [asesoriasProximas, setAsesoriasProximas] = useState([]);
@@ -64,23 +64,23 @@ const MaestroDashboard = () => {
       const asesorias = asesoriasData.data || [];
       const usuarios = usersData.data || [];
 
-      const estudianteIds = [...new Set(asesorias.map(a => a.Usuarios_idUsuarios).filter(Boolean))];
-      const uniqueEstudiantes = new Set(estudianteIds);
+      const EmprendedorIds = [...new Set(asesorias.map(a => a.Usuarios_idUsuarios).filter(Boolean))];
+      const uniqueEmprendedores = new Set(EmprendedorIds);
 
       const pendientes = asesorias.filter(a => a.confirmacion === 'pendiente');
       const completadas = asesorias.filter(a => a.confirmacion === 'completada');
 
       setStats({
-        emprendimientosAsignados: uniqueEstudiantes.size,
+        emprendimientosAsignados: uniqueEmprendedores.size,
         asesoriasCompletadas: completadas.length,
         asesoriasPendientes: pendientes.length,
-        estudiantesAtendidos: uniqueEstudiantes.size,
+        EmprendedoresAtendidos: uniqueEmprendedores.size,
       });
 
       setEmprendimientos(asesorias.slice(0, 5).map(a => ({
         id: a.idAsesorias,
         nombre: a.Nombre_de_asesoria || 'Asesoría sin nombre',
-        estudiante: usuarios.find(u => u.idUsuarios === a.Usuarios_idUsuarios)?.Nombre || 'Estudiante',
+        Emprendedor: usuarios.find(u => u.idUsuarios === a.Usuarios_idUsuarios)?.Nombre || 'Emprendedor',
         fecha: a.Fecha_asesoria,
         estado: a.confirmacion || 'pendiente',
       })));
@@ -130,10 +130,10 @@ const MaestroDashboard = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1 style={{ color: '#0c4a6e', marginBottom: '10px' }}>
-        👨‍🏫 Panel del Docente - SGEMD
+        👨‍🏫 Panel del Asesor - SGEMD
       </h1>
       <p style={{ color: '#666', marginBottom: '30px' }}>
-        Bienvenido, {user?.Nombre || 'Docente'}. Aquí está el resumen de tus actividades.
+        Bienvenido, {user?.Nombre || 'Asesor'}. Aquí está el resumen de tus actividades.
       </p>
 
       {/* Tarjetas de métricas */}
@@ -141,7 +141,7 @@ const MaestroDashboard = () => {
         <StatCard icon="🎯" label="Emprendimientos a Cargo" value={stats.emprendimientosAsignados} color="#0057a4" />
         <StatCard icon="✅" label="Asesorías Completadas" value={stats.asesoriasCompletadas} color="#4CAF50" />
         <StatCard icon="⏳" label="Asesorías Pendientes" value={stats.asesoriasPendientes} color="#ffc400" />
-        <StatCard icon="👥" label="Estudiantes Atendidos" value={stats.estudiantesAtendidos} color="#1a75bc" />
+        <StatCard icon="👥" label="Emprendedores Atendidos" value={stats.EmprendedoresAtendidos} color="#1a75bc" />
       </div>
 
       {/* Contenido principal */}
@@ -154,7 +154,7 @@ const MaestroDashboard = () => {
               <p style={{ fontSize: '48px', marginBottom: '10px' }}>📭</p>
               <p>No hay asesorías registradas aún.</p>
               <Link 
-                to="/maestro/asesorias/crear" 
+                to="/asesor/asesorias/crear" 
                 style={{ display: 'inline-block', marginTop: '15px', padding: '10px 20px', backgroundColor: '#1a75bc', color: 'white', textDecoration: 'none', borderRadius: '5px' }}
               >
                 + Crear Primera Asesoría
@@ -165,7 +165,7 @@ const MaestroDashboard = () => {
               <thead>
                 <tr style={{ backgroundColor: '#f4f4f4' }}>
                   <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Asesoría</th>
-                  <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Estudiante</th>
+                  <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Emprendedor</th>
                   <th style={{ padding: '12px', textAlign: 'left', borderBottom: '2px solid #ddd' }}>Fecha</th>
                   <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #ddd' }}>Estado</th>
                   <th style={{ padding: '12px', textAlign: 'center', borderBottom: '2px solid #ddd' }}>Acciones</th>
@@ -175,12 +175,12 @@ const MaestroDashboard = () => {
                 {emprendimientos.map((item, index) => (
                   <tr key={item.id || index} style={{ borderBottom: '1px solid #eee' }}>
                     <td style={{ padding: '12px', fontWeight: '500' }}>{item.nombre}</td>
-                    <td style={{ padding: '12px' }}>{item.estudiante}</td>
+                    <td style={{ padding: '12px' }}>{item.Emprendedor}</td>
                     <td style={{ padding: '12px' }}>{formatDate(item.fecha)}</td>
                     <td style={{ padding: '12px', textAlign: 'center' }}>{getEstadoBadge(item.estado)}</td>
                     <td style={{ padding: '12px', textAlign: 'center' }}>
                       <Link 
-                        to="/maestro/asesorias" 
+                        to="/asesor/asesorias" 
                         style={{ color: '#1a75bc', textDecoration: 'none', fontWeight: 'bold' }}
                       >
                         Ver →
@@ -226,16 +226,16 @@ const MaestroDashboard = () => {
       {/* Accesos rápidos */}
       <Card title="Accesos Rápidos" icon="⚡" style={{ marginTop: '20px' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '15px' }}>
-          <Link to="/maestro/asesorias/crear" style={quickLinkStyle}>
+          <Link to="/asesor/asesorias/crear" style={quickLinkStyle}>
             ➕ Crear Asesoría
           </Link>
-          <Link to="/maestro/asesorias" style={quickLinkStyle}>
+          <Link to="/asesor/asesorias" style={quickLinkStyle}>
             📋 Mis Asesorías
           </Link>
-          <Link to="/maestro/emprendimientos/seguimiento" style={quickLinkStyle}>
+          <Link to="/asesor/emprendimientos/seguimiento" style={quickLinkStyle}>
             📈 Seguimiento
           </Link>
-          <Link to="/maestro/perfil" style={quickLinkStyle}>
+          <Link to="/asesor/perfil" style={quickLinkStyle}>
             ⚙️ Mi Perfil
           </Link>
         </div>
@@ -256,4 +256,7 @@ const quickLinkStyle = {
   transition: 'background-color 0.2s',
 };
 
-export default MaestroDashboard;
+export default AsesorDashboard;
+
+
+

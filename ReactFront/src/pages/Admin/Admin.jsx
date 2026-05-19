@@ -81,8 +81,8 @@ const Admin = () => {
   const { user } = useContext(AuthContext);
   const [stats, setStats] = useState({
     totalEmprendimientos: 0,
-    estudiantesActivos: 0,
-    maestrosActivos: 0,
+    EmprendedoresActivos: 0,
+    AsesoresActivos: 0,
     asesoriasRealizadas: 0,
     eventosActivos: 0,
   });
@@ -116,14 +116,14 @@ const Admin = () => {
       const eventos = eventsData.data || [];
       const asesorias = adviceData.data || [];
 
-      const estudiantes = usuarios.filter(u => u.Roles_idRoles1 === 2);
-      const maestros = usuarios.filter(u => u.Roles_idRoles1 === 3);
+      const Emprendedores = usuarios.filter(u => u.Roles_idRoles1 === 2);
+      const Asesores = usuarios.filter(u => u.Roles_idRoles1 === 3);
       const asesoriasCompletadas = asesorias.filter(a => a.confirmacion === 'completada').length;
 
       setStats({
         totalEmprendimientos: emprendimientos.length,
-        estudiantesActivos: estudiantes.filter(u => u.Estado === 1).length,
-        maestrosActivos: maestros.filter(u => u.Estado === 1).length,
+        EmprendedoresActivos: Emprendedores.filter(u => u.Estado === 1).length,
+        AsesoresActivos: Asesores.filter(u => u.Estado === 1).length,
         asesoriasRealizadas: asesoriasCompletadas,
         eventosActivos: eventos.filter(e => e.Estado === 'activo').length,
       });
@@ -244,8 +244,8 @@ const Admin = () => {
           marginBottom: '30px' 
         }}>
           <StatCard icon="🎯" label="Total Emprendimientos" value={stats.totalEmprendimientos} color="#0c4a6e" trend={12} />
-          <StatCard icon="👨‍🎓" label="Estudiantes Activos" value={stats.estudiantesActivos} color="#1a75bc" trend={5} />
-          <StatCard icon="👨‍🏫" label="Docentes Activos" value={stats.maestrosActivos} color="#4CAF50" />
+          <StatCard icon="👨‍🎓" label="Emprendedores Activos" value={stats.EmprendedoresActivos} color="#1a75bc" trend={5} />
+          <StatCard icon="👨‍🏫" label="Asesores Activos" value={stats.AsesoresActivos} color="#4CAF50" />
           <StatCard icon="📚" label="Asesorías Realizadas" value={stats.asesoriasRealizadas} color="#ffc400" />
           <StatCard icon="📅" label="Eventos Activos" value={stats.eventosActivos} color="#9b59b6" />
         </div>
@@ -418,8 +418,8 @@ const Admin = () => {
             <Link to="/admin/usuarios" style={quickLinkStyle}>
               👥 Gestionar Usuarios
             </Link>
-            <Link to="/admin/docentes/gestion" style={quickLinkStyle}>
-              👨‍🏫 Asignar Docentes
+            <Link to="/admin/asesores/gestion" style={quickLinkStyle}>
+              👨‍🏫 Asignar Asesores
             </Link>
             <Link to="/admin/emprendimientos/crear" style={quickLinkStyle}>
               🚀 Nuevo Emprendimiento
@@ -427,8 +427,8 @@ const Admin = () => {
             <Link to="/admin/eventos" style={quickLinkStyle}>
               📅 Gestionar Eventos
             </Link>
-            <Link to="/admin/gestionar/estudiantes" style={quickLinkStyle}>
-              👨‍🎓 Ver Estudiantes
+            <Link to="/admin/gestionar/emprendedores" style={quickLinkStyle}>
+              👨‍🎓 Ver Emprendedores
             </Link>
             <Link to="/admin/perfil" style={quickLinkStyle}>
               ⚙️ Mi Perfil
@@ -454,3 +454,5 @@ const quickLinkStyle = {
 };
 
 export default Admin;
+
+

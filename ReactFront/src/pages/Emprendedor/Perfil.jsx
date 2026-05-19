@@ -163,7 +163,7 @@ const Perfil = () => {
         <div className="col-md-10">
           <div className="card shadow">
             <div className="card-header bg-primary text-white">
-              <h3 className="mb-0">Mi Perfil de Estudiante</h3>
+              <h3 className="mb-0">Mi Perfil de Emprendedor</h3>
             </div>
             <div className="card-body">
               {success && <div className="alert alert-success">{success}</div>}
@@ -284,3 +284,4 @@ const Perfil = () => {
 };
 
 export default Perfil;
+

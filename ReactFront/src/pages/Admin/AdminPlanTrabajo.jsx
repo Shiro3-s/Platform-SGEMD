@@ -202,7 +202,7 @@ const AdminPlanTrabajo = () => {
                   <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Nombre</th>
                   <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Tipo</th>
                   <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Sector</th>
-                  <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Estudiante</th>
+                  <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Emprendedor</th>
                   <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Etapa</th>
                   <th style={{ fontWeight: '600', color: '#0c4a6e' }}>Acciones</th>
                 </tr>
