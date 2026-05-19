@@ -76,8 +76,8 @@ const AdminSidebar = () => {
     if (item === 'crear' && base === 'eventos') return '/admin/eventos';
     if (item === 'editar' && base === 'eventos') return '/admin/eventos';
     if (item === 'gestionar' && base === 'diagnosticos') return '/admin/diagnosticos';
-    if (item === 'seguimiento' && base === 'asesores') return '/admin/asesores/seguimiento';
-    if (item === 'asesorias' && base === 'asesores') return '/admin/asesores/asesorias';
+    if (item === 'seguimiento' && base === 'asesores') return '/admin/emprendimientos/plan-de-trabajo';
+    if (item === 'asesorias' && base === 'asesores') return '/admin/diagnosticos';
 
     return `/admin/${base}/${item}`;
   };

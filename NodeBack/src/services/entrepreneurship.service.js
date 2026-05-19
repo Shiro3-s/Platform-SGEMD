@@ -27,7 +27,9 @@ exports.create = async (data) => {
     const acompanamiento = data.Acompanamiento !== undefined ? data.Acompanamiento : 0;
     const etapaId = data.EtapaEmprendimiento_idEtapaEmprendimiento || data.Etapaemprendimiento_idEtapaemprendimiento || 1;
     const usuarioId = data.Usuarios_idUsuarios !== undefined ? data.Usuarios_idUsuarios : null;
-    const actaCompromiso = data.ActaCompromiso !== undefined ? data.ActaCompromiso : null;
+    const actaCompromiso = data.ActaCompromiso !== undefined && data.ActaCompromiso !== null 
+      ? data.ActaCompromiso 
+      : '';
     
     try {
         const [result] = await pool.execute(

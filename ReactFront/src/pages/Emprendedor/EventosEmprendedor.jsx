@@ -189,7 +189,11 @@ const EventosEmprendedor = () => {
                 onChange={(e) => setFiltroTipo(e.target.value)}
               >
                 <option value="">Todos los tipos</option>
-                {tiposEvento.map(tipo => (
+                {Array.from(
+                  new Map(
+                    tiposEvento.map(tipo => [getTipoNombre(tipo), tipo])
+                  ).values()
+                ).map(tipo => (
                   <option key={tipo.idTipo_evento || tipo.idTipoEvento} value={tipo.idTipo_evento || tipo.idTipoEvento}>
                     {getTipoNombre(tipo)}
                   </option>

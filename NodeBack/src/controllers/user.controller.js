@@ -464,19 +464,25 @@ exports.hardDeleteUser = async (req, res) => {
 // ==================================================
 exports.uploadAvatar = async (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ success: false, error: 'Archivo no recibido' });
+    if (!req.file) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'No file received or invalid file type. Allowed: jpg, jpeg, png, gif' 
+      });
+    }
 
     const userId = req.params.id;
     const filename = req.file.filename;
+    const avatarPath = `/uploads/avatars/${filename}`;
 
-    const updated = await usersService.update(userId, { img_perfil: `/uploads/avatars/${filename}` });
+    const updated = await usersService.update(userId, { img_perfil: avatarPath });
     if (updated) {
-      return res.json({ success: true, message: 'Avatar subido', img_perfil: `/uploads/avatars/${filename}` });
+      return res.json({ success: true, message: 'Avatar uploaded', img_perfil: avatarPath });
     }
 
-    return res.status(404).json({ success: false, error: 'Usuario no encontrado' });
+    return res.status(404).json({ success: false, error: 'User not found' });
   } catch (error) {
-    console.error('Error subiendo avatar:', error);
+    console.error('Error uploading avatar:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 };

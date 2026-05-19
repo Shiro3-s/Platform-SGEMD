@@ -242,7 +242,13 @@ const AdminEventos = () => {
                         <label className="form-label">Tipo de Evento</label>
                         <select className="form-select" name="Tipo" value={form.Tipo} onChange={handleChange}>
                           <option value="">Seleccionar...</option>
-                          {tiposEvento.map(tipo => (
+                          {Array.from(
+                            new Map(
+                              tiposEvento
+                                .filter(tipo => getTipoNombre(tipo) !== 'Sin tipo')
+                                .map(tipo => [getTipoNombre(tipo), tipo])
+                            ).values()
+                          ).map(tipo => (
                             <option key={tipo.idTipo_evento || tipo.idTipoEvento} value={tipo.idTipo_evento || tipo.idTipoEvento}>
                               {getTipoNombre(tipo)}
                             </option>

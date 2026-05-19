@@ -277,7 +277,12 @@ const Admin = () => {
           </Card>
 
           {/* Gráfico Donut de Sectores */}
-          <Card title="🏢 Sectores Productivos" icon="">
+          <Card title="Sectores Productivos" icon="">
+            {sectoresData.length === 0 ? (
+              <div className="text-center py-4">
+                <p className="text-muted">No hay datos de sectores disponibles</p>
+              </div>
+            ) : (
             <ResponsiveContainer width="100%" height={250}>
               <PieChart>
                 <Pie
@@ -307,6 +312,7 @@ const Admin = () => {
                 />
               </PieChart>
             </ResponsiveContainer>
+            )}
           </Card>
 
           {/* Gráfico Radial de Progreso */}

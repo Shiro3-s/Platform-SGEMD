@@ -208,7 +208,7 @@ const Asesorias = () => {
           {asesorias.length === 0 ? (
             <div className="text-center py-5">
               <p style={{ fontSize: '48px', marginBottom: '15px' }}>📭</p>
-              <p className="text-muted">No hay asesorías registradas</p>
+              <p className="text-muted">No tienes asesorías asignadas aún</p>
               <Link to="/asesor/asesorias/crear" className="btn btn-primary">
                 Crear Primera Asesoría
               </Link>

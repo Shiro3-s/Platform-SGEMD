@@ -164,9 +164,12 @@ const AsesorTareas = () => {
               onChange={(e) => handleSelectEmprendimiento(e.target.value)}
             >
               <option value="">Seleccionar...</option>
+              {emprendimientos.length === 0 && (
+                <option disabled>No hay emprendimientos registrados</option>
+              )}
               {emprendimientos.map(emp => (
                 <option key={emp.idEmprendimiento} value={emp.idEmprendimiento}>
-                  {emp.Nombre} - {emp.SectorProductivo}
+                  {emp.Nombre} - {emp.SectorProductivo || 'Sin sector'}
                 </option>
               ))}
             </select>
@@ -332,6 +335,9 @@ const AsesorTareas = () => {
                       required
                     >
                       <option value="">Seleccionar...</option>
+                      {Emprendedores.length === 0 && (
+                        <option disabled>No hay emprendedores registrados</option>
+                      )}
                       {Emprendedores.map(est => (
                         <option key={est.idusuarios || est.idUsuarios} value={est.idusuarios || est.idUsuarios}>
                           {est.Nombre}

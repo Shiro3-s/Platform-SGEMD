@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const fs = require('fs');
+const path = require('path');
 const { testConnection } = require('./config/db.config');
 
 //Importar rutas
@@ -56,7 +58,11 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Servir archivos estáticos para imágenes subidas (avatars)
-app.use('/uploads', express.static(require('path').join(__dirname, '..', 'uploads')));
+const uploadsDir = path.join(__dirname, '..', 'uploads', 'avatars');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+app.use('/uploads', express.static(uploadsDir));
 
 // ============================
 // 🔹 Rutas del sistema

@@ -76,6 +76,7 @@ const SidebarAsesor = ({ user }) => {
     const item = normalize(itemTitle);
 
     if (item === 'completarinformacionpersonal') return '/asesor/perfil';
+    if (item === 'miperfil') return '/asesor/perfil';
     if (item === 'perfildeemprendimiento') return '/asesor/emprendimientos/perfil';
     if (item === 'seguimiento' && base === 'emprendimientos') return '/asesor/emprendimientos/seguimiento';
     if (item === 'tareas' && base === 'emprendimientos') return '/asesor/tareas';

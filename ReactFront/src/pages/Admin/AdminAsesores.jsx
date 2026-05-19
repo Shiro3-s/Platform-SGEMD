@@ -40,7 +40,7 @@ const AdminAsesores = () => {
       const asignacionesData = await asignacionesRes.json();
 
       setAsesores(AsesoresData.data || []);
-      setEmprendedores(EmprendedoresData.users?.filter(u => u.Roles_idRoles1 === 2) || []);
+      setEmprendedores((EmprendedoresData.data || []).filter(u => u.Roles_idRoles1 === 2));
       setAsignaciones(asignacionesData.data || []);
     } catch (err) {
       console.error('Error:', err);
